@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "skysim"
+version = "0.1.0"
+description = ""
+authors = ["taiwithers <59430904+taiwithers@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^2.2.2"
+matplotlib = "^3.10.0"
+astropy = "^7.0.1"
+astroquery = "^0.4.9.post1"
+jupyter = "^1.1.1"
+pydantic = "^2.10.6"
+
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+pandas = "^2.2.3"
+ipydatagrid = "^1.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
