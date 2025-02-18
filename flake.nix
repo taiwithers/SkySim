@@ -78,7 +78,9 @@
             useSaneDefaults = true; # adds OS and Nix-specific entries
 
             # extra custom entries
-            extraConfig = '''';
+            extraConfig = ''
+              *.py:Zone.Identifier
+            '';
           };
           libraries = pkgs.lib.makeLibraryPath (
             with pkgs;
