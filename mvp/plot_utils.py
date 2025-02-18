@@ -26,7 +26,7 @@ cloud_freespace = {
     "CygnusX_S": "top left",
 }
 
-COLUMN_WIDTH = 3.35
+COLUMN_WIDTH = 6
 
 nc_colours = ["lightgrey", "#88CCEE", "#AA4499", "#117733"]
 nc_cmap = ListedColormap(nc_colours)
