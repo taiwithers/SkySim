@@ -1,0 +1,60 @@
+fail_fast = true
+
+default_language_version:
+  python: python3.12 # minimum as in pyproject.toml
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-case-conflict
+    -   id: pretty-format-json
+    -   id: check-merge-conflict
+    -   id: check-toml
+    -   id: mixed-line-ending
+
+  # black
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.8.0
+    hooks:
+      - id: black
+      - id: black-jupyter
+
+  # isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.11.2
+    hooks:
+      - id: isort
+
+  # nbqa (linting for jupyter notebooks)
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.9.1
+    hooks:
+     - id: nbqa-black
+     - id: nbqa-isort
+     - id: nbqa-mypy
+     - id: nbqa-pylint
+
+  # pylint
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        stages: [pre-push]
+        # require_serial: true
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+          ]
