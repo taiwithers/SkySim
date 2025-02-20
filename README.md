@@ -6,6 +6,7 @@ git clone https://github.com/taiwithers/SkySim.git
 cd SkySim
 direnv allow
 ```
+
 ## Style checking
 
 ### IPython Notebooks
@@ -21,4 +22,3 @@ pyproject.toml:
 
 [tool.isort]
 profile = "black"
-
