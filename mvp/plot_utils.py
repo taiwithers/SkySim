@@ -26,7 +26,7 @@ cloud_freespace = {
     "CygnusX_S": "top left",
 }
 
-COLUMN_WIDTH = 3.35
+COLUMN_WIDTH = 6
 
 nc_colours = ["lightgrey", "#88CCEE", "#AA4499", "#117733"]
 nc_cmap = ListedColormap(nc_colours)
@@ -41,13 +41,13 @@ legend_kwargs = dict(
     edgecolor="k",
 )
 
-plt.rcParams["text.usetex"] = True
-plt.rcParams["font.size"] = 12
-plt.rcParams["font.weight"] = "bold"
-plt.rcParams["font.family"] = "serif"
-plt.rcParams["font.serif"] = ["Computer Modern Roman", "CMU Serif"]
-plt.rcParams["mathtext.fontset"] = "cm"
-plt.rcParams["text.latex.preamble"] = "\\usepackage{amsmath}"
+# plt.rcParams["text.usetex"] = True
+# plt.rcParams["font.size"] = 12
+# plt.rcParams["font.weight"] = "bold"
+# plt.rcParams["font.family"] = "serif"
+# plt.rcParams["font.serif"] = ["Computer Modern Roman", "CMU Serif"]
+# plt.rcParams["mathtext.fontset"] = "cm"
+# plt.rcParams["text.latex.preamble"] = "\\usepackage{amsmath}"
 
 # relative font sizes
 plt.rcParams["axes.labelsize"] = "small"
@@ -134,9 +134,11 @@ def fig_setup(
             raise Exception(
                 "When using WCS, fig_kwargs and plot_kwargs should be provided instead of **kwargs."
             )
-        fig = plt.figure(figsize=figsize, **fig_kwargs)
-        ax = plt.subplot(projection=wcs, **plot_kwargs)
-        fig.add_axes(ax)
+        plot_kwargs['projection'] = wcs
+        fig, ax = plt.subplots(figsize=figsize, **fig_kwargs, subplot_kw=plot_kwargs)
+        # fig = plt.figure(figsize=figsize, **fig_kwargs)
+        # ax = plt.subplot(projection=wcs, **plot_kwargs)
+        # fig.add_axes(ax)
         return fig, ax
 
 

@@ -19,6 +19,11 @@ pydantic = "^2.10.6"
 ipdb = "^0.13.13"
 pandas = "^2.2.3"
 ipydatagrid = "^1.4.0"
+pylint = "^3.3.4"
+black = "^25.1.0"
+nbqa = "^1.9.1"
+pyright = "^1.1.394"
+mypy = "^1.15.0"
 
 [build-system]
 requires = ["poetry-core"]
