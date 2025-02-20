@@ -97,6 +97,8 @@
           # set library path for python packages
           LD_LIBRARY_PATH = "${libraries}";
 
+          MAGICK_HOME = "${pkgs.imagemagick}";
+
           shellHook = ''
             ${gitignore} 
           '';
@@ -104,6 +106,7 @@
           packages = with pkgs; [
             poetry
             pkg-config # for poetry to locate dependencies
+            imagemagick
           ];
         };
 
