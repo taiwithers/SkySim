@@ -58,3 +58,15 @@ repos:
             "-rn", # Only display messages
             "-sn", # Don't display the score
           ]
+
+  # mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+      rev: 1.15.0  # Use the sha / tag you want to point at
+      hooks:
+      - id: mypy
+
+  # validate pyproject.toml
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: 0.23
+    hooks:
+      - id: validate-pyproject
