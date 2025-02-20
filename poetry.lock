@@ -975,6 +975,57 @@ files = [
 ]
 
 [[package]]
+name = "h3"
+version = "4.2.1"
+description = "Uber's hierarchical hexagonal geospatial indexing system"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "h3-4.2.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:8e4785358c2c68a3d5acf3bec074b0125378ad80b35e961b0afd5a4e7edbc62f"},
+    {file = "h3-4.2.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:08481cc13b26ff40cb5e6d72d6c4a34e007bb31d3ca7f6ff462b20bf16b2d7da"},
+    {file = "h3-4.2.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cbeab692bb62e92434772f7243095e097c83326f116d8c933f484096a7c64b38"},
+    {file = "h3-4.2.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3f4f1feef8e95bdce9cbefbf08808399f2180ef30485fa94796a4f21222e65de"},
+    {file = "h3-4.2.1-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:f903fc9433b0c840015b5b9b11b9b4e5c515890fce0889a4c481069466e29b7c"},
+    {file = "h3-4.2.1-cp310-cp310-win_amd64.whl", hash = "sha256:126393d674df1a1e05c816e88ce554a6c989d93c3bdd0b9f7468d30c41828ee0"},
+    {file = "h3-4.2.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:c3c5aff0b8de63a760d8ec162c3c959d0418321c54b84193472cafb1560ab540"},
+    {file = "h3-4.2.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9800d0a00a2231d896d6a47e8046d16175928cd947b6a2d7b64d0176770ee4f1"},
+    {file = "h3-4.2.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ec751665b2be8ff92d5b62637341b338875cfd2457789abffa0aa694c2dfb11c"},
+    {file = "h3-4.2.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d4e2ea658437002a0ac6c0c08846f44cfcba380a57596d3376233f0dbdd7e6e0"},
+    {file = "h3-4.2.1-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:9bdebc0fd8877176bb6fd0ab4d1cb13d7e676619715ee2c37bd2c8de70a2ca8b"},
+    {file = "h3-4.2.1-cp311-cp311-win_amd64.whl", hash = "sha256:1da01a46c69476b58b68279eb9b6b74751941b6bf7a03b5ba54e1fd36297d46c"},
+    {file = "h3-4.2.1-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:2b0c3ee94714799467fb26152dbd0309e7c5aa1a020518dace8fd3ddbe4d1da7"},
+    {file = "h3-4.2.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:292ca62f7474a88fc961bf30d08fccb6ec3270e5a479494e2262b9c11c713394"},
+    {file = "h3-4.2.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8a8eb8e8e6a4b18466208dbb72386dd695eb9534c13deea6b0f37708a3f771b9"},
+    {file = "h3-4.2.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b326683200e7a8845a260b2798509bf537875966fbda86bab049e858860f069d"},
+    {file = "h3-4.2.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:37869289e0208cfab30bc82fc356c48a2e99d5eaeaca7f0630bd5eb755db01db"},
+    {file = "h3-4.2.1-cp312-cp312-win_amd64.whl", hash = "sha256:d8e9d7a99a6e0a485f115ebbe293036a873348eb803c667b886deb1f6fac8850"},
+    {file = "h3-4.2.1-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:a4c4da955ad72a5162fadda01d81a944d3a02a0737e9d59c9f574cf71f30555e"},
+    {file = "h3-4.2.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:7e636e759aa73a3c5adb50a62735dc66f7a8517ee26091563e1030bc99fdf7d4"},
+    {file = "h3-4.2.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9af2122b4c137d4867f6092478a0d7f37c9fd1c9f920f3fb4dff9dd9197bcd3e"},
+    {file = "h3-4.2.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:232e2d157a5512cc0c7a44fea775766a66b00aba18ea38b7093ba75eb50f8f27"},
+    {file = "h3-4.2.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:9f627af7327c47006609d08f53fd993fbf811a2580d70b057f054434f50400aa"},
+    {file = "h3-4.2.1-cp313-cp313-win_amd64.whl", hash = "sha256:69bf4b9365acb093544b28b5b2bfa59bf1d98281a121492c887cd3137739ae33"},
+    {file = "h3-4.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:fadb5c817880aa1edc97c7e318fd62931ba367c7213a13b0a60439be0b719afd"},
+    {file = "h3-4.2.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e13c1e6b7b11e68b11df8c496ef9c275415eb492d9e91a04eacd90676f31d703"},
+    {file = "h3-4.2.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f5400c3b8e40ec81b63babf1760dadf5c014081c41be2eb7a031c00efa4fbf2d"},
+    {file = "h3-4.2.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95ed5493ba7f01840287a39ae37394f42db78dad84771db7c71cd6aa20ee0d70"},
+    {file = "h3-4.2.1-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:daa2943bcb3872b44d854031e0baaa7a39f2d39ff49959b567f20f3313a512d6"},
+    {file = "h3-4.2.1-cp38-cp38-win_amd64.whl", hash = "sha256:f514c68ee0cb4b2a960c3927d44cf2b9a14ef7f44fe1c0d87d28d58bcbaf2b31"},
+    {file = "h3-4.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e6b8e352a2a72f0a3a20bebf55ae70da4b1a3af05d48924e2bb78c78e859513f"},
+    {file = "h3-4.2.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:faef924773d08d42ab35ab38a3db8652860276dd0a8fa99216811edcf9359d05"},
+    {file = "h3-4.2.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e969b03b0f4e0ac32db4b2deec4dd89233024c6a8ef6de0a9e164ae9c219961a"},
+    {file = "h3-4.2.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e76824d9987877640931485a4d7ffa56c7653daf329501a80ef323be5c2e9f75"},
+    {file = "h3-4.2.1-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:a4e8e211074b1c88c2a1ad8372f5ce48d2d1fd1b13533e52b54fdeba4e0fe6f8"},
+    {file = "h3-4.2.1-cp39-cp39-win_amd64.whl", hash = "sha256:6af355d3c8d7316b3a5606f2fe67266e81ee3bfeba239d574373a7df0925ff05"},
+    {file = "h3-4.2.1.tar.gz", hash = "sha256:e64afe4166a6e31b06df71f0da6039683b04d88c2fec8c73d7bf4d5f36d7cb23"},
+]
+
+[package.extras]
+all = ["cartopy", "contextily", "geodatasets", "geopandas", "geoviews", "h3[test]", "jupyter-book", "jupyterlab", "jupyterlab-geojson", "matplotlib", "sphinx (>=7.3.3)"]
+numpy = ["numpy"]
+test = ["numpy", "pytest", "pytest-cov", "ruff"]
+
+[[package]]
 name = "html5lib"
 version = "1.1"
 description = "HTML parser based on the WHATWG HTML specification"
@@ -3421,6 +3472,37 @@ test = ["pre-commit", "pytest (>=7.0)", "pytest-timeout"]
 typing = ["mypy (>=1.6,<2.0)", "traitlets (>=5.11.1)"]
 
 [[package]]
+name = "timezonefinder"
+version = "6.5.8"
+description = "python package for finding the timezone of any point on earth (coordinates) offline"
+optional = false
+python-versions = "<4,>=3.8"
+files = [
+    {file = "timezonefinder-6.5.8-cp310-cp310-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d539dbfade8bd3ef3c738cf7f849d845b62ac323774899859d401bb1c29a1849"},
+    {file = "timezonefinder-6.5.8-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:85c55ceeb67c07919d7a71a036b37cfc612a956c4e0ad77eee72db4746da7599"},
+    {file = "timezonefinder-6.5.8-cp311-cp311-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:87a635453bf65cbc0af46b9c5aeab306e15ac75fa089ac6c1e0a208a3c2898e7"},
+    {file = "timezonefinder-6.5.8-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:b6e60c23ad89587bccbb396a9ac3e39f9ef35e49490842ae375fd42e36c82358"},
+    {file = "timezonefinder-6.5.8-cp312-cp312-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:723db23dfe476cfe636c45f9000f361b180c306b018beb66a2c9cef85ef1ccd5"},
+    {file = "timezonefinder-6.5.8-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:caade719b741accff1983d6851b1d5438f20a7e9c9342a88b81f80df9f09081e"},
+    {file = "timezonefinder-6.5.8-cp313-cp313-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c8f8b7e9f91883ec16410f7fb4f3f47237928e434532a4564a5d4f14a28b1ddf"},
+    {file = "timezonefinder-6.5.8-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:9c0f3edd2f25277f7eb4906de523260da371b2631db96605df8a48133497a6ef"},
+    {file = "timezonefinder-6.5.8-cp38-cp38-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:826943660242bab78fedd41ede2b66cef17350df48507e573502634a85b662d0"},
+    {file = "timezonefinder-6.5.8-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:85a7b523220bad54281af0eb3cd826cbc004085aeeadc82fc9d92c03011a59e0"},
+    {file = "timezonefinder-6.5.8-cp39-cp39-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f79339bd532178ea94bf66f02212512825086100e2066d17f15550c31803be3"},
+    {file = "timezonefinder-6.5.8-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:837d9a91cb648657c8ac5c365eea3cc48811744d45e7190dd9108b3740347cfb"},
+    {file = "timezonefinder-6.5.8.tar.gz", hash = "sha256:0993ba3416e1e117eeb88af03d805e7627d36e2b8a4b0c85eaae630c29cbb093"},
+]
+
+[package.dependencies]
+cffi = ">=1.15.1,<2"
+h3 = ">4"
+numpy = {version = ">=1.23,<3", markers = "python_version >= \"3.9\""}
+
+[package.extras]
+numba = ["numba (>=0.56,<1)", "numba (>=0.59,<1)"]
+pytz = ["pytz (>=2022.7.1)"]
+
+[[package]]
 name = "tinycss2"
 version = "1.4.0"
 description = "A tiny CSS parser"
@@ -3695,4 +3777,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "791fe495d0243470913d53a769ed6aa602e333974cc2bc4e618f93922d8dfc2a"
+content-hash = "71ee03ac7ed5e890fd462b1098ea07186e2157a36a858cd69528e0d1d47f9f47"
