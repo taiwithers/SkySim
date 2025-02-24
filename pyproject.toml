@@ -13,7 +13,6 @@ astropy = "^7.0.1"
 astroquery = "^0.4.9.post1"
 jupyter = "^1.1.1"
 pydantic = "^2.10.6"
-wand = "^0.6.13"
 timezonefinder = "^6.5.8"
 
 
