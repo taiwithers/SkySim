@@ -98,7 +98,7 @@
           LD_LIBRARY_PATH = "${libraries}";
 
           shellHook = ''
-            ${gitignore} 
+            ${gitignore}
           '';
 
           packages = with pkgs; [

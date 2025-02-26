@@ -4,6 +4,8 @@ exclude: .gitignore
 default_language_version:
   python: python3.12 # minimum as in pyproject.toml
 
+dependencies: &dependency-anchor ["astropy", "matplotlib", "timezonefinder"]
+
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
@@ -66,10 +68,17 @@ repos:
     rev: v1.15.0  # Use the sha / tag you want to point at
     hooks:
     - id: mypy
-      additional_dependencies: ["astropy", "matplotlib"]
+      additional_dependencies: *dependency-anchor
 
   # validate pyproject.toml
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: 'v0.23'
     hooks:
       - id: validate-pyproject
+
+  - repo: https://github.com/christophmeissner/pytest-pre-commit
+    rev: "1.0.0"
+    hooks:
+    - id: pytest
+      pass_filenames: false
+      additional_dependencies: *dependency-anchor
