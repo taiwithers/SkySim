@@ -36,9 +36,6 @@ class Settings:
     timezone: ZoneInfo
     frames: int
 
-    image_settings: "ImageSettings"
-    plot_settings: "PlotSettings"
-
     def __init__(
         self,
         input_location: str,
@@ -67,6 +64,9 @@ class Settings:
         self.get_degrees_per_pixel()
 
         return
+
+    def __str__(self) -> str:
+        return str(vars(self))
 
     def get_obs_time_values(
         self, start_date: date, start_time: time, snapshot_frequency: timedelta
@@ -122,18 +122,24 @@ class Settings:
             raise NotImplementedError
         return
 
-    def get_image_settings(self, *args: Any) -> None:
-        self.image_settings = ImageSettings(*args)
-        return
+    def passthrough_settings(
+        self, subclass_instance: "ImageSettings | PlotSettings"
+    ) -> None:
+        for name, value in vars(self).items():
+            setattr(subclass_instance, name, value)
 
-    def get_plot_settings(self, *args: Any) -> None:
-        self.plot_settings = PlotSettings(*args)
-        return
+    def get_image_settings(self, *args: Any) -> "ImageSettings":
+        return ImageSettings(self, *args)
+
+    def get_plot_settings(self, *args: Any) -> "PlotSettings":
+        return PlotSettings(self, *args)
 
 
 class ImageSettings(Settings):
     # Stored on initialization
-    object_colours: dict[str, str]  # same as colour_values for values
+    object_colours: dict[
+        str, tuple[float, float, float]
+    ]  # same as colour_values for values
 
     # Derived and stored
     colour_mapping: LinearSegmentedColormap
@@ -141,9 +147,19 @@ class ImageSettings(Settings):
 
     def __init__(
         self,
-        object_colours: dict[str, str],
+        settings: Settings,
+        object_colours: dict[str, tuple[float, float, float]],
+        colour_values: list[str],
+        colour_time_indices: dict[float | int, int],
+        magnitude_values: list[float | int],
+        magnitude_time_indices: dict[float | int, int],
     ) -> None:
         self.object_colours = object_colours
+
+        settings.passthrough_settings(self)
+        self.get_colour_mapping(colour_values, colour_time_indices)
+        self.get_magnitude_mapping(magnitude_values, magnitude_time_indices)
+
         return
 
     def get_colour_mapping(
@@ -151,11 +167,11 @@ class ImageSettings(Settings):
         colour_values: list[
             str
         ],  # matplotlib also accepts things like rbga tuples, not sure how to annotate that
-        colour_time_index: dict[float | int, int],
+        colour_time_indices: dict[float | int, int],
     ) -> None:
         colour_by_time = [
             (hour / 24, colour_values[index])
-            for hour, index in colour_time_index.items()
+            for hour, index in colour_time_indices.items()
         ]
         self.colour_mapping = LinearSegmentedColormap.from_list("sky", colour_by_time)
         return
@@ -163,11 +179,11 @@ class ImageSettings(Settings):
     def get_magnitude_mapping(
         self,
         magnitude_values: list[float | int],
-        magnitude_time_index: dict[float | int, int],
+        magnitude_time_indices: dict[float | int, int],
     ) -> None:
-        magnitude_day_percentage = [hour / 24 for hour in magnitude_time_index.keys()]
+        magnitude_day_percentage = [hour / 24 for hour in magnitude_time_indices.keys()]
         magnitude_by_time = [
-            magnitude_values[index] for index in magnitude_time_index.values()
+            magnitude_values[index] for index in magnitude_time_indices.values()
         ]
         day_percentages = np.linspace(0, 1, 24 * 60 * 60)
         self.magnitude_mapping = np.interp(
@@ -188,6 +204,7 @@ class PlotSettings(Settings):
 
     def __init__(
         self,
+        settings: Settings,
         fps: int | float,
         filename: str,
         figure_size: tuple[int | float, int | float],
@@ -197,6 +214,9 @@ class PlotSettings(Settings):
         self.filename = filename
         self.figure_size = figure_size
         self.dpi = dpi
+
+        settings.passthrough_settings(self)
+        self.get_obs_info()
         return
 
     def get_obs_info(self) -> None:
