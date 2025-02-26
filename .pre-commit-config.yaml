@@ -1,4 +1,5 @@
-fail_fast = true
+fail_fast : true
+exclude: .gitignore
 
 default_language_version:
   python: python3.12 # minimum as in pyproject.toml
@@ -6,42 +7,43 @@ default_language_version:
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
     -   id: check-added-large-files
+    -   id: check-case-conflict
     -   id: check-executables-have-shebangs
     -   id: check-json
-    -   id: check-case-conflict
-    -   id: pretty-format-json
     -   id: check-merge-conflict
     -   id: check-toml
+    -   id: check-yaml
+    -   id: end-of-file-fixer
     -   id: mixed-line-ending
+    -   id: pretty-format-json
+        exclude: .ipynb
+    -   id: trailing-whitespace
 
   # black
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.8.0
+    rev: 25.1.0
     hooks:
       - id: black
       - id: black-jupyter
 
   # isort
   - repo: https://github.com/pycqa/isort
-    rev: 5.11.2
+    rev: 6.0.0
     hooks:
       - id: isort
 
   # nbqa (linting for jupyter notebooks)
-  - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.9.1
-    hooks:
-     - id: nbqa-black
-     - id: nbqa-isort
-     - id: nbqa-mypy
-     - id: nbqa-pylint
+  # - repo: https://github.com/nbQA-dev/nbQA
+  #   rev: 1.9.1
+  #   hooks:
+  #    - id: nbqa-black
+  #    - id: nbqa-isort
+  #    - id: nbqa-mypy
+  #    - id: nbqa-pylint
 
   # pylint
   - repo: local
@@ -61,12 +63,12 @@ repos:
 
   # mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-      rev: 1.15.0  # Use the sha / tag you want to point at
-      hooks:
-      - id: mypy
+    rev: v1.15.0  # Use the sha / tag you want to point at
+    hooks:
+    - id: mypy
 
   # validate pyproject.toml
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: 0.23
+    rev: 'v0.23'
     hooks:
       - id: validate-pyproject

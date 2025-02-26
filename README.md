@@ -5,6 +5,7 @@
 git clone https://github.com/taiwithers/SkySim.git
 cd SkySim
 direnv allow
+pre-commit install
 ```
 ## Style checking
 
@@ -21,4 +22,3 @@ pyproject.toml:
 
 [tool.isort]
 profile = "black"
-
