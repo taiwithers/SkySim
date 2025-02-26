@@ -68,7 +68,7 @@ repos:
         language: system
         pass_filenames: false
         require_serial: true
-        verbose: true
+        types: ["python"]
         stages: [ "pre-commit", "pre-push", "manual"]
       - id: pytest
         name: pytest
@@ -76,6 +76,7 @@ repos:
         language: system
         pass_filenames: false
         require_serial: true
+        types: ["python"]
         stages: [ "pre-commit", "pre-push", "manual"]
 
 
