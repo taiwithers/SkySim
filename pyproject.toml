@@ -50,6 +50,10 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 disable_error_code = ["attr-defined"]
+# plugins = ["numpy.typing.mypy_plugin"]
 
 [tool.pylint]
 disable = ["no-member"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"] # avoid searching mvp/

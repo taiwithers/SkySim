@@ -12,6 +12,7 @@ pre-commit install
 isort .
 black .
 dmypy run -- .
+pytest
 ```
 
 ### IPython Notebooks
