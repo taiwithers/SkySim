@@ -12,13 +12,10 @@ matplotlib = "^3.10.0"
 astropy = "^7.0.1"
 astroquery = "^0.4.9.post1"
 jupyter = "^1.1.1"
-pydantic = "^2.10.6"
 timezonefinder = "^6.5.8"
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
-pandas = "^2.2.3"
-ipydatagrid = "^1.4.0"
 pylint = "^3.3.4"
 black = "^25.1.0"
 nbqa = "^1.9.1"
@@ -26,10 +23,14 @@ pyright = "^1.1.394"
 mypy = "^1.15.0"
 pre-commit = "^4.1.0"
 pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage]
+report.skip_empty = true
 
 [tool.isort]
 profile = "black"
@@ -50,10 +51,15 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 disable_error_code = ["attr-defined"]
-# plugins = ["numpy.typing.mypy_plugin"]
+plugins = ["numpy.typing.mypy_plugin"]
 
 [tool.pylint]
-disable = ["no-member"]
+disable = ["no-member", "redefined-outer-name", " reportAttributeAccessIssue "]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"] # avoid searching mvp/
+addopts = [
+    "--cov=skysim",
+    "--capture=no",
+    "--pdbcls=IPython.terminal.debugger:TerminalPdb",
+]

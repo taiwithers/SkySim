@@ -12,5 +12,5 @@ pre-commit install
 isort .
 black .
 dmypy run -- .
-pytest
+pytest # or pytest --pdb which uses ipdb
 ```
