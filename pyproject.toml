@@ -25,6 +25,7 @@ nbqa = "^1.9.1"
 pyright = "^1.1.394"
 mypy = "^1.15.0"
 pre-commit = "^4.1.0"
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]
@@ -32,3 +33,20 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
+
+[tool.mypy]
+follow_untyped_imports = true
+disallow_any_unimported = true
+disallow_any_expr = false
+disallow_any_decorated = true
+disallow_any_explicit = false
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = false
+disallow_untyped_defs = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+disable_error_code = ["attr-defined"]

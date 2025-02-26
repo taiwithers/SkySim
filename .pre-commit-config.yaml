@@ -66,6 +66,7 @@ repos:
     rev: v1.15.0  # Use the sha / tag you want to point at
     hooks:
     - id: mypy
+      additional_dependencies: ["astropy", "matplotlib"]
 
   # validate pyproject.toml
   - repo: https://github.com/abravalheri/validate-pyproject
