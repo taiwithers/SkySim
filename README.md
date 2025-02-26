@@ -8,6 +8,11 @@ direnv allow
 pre-commit install
 ```
 ## Style checking
+```
+isort .
+black .
+dmypy run -- .
+```
 
 ### IPython Notebooks
 ```bash
