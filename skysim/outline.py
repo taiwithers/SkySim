@@ -1,6 +1,11 @@
-# from pydantic import BaseModel
+"""
+Initial outline for SkySim
+"""
+
+# pylint: disable=super-init-not-called
+
 from datetime import date, datetime, time, timedelta
-from typing import Any, ForwardRef
+from typing import Any, ForwardRef  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -223,7 +228,10 @@ class PlotSettings(Settings):
         altitude = self.altitude_angle.to_string(format="latex")
         azimuth = self.azimuth_angle.to_string(format="latex")
         fov = self.field_of_view.to_string(format="latex")
-        self.obs_info = f"{self.input_location}\nAltitude: {altitude}, Azimuth: {azimuth}, FOV: {fov}"
+        self.obs_info = (
+            f"{self.input_location}\n Altitude: {altitude},"
+            f"Azimuth: {azimuth} , FOV: {fov}"
+        )
         return
 
 

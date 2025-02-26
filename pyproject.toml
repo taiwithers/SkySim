@@ -53,8 +53,11 @@ warn_unused_configs = true
 disable_error_code = ["attr-defined"]
 plugins = ["numpy.typing.mypy_plugin"]
 
+[tool.pyright]
+reportAttributeAccessIssue = false
+
 [tool.pylint]
-disable = ["no-member", "redefined-outer-name", " reportAttributeAccessIssue "]
+disable = ["no-member", "redefined-outer-name"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"] # avoid searching mvp/
