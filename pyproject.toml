@@ -13,6 +13,8 @@ astropy = "^7.0.1"
 astroquery = "^0.4.9.post1"
 jupyter = "^1.1.1"
 timezonefinder = "^6.5.8"
+pydantic = "^2.10.6"
+pydantic-extra-types = "^2.10.2"
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
@@ -52,6 +54,10 @@ warn_unreachable = true
 warn_unused_configs = true
 disable_error_code = ["attr-defined"]
 plugins = ["numpy.typing.mypy_plugin"]
+
+[[tool.mypy.overrides]]
+module = "skysim/outline"
+disable_error_code = ["prop-decorator"]
 
 [tool.pyright]
 reportAttributeAccessIssue = false

@@ -2,8 +2,7 @@
 Initial outline for SkySim
 """
 
-# pylint: disable=super-init-not-called
-
+from collections.abc import Collection
 from datetime import date, datetime, time, timedelta
 from typing import Any, ForwardRef  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
@@ -12,8 +11,18 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, to_rgb
 from numpy.typing import NDArray
+from pydantic import (
+    ConfigDict,
+    Field,
+    NonNegativeInt,
+    PositiveFloat,
+    PositiveInt,
+    computed_field,
+    field_validator,
+)
+from pydantic.dataclasses import dataclass
 from timezonefinder import TimezoneFinder
 
 ######## Input handling
@@ -21,100 +30,72 @@ from timezonefinder import TimezoneFinder
 # CLI arg for TOML filename
 
 
+type RGBTuple = tuple[float, float, float]
+
+dataclass_config = ConfigDict(
+    arbitrary_types_allowed=True,
+    extra="forbid",  # ignore is required as opposed to forbid for init_var fields
+    frozen=True,
+)
+
+
+@dataclass
+class RGB:  # type: ignore[misc]
+    original: Any
+
+    @computed_field()
+    @property
+    def rgb(self) -> RGBTuple:
+        if (
+            isinstance(self.original, Collection)
+            and not isinstance(self.original, str)
+            and (len(self.original) in (3, 4))
+            and any(i > 1 for i in self.original)
+        ):
+            self.original = tuple(i / 255 for i in self.original)
+        return to_rgb(self.original)
+
+
+def convert_colour(colour: Any) -> RGBTuple:
+    return RGB(colour).rgb
+
+
+@dataclass(kw_only=True)
 class Settings:
-    """
-    Store config values and derived information
-    """
+    __pydantic_config__ = dataclass_config
 
     # Stored on initialization
     input_location: str
     field_of_view: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
     altitude_angle: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
     azimuth_angle: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
-    image_pixels: int
+    image_pixels: PositiveInt
+
+    # Used to instantiate others, and stored, but hidden
+    start_date: date = Field(repr=False)
+    snapshot_frequency: timedelta = Field(repr=False)
+    duration: timedelta = Field(repr=False)  # init_var=True)
+    start_time: time = Field(repr=False)
 
     # Derived and stored
-    degrees_per_pixel: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
-    obs_time_values: Time
-    ra_dec_values: SkyCoord
-    earth_location: EarthLocation
-    timezone: ZoneInfo
-    frames: int
+    @computed_field()
+    @property
+    def frames(self) -> NonNegativeInt:
+        if self.snapshot_frequency.total_seconds() > 0:
+            return int(self.duration / self.snapshot_frequency)
+        return 0
 
-    def __init__(
-        self,
-        input_location: str,
-        field_of_view: u.Quantity["angle"],  # type: ignore[type-arg, name-defined]
-        altitude_angle: u.Quantity["angle"],  # type: ignore[type-arg, name-defined]
-        azimuth_angle: u.Quantity["angle"],  # type: ignore[type-arg, name-defined]
-        image_pixels: int,
-        start_date: date,
-        start_time: time,
-        snapshot_frequency: timedelta,
-        duration: timedelta,
-    ) -> None:
-        self.input_location = input_location
-        self.field_of_view = field_of_view
-        self.altitude_angle = altitude_angle
-        self.azimuth_angle = azimuth_angle
-        self.image_pixels = image_pixels
-
-        self.frames = int(duration / snapshot_frequency)
-
-        self.get_earth_location()
-        self.get_timezone()
-        self.get_obs_time_values(start_date, start_time, snapshot_frequency)
-
-        self.get_obs_ra_dec()
-        self.get_degrees_per_pixel()
-
-        return
-
-    def __str__(self) -> str:
-        return str(vars(self))
-
-    def get_obs_time_values(
-        self, start_date: date, start_time: time, snapshot_frequency: timedelta
-    ) -> None:
-        start_datetime = datetime(
-            year=start_date.year,
-            month=start_date.month,
-            day=start_date.day,
-            hour=start_time.hour,
-            minute=start_time.minute,
-            second=start_time.second,
-            microsecond=start_time.microsecond,
-            tzinfo=self.timezone,
-        )
-        self.obs_time_values = Time(
-            [start_datetime + (snapshot_frequency * i) for i in range(self.frames)]
-        )
-        return
-
-    def get_earth_location(self) -> None:
+    @computed_field()
+    @property
+    def earth_location(self) -> EarthLocation:
         try:
-            earth_location = EarthLocation.of_address(self.input_location)
+            return EarthLocation.of_address(self.input_location)  # type: ignore[no-any-return]
         except:
             raise NotImplementedError
 
-        self.earth_location = earth_location
-        return
-
-    def get_obs_ra_dec(self) -> None:
-        earth_frame = AltAz(
-            obstime=self.obs_time_values,
-            az=self.azimuth_angle,
-            alt=self.altitude_angle,
-            location=self.earth_location,
-        )
-        self.ra_dec_values = SkyCoord(earth_frame.transform_to(ICRS()))
-        return
-
-    def get_degrees_per_pixel(self) -> None:
-        self.degrees_per_pixel = (self.field_of_view / self.image_pixels).to(u.deg)
-        return
-
-    def get_timezone(self) -> None:
+    @computed_field()
+    @property
+    def timezone(self) -> ZoneInfo:
         lat, lon = [
             l.to(u.deg).value
             for l in [self.earth_location.lat, self.earth_location.lon]
@@ -122,119 +103,144 @@ class Settings:
         tf = TimezoneFinder()
         tzname = tf.timezone_at(lat=lat, lng=lon)
         if isinstance(tzname, str):
-            self.timezone = ZoneInfo(tzname)
+            return ZoneInfo(tzname)
         elif tzname is None:
             raise NotImplementedError
-        return
 
-    def passthrough_settings(
-        self, subclass_instance: "ImageSettings | PlotSettings"
-    ) -> None:
-        for name, value in vars(self).items():
-            setattr(subclass_instance, name, value)
+    @computed_field()
+    @property
+    def observation_times(self) -> Time:
+        start_datetime = datetime(
+            year=self.start_date.year,
+            month=self.start_date.month,
+            day=self.start_date.day,
+            hour=self.start_time.hour,
+            minute=self.start_time.minute,
+            second=self.start_time.second,
+            microsecond=self.start_time.microsecond,
+            tzinfo=self.timezone,
+        )
+        return Time(
+            [start_datetime + (self.snapshot_frequency * i) for i in range(self.frames)]
+        )
 
-    def get_image_settings(self, *args: Any) -> "ImageSettings":
-        return ImageSettings(self, *args)
+    @computed_field()
+    @property
+    def observation_radec(self) -> SkyCoord:
+        earth_frame = AltAz(
+            obstime=self.observation_times,
+            az=self.azimuth_angle,
+            alt=self.altitude_angle,
+            location=self.earth_location,
+        )
+        return SkyCoord(earth_frame.transform_to(ICRS()))
 
-    def get_plot_settings(self, *args: Any) -> "PlotSettings":
-        return PlotSettings(self, *args)
+    @computed_field()
+    @property
+    def degrees_per_pixel(self) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
+        return (self.field_of_view / self.image_pixels).to(u.deg)  # type: ignore[no-any-return]
+
+    def get_image_settings(self: "Settings", **kwargs: Any) -> "ImageSettings":
+        return ImageSettings(**vars(self), **kwargs)
+
+    def get_plot_settings(self: "Settings", **kwargs: Any) -> "PlotSettings":
+        return PlotSettings(**vars(self), **kwargs)
 
 
-class ImageSettings(Settings):
+@dataclass(kw_only=True)
+class ImageSettings(Settings):  # type: ignore[misc]
+    __pydantic_config__ = dataclass_config
+
     # Stored on initialization
-    object_colours: dict[
-        str, tuple[float, float, float]
-    ]  # same as colour_values for values
+    object_colours: dict[str, Any] = Field()
+
+    # Used to instantiate others, but not stored
+    # settings: Settings = Field(repr=False)
+    colour_values: list[Any] = Field(repr=False)
+    colour_time_indices: dict[float | int, int] = Field(repr=False)
+    magnitude_values: list[float | int] = Field(repr=False)
+    magnitude_time_indices: dict[float | int, int] = Field(repr=False)
+
+    @field_validator("object_colours", mode="before")
+    @classmethod
+    def convert_colour_dict(cls, colour_dict: dict[str, Any]) -> dict[str, RGBTuple]:  # type: ignore[misc]
+        return {key: convert_colour(value) for key, value in colour_dict.items()}
+
+    @field_validator("colour_values", mode="before")
+    @classmethod
+    def convert_colour_list(cls, colour_list: list[Any]) -> list[RGBTuple]:  # type: ignore[misc]
+        return [convert_colour(value) for value in colour_list]
 
     # Derived and stored
-    colour_mapping: LinearSegmentedColormap
-    magnitude_mapping: NDArray[np.float64]
 
-    def __init__(
-        self,
-        settings: Settings,
-        object_colours: dict[str, tuple[float, float, float]],
-        colour_values: list[str],
-        colour_time_indices: dict[float | int, int],
-        magnitude_values: list[float | int],
-        magnitude_time_indices: dict[float | int, int],
-    ) -> None:
-        self.object_colours = object_colours
-
-        settings.passthrough_settings(self)
-        self.get_colour_mapping(colour_values, colour_time_indices)
-        self.get_magnitude_mapping(magnitude_values, magnitude_time_indices)
-
-        return
-
-    def get_colour_mapping(
-        self,
-        colour_values: list[
-            str
-        ],  # matplotlib also accepts things like rbga tuples, not sure how to annotate that
-        colour_time_indices: dict[float | int, int],
-    ) -> None:
+    @computed_field()
+    @property
+    def colour_mapping(self) -> LinearSegmentedColormap:
         colour_by_time = [
-            (hour / 24, colour_values[index])
-            for hour, index in colour_time_indices.items()
+            (hour / 24, self.colour_values[index])
+            for hour, index in self.colour_time_indices.items()
         ]
-        self.colour_mapping = LinearSegmentedColormap.from_list("sky", colour_by_time)
-        return
+        return LinearSegmentedColormap.from_list("sky", colour_by_time)
 
-    def get_magnitude_mapping(
-        self,
-        magnitude_values: list[float | int],
-        magnitude_time_indices: dict[float | int, int],
-    ) -> None:
-        magnitude_day_percentage = [hour / 24 for hour in magnitude_time_indices.keys()]
+    @computed_field()
+    @property
+    def magnitude_mapping(self) -> NDArray[np.float64]:
+        magnitude_day_percentage = [
+            hour / 24 for hour in self.magnitude_time_indices.keys()
+        ]
         magnitude_by_time = [
-            magnitude_values[index] for index in magnitude_time_indices.values()
+            self.magnitude_values[index]
+            for index in self.magnitude_time_indices.values()
         ]
         day_percentages = np.linspace(0, 1, 24 * 60 * 60)
-        self.magnitude_mapping = np.interp(
-            day_percentages, magnitude_day_percentage, magnitude_by_time
-        )
-        return
+        return np.interp(day_percentages, magnitude_day_percentage, magnitude_by_time)  # type: ignore[no-any-return]
 
 
+@dataclass(kw_only=True)
 class PlotSettings(Settings):
     # Stored on initialization
-    fps: int | float
+    fps: PositiveFloat
     filename: str
-    figure_size: tuple[int | float, int | float]
-    dpi: int
+    figure_size: tuple[PositiveFloat, PositiveFloat]
+    dpi: PositiveInt
 
-    # Derived and stored
-    obs_info: str
-
-    def __init__(
-        self,
-        settings: Settings,
-        fps: int | float,
-        filename: str,
-        figure_size: tuple[int | float, int | float],
-        dpi: int,
-    ) -> None:
-        self.fps = fps
-        self.filename = filename
-        self.figure_size = figure_size
-        self.dpi = dpi
-
-        settings.passthrough_settings(self)
-        self.get_obs_info()
-        return
-
-    def get_obs_info(self) -> None:
+    @computed_field()
+    @property
+    def observation_info(self) -> str:
         altitude = self.altitude_angle.to_string(format="latex")
         azimuth = self.azimuth_angle.to_string(format="latex")
         fov = self.field_of_view.to_string(format="latex")
-        self.obs_info = (
+        return (
             f"{self.input_location}\n Altitude: {altitude},"
             f"Azimuth: {azimuth} , FOV: {fov}"
         )
-        return
 
 
+if __name__ == "__main__":
+    input_location = "Toronto"
+    field_of_view = 2 * u.deg
+    altitude_angle = 40 * u.deg
+    azimuth_angle = 140 * u.deg
+    image_pixels = 250
+
+    start_date = date(year=2025, month=2, day=25)
+    start_time = time(hour=20, minute=30)
+    snapshot_frequency = timedelta(minutes=1)
+    duration = timedelta(minutes=2)
+
+    s = Settings(
+        input_location=input_location,
+        field_of_view=field_of_view,
+        altitude_angle=altitude_angle,
+        azimuth_angle=azimuth_angle,
+        image_pixels=image_pixels,
+        duration=duration,
+        snapshot_frequency=snapshot_frequency,
+        start_date=start_date,
+        start_time=start_time,
+    )
+
+    print(s.frames)
 ######## Worker Functions
 
 
