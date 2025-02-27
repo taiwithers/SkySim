@@ -80,6 +80,7 @@
             # extra custom entries
             extraConfig = ''
               *.py:Zone.Identifier
+              docs/source/generated
             '';
           };
           libraries = pkgs.lib.makeLibraryPath (
@@ -98,7 +99,7 @@
           LD_LIBRARY_PATH = "${libraries}";
 
           shellHook = ''
-            ${gitignore} 
+            ${gitignore}
           '';
 
           packages = with pkgs; [

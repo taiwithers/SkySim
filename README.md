@@ -5,20 +5,21 @@
 git clone https://github.com/taiwithers/SkySim.git
 cd SkySim
 direnv allow
+pre-commit install
 ```
 
-## Style checking
-
-### IPython Notebooks
+### Style checking
 ```bash
-nbqa black <filename(s)>
-nbqa isort <filename(s)> --profile=black
-nbqa pylint <filename(s)> --output-format=colorized --jobs=0 --ignored-modules="astropy.units" --recursive
-nbqa pyright <filename(s)> # haven't investigated pyright yet
-nbqa mypy <filename(s)> # haven't investigated mypy yet
+isort .
+black .
+dmypy run -- --package skysim
+pytest # or pytest --pdb which uses ipdb
 ```
 
-pyproject.toml:
-
-[tool.isort]
-profile = "black"
+### Build Docs
+```bash
+trash docs/source/generated/*.rst
+sphinx-apidoc --output-dir docs/source/generated skysim/
+sphinx-build -M html docs/source docs/build/ --write-all
+xdg-open docs/build/html/index.html
+```
