@@ -80,6 +80,7 @@
             # extra custom entries
             extraConfig = ''
               *.py:Zone.Identifier
+              docs/source/generated
             '';
           };
           libraries = pkgs.lib.makeLibraryPath (
