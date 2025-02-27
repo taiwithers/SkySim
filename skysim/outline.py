@@ -14,6 +14,7 @@ from astropy.time import Time
 from matplotlib.colors import LinearSegmentedColormap, to_rgb
 from numpy.typing import NDArray
 from pydantic import (
+    BaseModel,
     ConfigDict,
     Field,
     NonNegativeInt,
@@ -53,16 +54,15 @@ class RGB:  # type: ignore[misc]
             and any(i > 1 for i in self.original)
         ):
             self.original = tuple(i / 255 for i in self.original)
-        return to_rgb(self.original)
+        return to_rgb(self.original)  # pyright: ignore
 
 
 def convert_colour(colour: Any) -> RGBTuple:
     return RGB(colour).rgb
 
 
-@dataclass(kw_only=True)
-class Settings:
-    __pydantic_config__ = dataclass_config
+class Settings(BaseModel):  # type: ignore[misc]
+    model_config = dataclass_config
 
     # Stored on initialization
     input_location: str
@@ -95,7 +95,7 @@ class Settings:
 
     @computed_field()
     @property
-    def timezone(self) -> ZoneInfo:
+    def timezone(self) -> ZoneInfo:  # pyright: ignore
         lat, lon = [
             l.to(u.deg).value
             for l in [self.earth_location.lat, self.earth_location.lon]
@@ -147,9 +147,8 @@ class Settings:
         return PlotSettings(**vars(self), **kwargs)
 
 
-@dataclass(kw_only=True)
 class ImageSettings(Settings):  # type: ignore[misc]
-    __pydantic_config__ = dataclass_config
+    model_config = dataclass_config
 
     # Stored on initialization
     object_colours: dict[str, Any] = Field()
@@ -172,7 +171,6 @@ class ImageSettings(Settings):  # type: ignore[misc]
         return [convert_colour(value) for value in colour_list]
 
     # Derived and stored
-
     @computed_field()
     @property
     def colour_mapping(self) -> LinearSegmentedColormap:
@@ -196,8 +194,9 @@ class ImageSettings(Settings):  # type: ignore[misc]
         return np.interp(day_percentages, magnitude_day_percentage, magnitude_by_time)  # type: ignore[no-any-return]
 
 
-@dataclass(kw_only=True)
-class PlotSettings(Settings):
+class PlotSettings(Settings):  # type: ignore[misc]
+    model_config = dataclass_config
+
     # Stored on initialization
     fps: PositiveFloat
     filename: str
@@ -216,31 +215,6 @@ class PlotSettings(Settings):
         )
 
 
-if __name__ == "__main__":
-    input_location = "Toronto"
-    field_of_view = 2 * u.deg
-    altitude_angle = 40 * u.deg
-    azimuth_angle = 140 * u.deg
-    image_pixels = 250
-
-    start_date = date(year=2025, month=2, day=25)
-    start_time = time(hour=20, minute=30)
-    snapshot_frequency = timedelta(minutes=1)
-    duration = timedelta(minutes=2)
-
-    s = Settings(
-        input_location=input_location,
-        field_of_view=field_of_view,
-        altitude_angle=altitude_angle,
-        azimuth_angle=azimuth_angle,
-        image_pixels=image_pixels,
-        duration=duration,
-        snapshot_frequency=snapshot_frequency,
-        start_date=start_date,
-        start_time=start_time,
-    )
-
-    print(s.frames)
 ######## Worker Functions
 
 

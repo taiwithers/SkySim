@@ -39,25 +39,22 @@ def settings() -> Settings:
 @pytest.fixture()
 def image_settings(settings: Settings) -> ImageSettings:
     object_colours = {
-        key: mpl_colors.to_rgb(value)
-        for key, value in {
-            "O": "lightskyblue",
-            "B": "lightcyan",
-            "A": "white",
-            "F": "lemonchiffon",
-            "G": "yellow",
-            "K": "orange",
-            "M": "lightpink",  # "#f9706b",
-            "": "white",
-            "moon": "white",
-            "mercury": "white",
-            "venus": "lemonchiffon",
-            "mars": "orange",
-            "jupiter": "white",
-            "saturn": "white",
-            "uranus": "white",
-            "neptune": "white",
-        }.items()
+        "O": "lightskyblue",
+        "B": "lightcyan",
+        "A": "white",
+        "F": "lemonchiffon",
+        "G": "yellow",
+        "K": "orange",
+        "M": "lightpink",  # "#f9706b",
+        "": "white",
+        "moon": "white",
+        "mercury": "white",
+        "venus": "lemonchiffon",
+        "mars": "orange",
+        "jupiter": "white",
+        "saturn": "white",
+        "uranus": "white",
+        "neptune": "white",
     }
     colour_values = ["#000", "#171726", "dodgerblue", "#00BFFF", "lightskyblue"]
     magnitude_values = [6, 4, 2, 0, -1]
@@ -95,13 +92,12 @@ def test_settings(settings: Settings) -> None:
     _test_any_settings(settings)
 
 
-# def test_image_settings(image_settings: ImageSettings) -> None:
-#     _test_any_settings(image_settings)
+def test_image_settings(image_settings: ImageSettings) -> None:
+    _test_any_settings(image_settings)
+    assert mpl_colors.same_color(image_settings.colour_mapping(0), "black")
 
-#     assert mpl_colors.same_color(image_settings.colour_mapping(0), "black")
 
+def test_plot_settings(plot_settings: PlotSettings) -> None:
+    _test_any_settings(plot_settings)
 
-# def test_plot_settings(plot_settings: PlotSettings) -> None:
-#     _test_any_settings(plot_settings)
-
-#     assert isinstance(plot_settings.observation_info, str)
+    assert isinstance(plot_settings.observation_info, str)
