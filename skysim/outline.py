@@ -3,9 +3,9 @@ Initial outline for SkySim
 """
 
 import tomllib
-from collections.abc import Collection
+from collections.abc import Collection, Mapping
 from datetime import date, datetime, time, timedelta
-from typing import Any, ForwardRef  # pylint: disable=unused-import
+from typing import Any, ForwardRef, Optional, cast  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -37,35 +37,17 @@ from typing_extensions import Annotated, Self
 
 
 type RGBTuple = tuple[float, float, float]
+type InputColour = list[float | int] | str
+type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
+    int | float, int
+] | list[int | float]
+type ConfigMapping = Mapping[str, ConfigValue]
+type TOMLConfig = dict[str, dict[str, ConfigValue | dict[str, ConfigValue]]]
 
 dataclass_config = ConfigDict(
     arbitrary_types_allowed=True,
     extra="forbid",
     frozen=True,
-)
-default_config = dict(
-    object_colours={
-        "O": "lightskyblue",
-        "B": "lightcyan",
-        "A": "white",
-        "F": "lemonchiffon",
-        "G": "yellow",
-        "K": "orange",
-        "M": "lightpink",  # "#f9706b",
-        "": "white",
-        "moon": "white",
-        "mercury": "white",
-        "venus": "lemonchiffon",
-        "mars": "orange",
-        "jupiter": "white",
-        "saturn": "white",
-        "uranus": "white",
-        "neptune": "white",
-    },
-    colour_values=["#000", "#171726", "dodgerblue", "#00BFFF", "lightskyblue"],
-    magnitude_values=[6, 4, 2, 0, -1],
-    colour_time_indices={0: 0, 3: 1, 5: 2, 7: 3, 12: 4, 15: 3, 18: 2, 21: 1, 24: 0},
-    magnitude_time_indices={0: 0, 3: 1, 5: 2, 7: 3, 12: 4, 15: 3, 18: 2, 21: 1, 24: 0},
 )
 
 
@@ -255,74 +237,146 @@ class PlotSettings(Settings):  # type: ignore[misc]
         return self
 
 
+def access_nested_dictionary(
+    dictionary: TOMLConfig, full_key: str, split_character: str = "."
+) -> ConfigValue:
+    keys = full_key.split(split_character)
+    subdictionary = dictionary.copy()
+    for key in keys[:-1]:
+        subdictionary = subdictionary[key]  # type: ignore[assignment]
+    return subdictionary[keys[-1]]  # type: ignore[return-value]
+
+
+def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
+    try:
+        access_nested_dictionary(dictionary, full_key)
+        return True
+    except KeyError:
+        return False
+
+
+def check_toml_presence(dictionary: TOMLConfig) -> None:
+    mandatory_keys = [f"observation.{key}" for key in ("location", "date", "time")] + [
+        "image.filename"
+    ]
+
+    one_or_more_keys = [
+        [
+            f"observation.{key}.{unit}"
+            for unit in ("degrees", "arcminutes", "arcseconds")
+        ]
+        for key in ("viewing-radius", "altitude", "azimuth")
+    ]
+
+    all_or_none_keys = [
+        [f"observation.{key}" for key in ("interval", "duration")],
+        [f"image.{key}" for key in ("width", "height")],
+    ]
+    # check that mandatory keys are provided
+    for key in mandatory_keys:
+        if not check_key_exists(dictionary, key):
+            raise ValueError(f"Required element {key} was not found.")
+
+    # check that one-or-more keys are provided
+    for keyset in one_or_more_keys:
+        keys_exist = [check_key_exists(dictionary, key) for key in keyset]
+        if not any(keys_exist):
+            raise ValueError(
+                f"One or more of {keyset} must be given, but none were found."
+            )
+
+    # all_or_none keys
+    for keyset in all_or_none_keys:
+        keys_exist = [check_key_exists(dictionary, key) for key in keyset]
+        if (not (all(keys_exist))) and any(keys_exist):
+            raise ValueError(
+                f"Some but not all of the keys {keyset} were given. "
+                "These keys must be given all together or not at all."
+            )
+
+    return
+
+
+def parse_angle_dict(
+    dictionary: dict[str, int | float],
+) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
+    """
+    Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
+    to a single Quantity
+
+    Parameters
+    ----------
+    dictionary : _type_
+        _description_
+    """
+
+    degrees, arcminutes, arcseconds = (
+        dictionary.get(key, 0) * u.Unit(key[:-1])
+        for key in ["degrees", "arcminutes", "arcseconds"]
+    )
+    return degrees + arcminutes + arcseconds  # type: ignore[no-any-return]
+
+
+def time_to_timedelta(time_object: time) -> timedelta:
+    components = {
+        key: getattr(time_object, key[:-1])
+        for key in ("hours", "minutes", "seconds", "microseconds")
+    }
+    return timedelta(**components)
+
+
+def get_config_option(
+    toml_dictionary: TOMLConfig,
+    toml_key: str,
+    default_config: TOMLConfig,
+    default_key: Optional[str] = None,
+) -> ConfigValue:
+    if check_key_exists(toml_dictionary, toml_key):
+        return access_nested_dictionary(toml_dictionary, toml_key)
+    if default_key is None:
+        default_key = toml_key
+    return access_nested_dictionary(default_config, default_key)
+
+
 # TODO: type filename as path (pathlib?)
 def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
     with open(filename, "rb") as opened:
         toml_config = tomllib.load(opened)
 
-        # validate all entries exist?
-        # validate all entries are correct types? -> pydantic will do this - but will it
-        # be obvious to the user if/when something goes wrong
+    check_toml_presence(toml_config)
 
-        def parse_angle_dict(
-            dictionary: dict[str, int | float],
-        ) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
-            """
-            Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
-            to a single Quantity
+    with open("skysim/default.toml", "rb") as default:
+        default_config = tomllib.load(default)
 
-            Parameters
-            ----------
-            dictionary : _type_
-                _description_
-            """
+    settings_config = {
+        "input_location": toml_config["observation"]["location"],
+        "field_of_view": parse_angle_dict(toml_config["observation"]["viewing-radius"]),
+        "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
+        "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
+        "image_pixels": get_config_option(toml_config, "image.pixels", default_config),
+        "duration": time_to_timedelta(toml_config["observation"]["duration"]),
+        "snapshot_frequency": time_to_timedelta(toml_config["observation"]["interval"]),
+        "start_date": toml_config["observation"]["date"],
+        "start_time": toml_config["observation"]["time"],
+    }
 
-            degrees, arcminutes, arcseconds = (
-                dictionary[key] * u.Unit(key[:-1])
-                for key in ["degrees", "arcminutes", "arcseconds"]
-            )
-            return degrees + arcminutes + arcseconds  # type: ignore[no-any-return]
+    image_config = {
+        k: get_config_option(toml_config, f"image.{v}", default_config, f"image.{k}")
+        for k, v in {
+            "object_colours": "object-colours",
+            "colour_values": "sky-colours",
+            "colour_time_indices": "sky-colours-index-by-time",
+            "magnitude_values": "maximum-magnitudes",
+            "magnitude_time_indices": "maximum-magnitudes-index-by-time",
+        }.items()
+    }
 
-        def time_to_timedelta(time_object: time) -> timedelta:
-            components = {
-                key: getattr(time_object, key[:-1])
-                for key in ("hours", "minutes", "seconds", "microseconds")
-            }
-            return timedelta(**components)
-
-        settings_config = {
-            "input_location": toml_config["observation"]["location"],
-            "field_of_view": parse_angle_dict(
-                toml_config["observation"]["viewing-radius"]
-            ),
-            "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
-            "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
-            "image_pixels": toml_config["image"]["pixels"],
-            "duration": time_to_timedelta(toml_config["observation"]["duration"]),
-            "snapshot_frequency": time_to_timedelta(
-                toml_config["observation"]["interval"]
-            ),
-            "start_date": toml_config["observation"]["date"],
-            "start_time": toml_config["observation"]["time"],
-        }
-
-        image_config = {
-            k: default_config[k]
-            for k in (
-                "object_colours",
-                "colour_values",
-                "colour_time_indices",
-                "magnitude_values",
-                "magnitude_time_indices",
-            )
-        }
-
-        plot_config = {
-            "fps": toml_config["image"]["fps"],
-            "filename": toml_config["image"]["filename"],
-            "figure_size": (toml_config["image"][d] for d in ("width", "height")),
-            "dpi": toml_config["image"]["dpi"],
-        }
+    plot_config = {
+        "fps": toml_config["image"]["fps"],
+        "filename": toml_config["image"]["filename"],
+        "figure_size": (toml_config["image"][d] for d in ("width", "height")),
+        "dpi": toml_config["image"]["dpi"],
+    }
 
     settings = Settings(**settings_config)
     image_settings = settings.get_image_settings(**image_config)
