@@ -20,3 +20,8 @@ add package group="main":
 # run pytest with debugging enabled
 itest:
   pytest --pdb
+
+# generate and activate completions
+complete shell="bash":
+  just --completions {{shell}} > /tmp/just.completions
+  source /tmp/just.completions
