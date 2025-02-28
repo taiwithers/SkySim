@@ -2,6 +2,7 @@
 Initial outline for SkySim
 """
 
+import tomllib
 from collections.abc import Collection
 from datetime import date, datetime, time, timedelta
 from typing import Any, ForwardRef  # pylint: disable=unused-import
@@ -14,17 +15,21 @@ from astropy.time import Time
 from matplotlib.colors import LinearSegmentedColormap, to_rgb
 from numpy.typing import NDArray
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
+    NonNegativeFloat,
     NonNegativeInt,
     PositiveFloat,
     PositiveInt,
     computed_field,
     field_validator,
+    model_validator,
 )
 from pydantic.dataclasses import dataclass
 from timezonefinder import TimezoneFinder
+from typing_extensions import Annotated, Self
 
 ######## Input handling
 # read input from TOML
@@ -35,8 +40,32 @@ type RGBTuple = tuple[float, float, float]
 
 dataclass_config = ConfigDict(
     arbitrary_types_allowed=True,
-    extra="forbid",  # ignore is required as opposed to forbid for init_var fields
+    extra="forbid",
     frozen=True,
+)
+default_config = dict(
+    object_colours={
+        "O": "lightskyblue",
+        "B": "lightcyan",
+        "A": "white",
+        "F": "lemonchiffon",
+        "G": "yellow",
+        "K": "orange",
+        "M": "lightpink",  # "#f9706b",
+        "": "white",
+        "moon": "white",
+        "mercury": "white",
+        "venus": "lemonchiffon",
+        "mars": "orange",
+        "jupiter": "white",
+        "saturn": "white",
+        "uranus": "white",
+        "neptune": "white",
+    },
+    colour_values=["#000", "#171726", "dodgerblue", "#00BFFF", "lightskyblue"],
+    magnitude_values=[6, 4, 2, 0, -1],
+    colour_time_indices={0: 0, 3: 1, 5: 2, 7: 3, 12: 4, 15: 3, 18: 2, 21: 1, 24: 0},
+    magnitude_time_indices={0: 0, 3: 1, 5: 2, 7: 3, 12: 4, 15: 3, 18: 2, 21: 1, 24: 0},
 )
 
 
@@ -198,7 +227,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
     model_config = dataclass_config
 
     # Stored on initialization
-    fps: PositiveFloat
+    fps: NonNegativeFloat
     filename: str
     figure_size: tuple[PositiveFloat, PositiveFloat]
     dpi: PositiveInt
@@ -210,11 +239,103 @@ class PlotSettings(Settings):  # type: ignore[misc]
         azimuth = self.azimuth_angle.to_string(format="latex")
         fov = self.field_of_view.to_string(format="latex")
         return (
-            f"{self.input_location}\n Altitude: {altitude},"
+            f"{self.input_location}\n Altitude: {altitude}, "
             f"Azimuth: {azimuth} , FOV: {fov}"
         )
 
+    @model_validator(mode="after")
+    def validate_fps(self) -> Self:
+        if self.duration.total_seconds() == 0:
+            self.fps = 0
+            return self
+        if self.fps == 0:
+            raise ValueError(
+                f"Non-zero duration ({self.duration}) implies the creation of a GIF, but the given fps was zero."
+            )
+        return self
 
+
+# TODO: type filename as path (pathlib?)
+def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
+    with open(filename, "rb") as opened:
+        toml_config = tomllib.load(opened)
+
+        # validate all entries exist?
+        # validate all entries are correct types? -> pydantic will do this - but will it
+        # be obvious to the user if/when something goes wrong
+
+        def parse_angle_dict(
+            dictionary: dict[str, int | float],
+        ) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
+            """
+            Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
+            to a single Quantity
+
+            Parameters
+            ----------
+            dictionary : _type_
+                _description_
+            """
+
+            degrees, arcminutes, arcseconds = (
+                dictionary[key] * u.Unit(key[:-1])
+                for key in ["degrees", "arcminutes", "arcseconds"]
+            )
+            return degrees + arcminutes + arcseconds  # type: ignore[no-any-return]
+
+        def time_to_timedelta(time_object: time) -> timedelta:
+            components = {
+                key: getattr(time_object, key[:-1])
+                for key in ("hours", "minutes", "seconds", "microseconds")
+            }
+            return timedelta(**components)
+
+        settings_config = {
+            "input_location": toml_config["observation"]["location"],
+            "field_of_view": parse_angle_dict(
+                toml_config["observation"]["viewing-radius"]
+            ),
+            "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
+            "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
+            "image_pixels": toml_config["image"]["pixels"],
+            "duration": time_to_timedelta(toml_config["observation"]["duration"]),
+            "snapshot_frequency": time_to_timedelta(
+                toml_config["observation"]["interval"]
+            ),
+            "start_date": toml_config["observation"]["date"],
+            "start_time": toml_config["observation"]["time"],
+        }
+
+        image_config = {
+            k: default_config[k]
+            for k in (
+                "object_colours",
+                "colour_values",
+                "colour_time_indices",
+                "magnitude_values",
+                "magnitude_time_indices",
+            )
+        }
+
+        plot_config = {
+            "fps": toml_config["image"]["fps"],
+            "filename": toml_config["image"]["filename"],
+            "figure_size": (toml_config["image"][d] for d in ("width", "height")),
+            "dpi": toml_config["image"]["dpi"],
+        }
+
+    settings = Settings(**settings_config)
+    image_settings = settings.get_image_settings(**image_config)
+    plot_settings = settings.get_plot_settings(**plot_config)
+
+    return image_settings, plot_settings
+
+
+if __name__ == "__main__":
+    image_settings, plot_settings = load_from_toml(
+        "/home/taiwithers/projects/skysim/skysim/config.toml"
+    )
+    print(plot_settings)
 ######## Worker Functions
 
 

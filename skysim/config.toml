@@ -1,0 +1,31 @@
+[observation]
+location = "Toronto"
+date = 2025-02-25    # YYYY-MM-DD
+time = 18:30:00      # HH:MM:SS.ssss
+interval = 00:02:00  # same format as time
+duration = 00:10:00  # same format as time, max 23:59:59.999999
+
+viewing-radius.degrees = 2
+viewing-radius.arcminutes = 30
+viewing-radius.arcseconds = 0
+
+altitude.degrees = 25
+altitude.arcminutes = 0
+altitude.arcseconds = 0
+azimuth.degrees = 140
+azimuth.arcminutes = 0
+azimuth.arcseconds = 0
+
+
+[image]
+pixels = 250
+width = 4
+height = 4.5
+filename = "SkySim"
+fps = 10
+dpi = 200
+
+
+# key times
+# key magnitudes
+# key blues
