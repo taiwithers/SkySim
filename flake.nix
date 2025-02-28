@@ -105,6 +105,7 @@
           packages = with pkgs; [
             poetry
             pkg-config # for poetry to locate dependencies
+            just # command runner (per-project aliases)
           ];
         };
 
