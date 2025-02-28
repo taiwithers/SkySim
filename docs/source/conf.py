@@ -1,3 +1,7 @@
+"""
+Configuration for Sphinx.
+"""
+
 import sys
 from pathlib import Path
 
@@ -35,3 +39,6 @@ viewcode_line_numbers = True
 
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
+
+
+autodoc_typehints = "description"

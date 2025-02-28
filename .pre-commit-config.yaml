@@ -89,3 +89,4 @@ repos:
     rev: 'v1.8.0'
     hooks:
       - id: numpydoc-validation
+        exclude: "mvp/|__init__"

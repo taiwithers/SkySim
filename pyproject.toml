@@ -33,6 +33,10 @@ sphinx = "^8.2.1"
 myst-parser = "^4.0.1"
 pydata-sphinx-theme = "^0.16.1"
 
+
+[tool.poetry.group.doc.dependencies]
+numpydoc = "^1.8.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -64,6 +68,16 @@ plugins = ["numpy.typing.mypy_plugin"]
 [[tool.mypy.overrides]]
 module = "skysim/outline"
 disable_error_code = ["prop-decorator"]
+
+[tool.numpydoc_validation]
+checks = [
+    "all",  # run all, ignore the below
+    "SA01", # missing see also
+    "ES01", # missing exttended summary
+    "EX01", # missing examples
+    "SS05", # some stuff about verb tenses
+    "SS06", # allow multi-line summaries
+]
 
 [tool.pyright]
 reportAttributeAccessIssue = false
