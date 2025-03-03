@@ -21,6 +21,10 @@ add package group="main":
 itest:
   pytest --pdb
 
+# use pylint to locate TODO comments
+todo:
+  pylint . --disable=all --enable=fixme --score=false --exit-zero
+
 # generate and activate completions
 complete shell="bash":
   just --completions {{shell}} > /tmp/just.completions

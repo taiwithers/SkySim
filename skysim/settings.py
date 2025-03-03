@@ -186,11 +186,11 @@ class Settings(BaseModel):  # type: ignore[misc]
             return EarthLocation.of_address(self.input_location)  # type: ignore[no-any-return]
         except:
             # TODO: location validation
-            raise NotImplementedError
+            raise NotImplementedError  # pylint: disable=raise-missing-from
 
     @computed_field()
     @property
-    def timezone(self) -> ZoneInfo:
+    def timezone(self) -> ZoneInfo:  # pylint: disable=inconsistent-return-statements
         """
         Look up timezone based on Lat/Long.
 
@@ -213,7 +213,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         if isinstance(tzname, str):
             return ZoneInfo(tzname)
         if tzname is None:
-            # TODO: timezone validation
+            # TODO: timezone validation [remove pylint pragma]
             raise NotImplementedError
 
     @computed_field()

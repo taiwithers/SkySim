@@ -54,17 +54,8 @@ repos:
         entry: pylint
         language: system
         types: ["python"]
-        pass_filenames: false
-        args: ["."]
-        # require_serial: true
-        # args:
-        #   [
-        #     "--output-format=colorized",
-        #     "--max-line-length=120",
-        #     "--ignore-paths=mvp/",
-        #     # "-rn", # Only display messages
-        #     # "-sn", # Don't display the score
-        #   ]
+        args: [ "--score=false", "--disable=fixme"]
+
       - id: mypy
         name: mypy
         entry: "dmypy run -- --package skysim"

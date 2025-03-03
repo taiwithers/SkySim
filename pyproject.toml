@@ -87,11 +87,11 @@ reportAttributeAccessIssue = false
 format.max-line-length = 120
 main.ignore-paths = ["mvp/", "docs/source/conf.py"]
 main.jobs = 0
-main.fail-under = 9.5
 "messages control".disable = [
     "no-member",
     "redefined-outer-name",
     "useless-return",
+    "too-many-locals",
 ]
 reports.output-format = "colorized"
 
