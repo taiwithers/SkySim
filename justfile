@@ -4,7 +4,7 @@ default:
 
 # run pre-commit on all files
 validate:
-  pre-commit run --all-files
+  pre-commit run --hook-stage="manual" --all-files
 
 build-docs:
   sphinx-apidoc --output-dir docs/source/generated skysim/
@@ -16,6 +16,10 @@ open-docs:
 # poetry add <package> to <group (optional)>
 add package group="main":
   poetry add --group={{group}} {{package}}
+
+# run (needed) tests with testmon
+qtest:
+  pytest --testmon
 
 # run pytest with debugging enabled
 itest:

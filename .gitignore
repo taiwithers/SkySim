@@ -253,4 +253,5 @@ ipython_config.py
 # User Provided
 *.py:Zone.Identifier
 docs/source/generated
+.testmondata
 

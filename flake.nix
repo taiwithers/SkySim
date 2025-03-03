@@ -81,6 +81,7 @@
             extraConfig = ''
               *.py:Zone.Identifier
               docs/source/generated
+              .testmondata
             '';
           };
           libraries = pkgs.lib.makeLibraryPath (

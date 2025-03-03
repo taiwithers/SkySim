@@ -71,6 +71,17 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
+        stages: ["pre-commit", "pre-merge-commit", "pre-push"]
+
+      - id: pytest-testmon
+        name: pytest-testmon
+        entry: pytest
+        language: system
+        pass_filenames: false
+        require_serial: true
+        types: ["python"]
+        stages: ["manual"]
+        args: ["--testmon"]
 
 
   # validate pyproject.toml
