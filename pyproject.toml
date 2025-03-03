@@ -66,7 +66,7 @@ disable_error_code = ["attr-defined"]
 plugins = ["numpy.typing.mypy_plugin"]
 
 [[tool.mypy.overrides]]
-module = "skysim/outline"
+module = "skysim/settings"
 disable_error_code = ["prop-decorator"]
 
 [tool.numpydoc_validation]
@@ -77,13 +77,23 @@ checks = [
     "EX01", # missing examples
     "SS05", # some stuff about verb tenses
     "SS06", # allow multi-line summaries
+    "GL08", # let other checkers complain about a lack of docstrings
 ]
 
 [tool.pyright]
 reportAttributeAccessIssue = false
 
 [tool.pylint]
-disable = ["no-member", "redefined-outer-name"]
+format.max-line-length = 120
+main.ignore-paths = ["mvp/", "docs/source/conf.py"]
+main.jobs = 0
+main.fail-under = 9.5
+"messages control".disable = [
+    "no-member",
+    "redefined-outer-name",
+    "useless-return",
+]
+reports.output-format = "colorized"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"] # avoid searching mvp/

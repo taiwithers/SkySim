@@ -9,14 +9,14 @@ import matplotlib.colors as mpl_colors
 import pytest
 from astropy import units as u
 
-from skysim.outline import ImageSettings, PlotSettings, Settings
+from skysim.settings import ImageSettings, PlotSettings, Settings
 
 # from ipdb import set_trace as breakpoint  # overriding builtin breakpoint()
 
 
 @pytest.fixture()
 def settings() -> Settings:
-    # numpydoc ignore=GL08
+    # pylint: disable=missing-function-docstring
     input_location = "Toronto"
     field_of_view = 2 * u.deg
     altitude_angle = 40 * u.deg
@@ -43,7 +43,7 @@ def settings() -> Settings:
 
 @pytest.fixture()
 def image_settings(settings: Settings) -> ImageSettings:
-    # numpydoc ignore=GL08
+    # pylint: disable=missing-function-docstring
     object_colours = {
         "O": "lightskyblue",
         "B": "lightcyan",
@@ -79,7 +79,7 @@ def image_settings(settings: Settings) -> ImageSettings:
 
 @pytest.fixture()
 def plot_settings(settings: Settings) -> PlotSettings:
-    # numpydoc ignore=GL08
+    # pylint: disable=missing-function-docstring
     fps = 2
     filename = "SkySim.gif"
     figure_size = (5, 5.5)
@@ -91,7 +91,8 @@ def plot_settings(settings: Settings) -> PlotSettings:
 
 def _test_any_settings(settings: Settings) -> None:
     """
-    Generic tests that can apply to any `Settings` object initialized from the `settings()` fixture.
+    Generic tests that can apply to any `Settings` object initialized from the
+    `settings()` fixture.
 
     Parameters
     ----------

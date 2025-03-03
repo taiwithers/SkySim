@@ -53,14 +53,18 @@ repos:
         name: pylint
         entry: pylint
         language: system
-        types: [python]
-        stages: [pre-push]
+        types: ["python"]
+        pass_filenames: false
+        args: ["."]
         # require_serial: true
-        args:
-          [
-            "-rn", # Only display messages
-            "-sn", # Don't display the score
-          ]
+        # args:
+        #   [
+        #     "--output-format=colorized",
+        #     "--max-line-length=120",
+        #     "--ignore-paths=mvp/",
+        #     # "-rn", # Only display messages
+        #     # "-sn", # Don't display the score
+        #   ]
       - id: mypy
         name: mypy
         entry: "dmypy run -- --package skysim"
@@ -68,7 +72,7 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
-        stages: [ "pre-commit", "pre-push", "manual"]
+
       - id: pytest
         name: pytest
         entry: pytest
@@ -76,7 +80,6 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
-        stages: [ "pre-commit", "pre-push", "manual"]
 
 
   # validate pyproject.toml

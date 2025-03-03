@@ -25,11 +25,9 @@ from pydantic import (
     ValidationInfo,
     computed_field,
     field_validator,
-    model_validator,
 )
 from pydantic.dataclasses import dataclass
 from timezonefinder import TimezoneFinder
-from typing_extensions import Self
 
 ######## Input handling
 # read input from TOML
@@ -42,8 +40,9 @@ type ConfigValue = str | date | time | int | float | dict[str, InputColour] | di
     int | float, int
 ] | list[int | float]
 type ConfigMapping = Mapping[str, ConfigValue]
-type TOMLConfig = dict[str, dict[str, ConfigValue | dict[str, ConfigValue]]]
-
+type TOMLConfig = dict[  # pylint: disable=invalid-name
+    str, dict[str, ConfigValue | dict[str, ConfigValue]]
+]
 dataclass_config = ConfigDict(
     arbitrary_types_allowed=True,
     extra="forbid",
@@ -87,7 +86,7 @@ class RGB:  # type: ignore[misc]
 
 
 def convert_colour(colour: Any) -> RGBTuple:
-    # numpydoc ignore=GL08
+    # pylint: disable=missing-function-docstring
     return RGB(colour).rgb
 
 
@@ -186,11 +185,12 @@ class Settings(BaseModel):  # type: ignore[misc]
         try:
             return EarthLocation.of_address(self.input_location)  # type: ignore[no-any-return]
         except:
+            # TODO: location validation
             raise NotImplementedError
 
     @computed_field()
     @property
-    def timezone(self) -> ZoneInfo:  # pyright: ignore
+    def timezone(self) -> ZoneInfo:
         """
         Look up timezone based on Lat/Long.
 
@@ -212,7 +212,8 @@ class Settings(BaseModel):  # type: ignore[misc]
         tzname = tf.timezone_at(lat=lat, lng=lon)
         if isinstance(tzname, str):
             return ZoneInfo(tzname)
-        elif tzname is None:
+        if tzname is None:
+            # TODO: timezone validation
             raise NotImplementedError
 
     @computed_field()
@@ -347,13 +348,11 @@ class ImageSettings(Settings):  # type: ignore[misc]
     @field_validator("object_colours", mode="before")
     @classmethod
     def _convert_colour_dict(cls, colour_dict: dict[str, Any]) -> dict[str, RGBTuple]:  # type: ignore[misc]
-        # numpydoc ignore=GL08
         return {key: convert_colour(value) for key, value in colour_dict.items()}
 
     @field_validator("colour_values", mode="before")
     @classmethod
     def _convert_colour_list(cls, colour_list: list[Any]) -> list[RGBTuple]:  # type: ignore[misc]
-        # numpydoc ignore=GL08
         return [convert_colour(value) for value in colour_list]
 
     # Derived and stored
@@ -479,7 +478,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
 
 
 def split_nested_key(full_key: str) -> list[str]:
-    # numpydoc ignore=GL08
+    # pylint: disable=missing-function-docstring
     return full_key.split(".")
 
 
@@ -579,7 +578,7 @@ def check_toml_presence(dictionary: TOMLConfig) -> None:
     # all_or_none keys
     for keyset in all_or_none_keys:
         keys_exist = [check_key_exists(dictionary, key) for key in keyset]
-        if (not (all(keys_exist))) and any(keys_exist):
+        if (not all(keys_exist)) and any(keys_exist):
             raise ValueError(
                 f"Some but not all of the keys {keyset} were given. "
                 "These keys must be given all together or not at all."

@@ -23,3 +23,10 @@ sphinx-apidoc --output-dir docs/source/generated skysim/
 sphinx-build -M html docs/source docs/build/ --write-all
 xdg-open docs/build/html/index.html
 ```
+
+
+### Ignore warnings
+```py
+# Missing docstring
+    # pylint: disable=missing-function-docstring
+```
