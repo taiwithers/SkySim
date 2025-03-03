@@ -66,7 +66,7 @@ disable_error_code = ["attr-defined"]
 plugins = ["numpy.typing.mypy_plugin"]
 
 [[tool.mypy.overrides]]
-module = "skysim/settings"
+module = "skysim/*"
 disable_error_code = ["prop-decorator"]
 
 [tool.numpydoc_validation]
@@ -82,6 +82,7 @@ checks = [
 
 [tool.pyright]
 reportAttributeAccessIssue = false
+exclude = ['mvp/']
 
 [tool.pylint]
 format.max-line-length = 120
@@ -92,6 +93,7 @@ main.jobs = 0
     "redefined-outer-name",
     "useless-return",
     "too-many-locals",
+    "unnecessary-lambda-assignment",
 ]
 reports.output-format = "colorized"
 
@@ -101,4 +103,5 @@ addopts = [
     "--cov=skysim",
     "--capture=no",
     "--pdbcls=IPython.terminal.debugger:TerminalPdb",
+    "--color=yes",
 ]

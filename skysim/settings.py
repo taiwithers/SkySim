@@ -3,7 +3,7 @@ Initial outline for SkySim.
 """
 
 import tomllib
-from collections.abc import Collection, Mapping
+from collections.abc import Mapping
 from datetime import date, datetime, time, timedelta
 from typing import Any, ForwardRef, Optional  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
@@ -12,7 +12,7 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from matplotlib.colors import LinearSegmentedColormap, to_rgb
+from matplotlib.colors import LinearSegmentedColormap
 from numpy.typing import NDArray
 from pydantic import (
     BaseModel,
@@ -26,16 +26,10 @@ from pydantic import (
     computed_field,
     field_validator,
 )
-from pydantic.dataclasses import dataclass
 from timezonefinder import TimezoneFinder
 
-######## Input handling
-# read input from TOML
-# CLI arg for TOML filename
+from skysim.colours import InputColour, RGBTuple, convert_colour
 
-
-type RGBTuple = tuple[float, float, float]
-type InputColour = list[float | int] | str
 type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
     int | float, int
 ] | list[int | float]
@@ -48,46 +42,6 @@ dataclass_config = ConfigDict(
     extra="forbid",
     frozen=True,
 )
-
-
-@dataclass
-class RGB:  # type: ignore[misc]
-    """
-    Tuple of RGB values.
-    """
-
-    # Attributes
-    # ----------
-    # rgb
-    # original : InputColour
-    #     Whatever was passed to the constructor
-
-    original: InputColour
-
-    @computed_field()
-    @property
-    def rgb(self) -> RGBTuple:
-        """
-        Generate an rgb tuple with values [0,1].
-
-        Returns
-        -------
-        RGBTuple
-            RGB value.
-        """
-        if (
-            isinstance(self.original, Collection)
-            and not isinstance(self.original, str)
-            and (len(self.original) in (3, 4))
-            and any(i > 1 for i in self.original)
-        ):
-            self.original = list(i / 255 for i in self.original)
-        return to_rgb(self.original)  # type: ignore[arg-type]
-
-
-def convert_colour(colour: Any) -> RGBTuple:
-    # pylint: disable=missing-function-docstring
-    return RGB(colour).rgb
 
 
 class Settings(BaseModel):  # type: ignore[misc]
@@ -110,10 +64,10 @@ class Settings(BaseModel):  # type: ignore[misc]
         Starting (local) date of observation
     start_time : naive time
         Starting (local) time of observation
-    snapshot_frequency : timedelta
-        How often an observation should be taken
-    duration : timedelta
-        How long the total observation should last
+    snapshot_frequency : Optional[timedelta], optional
+        How often an observation should be taken - should be given in concert w/ `duration`
+    duration : Optional[timedelta], optional
+        How long the total observation should last - should be given in concert w/ `duration`
     """
 
     # model_config : ConfigDict
@@ -358,6 +312,19 @@ class ImageSettings(Settings):  # type: ignore[misc]
     # Derived and stored
     @computed_field()
     @property
+    def maximum_magnitude(self) -> float:
+        """
+        The highest magnitude that will ever be visible in the image.
+
+        Returns
+        -------
+        float
+            Magnitude.
+        """
+        return max(self.magnitude_values)
+
+    @computed_field()
+    @property
     def colour_mapping(self) -> LinearSegmentedColormap:
         """
         Interpolate between the colour-time mappings indicated by `colour_values` and
@@ -529,7 +496,7 @@ def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
         return False
 
 
-def check_toml_presence(dictionary: TOMLConfig) -> None:
+def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     """
     Validate the existence of the required keys in the TOML configuration.
 
@@ -683,26 +650,33 @@ def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
     with open(filename, "rb") as opened:
         toml_config = tomllib.load(opened)
 
-    check_toml_presence(toml_config)
+    check_mandatory_toml_keys(toml_config)
 
     with open("skysim/default.toml", "rb") as default:
         default_config = tomllib.load(default)
 
+    load_entry = lambda toml_key, default_key=None: get_config_option(
+        toml_config, toml_key, default_config, default_key
+    )
+
     settings_config = {
+        # Mandatory
         "input_location": toml_config["observation"]["location"],
         "field_of_view": parse_angle_dict(toml_config["observation"]["viewing-radius"]),
         "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
         "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
-        "image_pixels": get_config_option(toml_config, "image.pixels", default_config),
-        "duration": time_to_timedelta(toml_config["observation"]["duration"]),
-        "snapshot_frequency": time_to_timedelta(toml_config["observation"]["interval"]),
         "start_date": toml_config["observation"]["date"],
         "start_time": toml_config["observation"]["time"],
+        # Optional
+        "image_pixels": load_entry("image.pixels"),
+        "duration": time_to_timedelta(load_entry("observation.duration")),  # type: ignore[arg-type]
+        "snapshot_frequency": time_to_timedelta(load_entry("observation.interval")),  # type: ignore[arg-type]
     }
 
     image_config = {
-        k: get_config_option(toml_config, f"image.{v}", default_config, f"image.{k}")
+        k: load_entry(f"image.{v}", default_key=f"image.{v}")
         for k, v in {
+            # Optional
             "object_colours": "object-colours",
             "colour_values": "sky-colours",
             "colour_time_indices": "sky-colours-index-by-time",
@@ -712,10 +686,12 @@ def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
     }
 
     plot_config = {
-        "fps": toml_config["image"]["fps"],
+        # Mandatory
         "filename": toml_config["image"]["filename"],
-        "figure_size": (toml_config["image"][d] for d in ("width", "height")),
-        "dpi": toml_config["image"]["dpi"],
+        # Optional
+        "fps": load_entry("image.fps"),
+        "dpi": load_entry("image.dpi"),
+        "figure_size": (load_entry("image.width"), load_entry("image.height")),
     }
 
     settings = Settings(**settings_config)
