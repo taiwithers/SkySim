@@ -34,6 +34,8 @@ myst-parser = "^4.0.1"
 pydata-sphinx-theme = "^0.16.1"
 numpydoc = "^1.8.0"
 
+[tool.poetry.scripts]
+main = "skysim.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
