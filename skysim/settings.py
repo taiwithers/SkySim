@@ -5,7 +5,7 @@ Initial outline for SkySim.
 import tomllib
 from collections.abc import Mapping
 from datetime import date, datetime, time, timedelta
-from typing import Any, ForwardRef, Optional  # pylint: disable=unused-import
+from typing import Any, ForwardRef, Optional, Self  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -19,12 +19,12 @@ from pydantic import (
     ConfigDict,
     Field,
     NonNegativeFloat,
-    NonNegativeInt,
     PositiveFloat,
     PositiveInt,
     ValidationInfo,
     computed_field,
     field_validator,
+    model_validator,
 )
 from timezonefinder import TimezoneFinder
 
@@ -37,6 +37,8 @@ type ConfigMapping = Mapping[str, ConfigValue]
 type TOMLConfig = dict[  # pylint: disable=invalid-name
     str, dict[str, ConfigValue | dict[str, ConfigValue]]
 ]
+type SettingsPair = tuple["ImageSettings", "PlotSettings"]
+
 dataclass_config = ConfigDict(
     arbitrary_types_allowed=True,
     extra="forbid",
@@ -104,10 +106,38 @@ class Settings(BaseModel):  # type: ignore[misc]
     snapshot_frequency: timedelta = Field(repr=False)
     duration: timedelta = Field(repr=False)
 
+    @field_validator("field_of_view", "altitude_angle", "azimuth_angle", mode="after")
+    @classmethod
+    def convert_to_deg(cls, angular: u.Quantity["angle"]) -> u.Quantity["degree"]:
+        # pylint: disable=missing-function-docstring
+        return angular.to(u.deg)
+
+    @model_validator(mode="after")
+    def compare_timespans(self) -> Self:
+        """
+        Confirm that the time between snapshots is not greater than the observation
+        duration.
+
+        Returns
+        -------
+        Self
+            `Settings` object.
+
+        Raises
+        ------
+        ValueError
+            Raised if the snapshot frequency is greater than the duration.
+        """
+        if self.snapshot_frequency > self.duration:
+            raise ValueError(
+                "Frequency of snapshots cannot be longer than the observation duration."
+            )
+        return self
+
     # Derived and stored
     @computed_field()
     @property
-    def frames(self) -> NonNegativeInt:
+    def frames(self) -> PositiveInt:
         """
         Calculates number of frames for GIF/observations to take.
 
@@ -118,7 +148,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         """
         if self.snapshot_frequency.total_seconds() > 0:
             return int(self.duration / self.snapshot_frequency)
-        return 0
+        return 1
 
     @computed_field()
     @property
@@ -192,7 +222,7 @@ class Settings(BaseModel):  # type: ignore[misc]
             tzinfo=self.timezone,
         )
         return Time(
-            [start_datetime + (self.snapshot_frequency * i) for i in range(self.frames)]
+            [(start_datetime + self.snapshot_frequency * i) for i in range(self.frames)]
         )
 
     @computed_field()
@@ -226,9 +256,6 @@ class Settings(BaseModel):  # type: ignore[misc]
             Degrees per pixel (pixel considered unitless).
         """
         return (self.field_of_view / self.image_pixels).to(u.deg)  # type: ignore[no-any-return]
-
-    # @model_validator(mode="before")
-    # def compare_
 
     def get_image_settings(self: "Settings", **kwargs: Any) -> "ImageSettings":
         """
@@ -633,7 +660,7 @@ def get_config_option(
 
 
 # TODO: type filename as path (pathlib?)
-def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
+def load_from_toml(filename: str) -> SettingsPair:
     """
     Load configuration options from a TOML file and parse them into `Settings` objects.
 
@@ -701,11 +728,6 @@ def load_from_toml(filename: str) -> tuple[ImageSettings, PlotSettings]:
     return image_settings, plot_settings
 
 
-if __name__ == "__main__":
-    image_settings, plot_settings = load_from_toml(
-        "/home/taiwithers/projects/skysim/skysim/config.toml"
-    )
-    print(plot_settings)
 ######## Worker Functions
 
 
