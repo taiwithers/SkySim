@@ -1,8 +1,11 @@
+[observation]
+duration = 00:00:00
+interval = 00:00:00
+
 [image]
 pixels = 250
 width = 4
 height = 4.5
-filename = "SkySim"
 fps = 2.5
 dpi = 200
 
@@ -14,8 +17,8 @@ sky-colours = ["#000", "#171726", "dodgerblue", "#00BFFF", "lightskyblue"]
 # the different maximum magnitude values determining which objects are visible
 # these values are interpolated between in the same manner as image.sky-colours
 # the times corresponding to these magnitudes are defined in
-# image.magnitude-values-index-by-time
-magnitude-values = [6, 4, 2, 0, -1.5]
+# image.maximum-magnitudes-index-by-time
+maximum-magnitudes = [6, 4, 2, 0, -1.5]
 
 # =============================================================================
 
@@ -33,9 +36,9 @@ magnitude-values = [6, 4, 2, 0, -1.5]
 21 = 1
 24 = 0
 
-[image.magnitude-values-index-by-time]
+[image.maximum-magnitudes-index-by-time]
 # hour [float] = index [int]
-# index is the zero-counted index of magnitude-values
+# index is the zero-counted index of maximum-magnitudes
 # 13.5 : 2 would set the 1:30pm maximum magnitude to be the 3rd entry in
 # image.magnitude_values
 0 = 0

@@ -3,15 +3,25 @@ Tests for SkySim Settings objects.
 """
 
 from datetime import date, time, timedelta
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import matplotlib.colors as mpl_colors
 import pytest
 from astropy import units as u
 
-from skysim.settings import ImageSettings, PlotSettings, Settings
+from skysim.settings import ImageSettings, PlotSettings, Settings, load_from_toml
 
 # from ipdb import set_trace as breakpoint  # overriding builtin breakpoint()
+
+TEST_ROOT_PATH = Path(__file__).resolve().parent
+"""Path to root test suite directory.
+"""
+
+
+ROOT_PATH = TEST_ROOT_PATH.parent
+"""Path to root directory containing repository.
+"""
 
 
 @pytest.fixture()
@@ -141,3 +151,16 @@ def test_plot_settings(plot_settings: PlotSettings) -> None:
     _test_any_settings(plot_settings)
 
     assert isinstance(plot_settings.observation_info, str)
+
+
+@pytest.fixture()
+def minimal_config_path() -> str:
+    # pylint: disable=missing-function-docstring
+    return f"{TEST_ROOT_PATH}/minimal.toml"
+
+
+def test_load_from_toml(minimal_config_path: str) -> None:
+    # pylint: disable=missing-function-docstring
+    i_s, p_s = load_from_toml(minimal_config_path)
+    assert isinstance(i_s, ImageSettings)
+    assert isinstance(p_s, PlotSettings)

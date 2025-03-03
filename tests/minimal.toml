@@ -1,0 +1,14 @@
+[observation]
+location = "Toronto"
+date = 2025-02-25    # YYYY-MM-DD
+time = 18:30:00      # HH:MM:SS.ssss
+
+viewing-radius.degrees = 2
+
+altitude.arcminutes = 0
+
+azimuth.arcseconds = 0
+
+
+[image]
+filename = "SkySim"
