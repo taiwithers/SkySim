@@ -82,6 +82,7 @@
               *.py:Zone.Identifier
               docs/source/generated
               .testmondata
+              .testmondata*
             '';
           };
           libraries = pkgs.lib.makeLibraryPath (

@@ -254,4 +254,5 @@ ipython_config.py
 *.py:Zone.Identifier
 docs/source/generated
 .testmondata
+.testmondata*
 
