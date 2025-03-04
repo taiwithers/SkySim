@@ -49,64 +49,40 @@ dataclass_config = ConfigDict(
 
 
 class Settings(BaseModel):  # type: ignore[misc]
-    """
-    Base class to interpret often-used configuration values.
-
-    Attributes
-    ----------
-    input_location : str
-        User-input version of the observing location
-    field_of_view : u.Quantity["angle"]
-        Diameter of the area being observed at any time
-    altitude_angle : u.Quantity["angle"]
-        Angle of observation (measured from horizon)
-    alzimuth_angle : u.Quantity["angle"]
-        Angle of observation (Eastwards from North)
-    image_pixels : PositiveInt
-        Number of pixels (diameter) for the resulting image
-    start_date : naive date
-        Starting (local) date of observation
-    start_time : naive time
-        Starting (local) time of observation
-    snapshot_frequency : Optional[timedelta], optional
-        How often an observation should be taken - should be given in concert w/ `duration`
-    duration : Optional[timedelta], optional
-        How long the total observation should last - should be given in concert w/ `duration`
-    """
-
-    # model_config : ConfigDict
-    #     Standard configuration for Pydantic models
-    #     Not passable by callers
-    # frames
-    # earth_location
-    # timezone
-    # observation_times
-    # observation_radec
-    # degrees_per_pixel
-
-    # Methods
-    # -------
-    # get_image_settings(kwargs)
-    #     Generate an `ImageSettings` object based on this object, and with the additional
-    #     image settings provided in kwargs
-    # get_plot_settings(kwargs)
-    #     Generate a `PlotSettings` object based on this object, and with the additional
-    #     plot settings provided in kwargs
+    """Base class to interpret often-used configuration values."""
 
     model_config = dataclass_config
 
     # Stored on initialization
     input_location: str
+    """User-input version of the observing location."""
+
     field_of_view: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
+    """Diameter of the area being observed at any time."""
+
     altitude_angle: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
+    """Angle of observation (measured from horizon)."""
+
     azimuth_angle: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
+    """Angle of observation (Eastwards from North)."""
+
     image_pixels: PositiveInt
+    """Number of pixels (diameter) for the resulting image."""
 
     # Used to instantiate others, and stored, but hidden
     start_date: date = Field(repr=False)
+    """Starting (local) date of observation."""
+
     start_time: time = Field(repr=False)
+    """Starting (local) time of observation."""
+
     snapshot_frequency: timedelta = Field(repr=False)
+    """How often an observation should be taken - should be given in concert
+    with `duration` """
+
     duration: timedelta = Field(repr=False)
+    """How long the total observation should last - should be given in concert
+    with `snapshot_frequency`"""
 
     @field_validator("field_of_view", "altitude_angle", "azimuth_angle", mode="after")
     @classmethod
@@ -147,7 +123,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        NonNegativeInt
+        PositiveInt
             Number of frames.
         """
         if self.snapshot_frequency.total_seconds() > 0:
@@ -297,38 +273,32 @@ class Settings(BaseModel):  # type: ignore[misc]
 
 
 class ImageSettings(Settings):  # type: ignore[misc]
-    """
-    `Settings` subclass to hold values used when populating the image array.
+    """`Settings` subclass to hold values used when populating the image array.
     Additionally contains a copy of all attributes belonging to the `Settings` instance
     it inherits from.
-
-    Attributes
-    ----------
-    object_colours : dict[str, RGBTuple]
-        Mapping between object types, and the colours to use on the image
-        Passed in as dict[str: InputColour] and converted to the correct type
-    colour_values : list[RGBTuple]
-        List of colours to use to fill out the background
-    colour_time_indices : dict[float|int, int]
-        Mapping between hour of the day (0-24, float) and the index corresponding
-        to the colour in `colour_values` to use at that time
-    magnitude_values : list[float|int]
-        List of maximum magnitude values, to be used in the same manner as `colour_values`
-    magnitude_time_indices : dict[float|int, int]
-        Same as `colour_time_indices`, except applying to magnitude_values. Need not be
-        the same as `colour_time_indices`
     """
 
     model_config = dataclass_config
 
     # Stored on initialization
     object_colours: dict[str, RGBTuple] = Field()
+    """Mapping between object types, and the colours to use on the image."""
 
     # Used to instantiate others
     colour_values: list[RGBTuple] = Field(repr=False)
+    """List of colours to use to fill out the background."""
+
     colour_time_indices: dict[float | int, int] = Field(repr=False)
+    """Mapping between hour of the day (0-24, float) and the index corresponding
+        to the colour in `colour_values` to use at that time."""
+
     magnitude_values: list[float | int] = Field(repr=False)
+    """List of maximum magnitude values, to be used in the same manner as
+    `colour_values`."""
+
     magnitude_time_indices: dict[float | int, int] = Field(repr=False)
+    """Same as `colour_time_indices`, except applying to magnitude_values. Need not be
+        the same as `colour_time_indices`."""
 
     @field_validator("object_colours", mode="before")
     @classmethod
@@ -344,8 +314,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
     @computed_field()
     @property
     def maximum_magnitude(self) -> float:
-        """
-        The highest magnitude that will ever be visible in the image.
+        """The highest magnitude that will ever be visible in the image.
 
         Returns
         -------
@@ -357,8 +326,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
     @computed_field()
     @property
     def colour_mapping(self) -> LinearSegmentedColormap:
-        """
-        Interpolate between the colour-time mappings indicated by `colour_values` and
+        """Interpolate between the colour-time mappings indicated by `colour_values` and
         `colour_time_indices` to generate an addressable mapping.
 
         Returns
@@ -375,8 +343,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
     @computed_field()
     @property
     def magnitude_mapping(self) -> NDArray[np.float64]:
-        """
-        Interpolate between the magnitude-time mappings indicated by `magnitude_values` and
+        """Interpolate between the magnitude-time mappings indicated by `magnitude_values` and
         `magnitude_time_indices` to generate an addressable mapping.
 
         Returns
@@ -396,36 +363,31 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
 
 class PlotSettings(Settings):  # type: ignore[misc]
-    """
-    `Settings` subclass to hold values used when generating the final plot
+    """`Settings` subclass to hold values used when generating the final plot
     Additionally contains a copy of all attributes belonging to the `Settings` instance
     it inherits from.
-
-    Attributes
-    ----------
-    fps : NonNegativeFloat
-        Frames per second of the GIF/video generated. Zero if there is only one frame.
-    filename : str
-        Location to save the plot.
-    figure_size : tuple[PositiveFloat, PositiveFloat]
-        Size of the figure in inches to pass to `matplotlib`.
-    dpi : PositiveInt
-        Dots per inch, passed to `matplotlib`.
     """
 
     model_config = dataclass_config
 
     # Stored on initialization
     fps: NonNegativeFloat
+    """Frames per second of the GIF/video generated. Zero if there is only one
+    frame."""
+
     filename: str
+    """Location to save the plot."""
+
     figure_size: tuple[PositiveFloat, PositiveFloat]
+    """Size of the figure in inches to pass to `matplotlib`."""
+
     dpi: PositiveInt
+    """Dots per inch, passed to `matplotlib`."""
 
     @computed_field()
     @property
     def observation_info(self) -> str:
-        """
-        Generate a string containing information about the observation for the plot.
+        """Generate a string containing information about the observation for the plot.
         Only contains information which is constant throughout all snapshots.
 
         Returns
@@ -446,8 +408,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
     def validate_fps(
         cls, input_fps: NonNegativeFloat, info: ValidationInfo
     ) -> NonNegativeFloat:
-        """
-        Ensure fps conforms to the described requirements.
+        """Ensure fps conforms to the described requirements.
 
         Parameters
         ----------
@@ -483,8 +444,7 @@ def split_nested_key(full_key: str) -> list[str]:
 def access_nested_dictionary(
     dictionary: dict[str, Any], keys: list[str]
 ) -> ConfigValue:
-    """
-    Access a value from an arbitrarily nested dictionary via a list of keys.
+    """Access a value from an arbitrarily nested dictionary via a list of keys.
 
     Parameters
     ----------
@@ -505,8 +465,7 @@ def access_nested_dictionary(
 
 
 def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
-    """
-    Check if a key exists within a nested dictionary.
+    """Check if a key exists within a nested dictionary.
 
     Parameters
     ----------
@@ -528,8 +487,7 @@ def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
 
 
 def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
-    """
-    Validate the existence of the required keys in the TOML configuration.
+    """Validate the existence of the required keys in the TOML configuration.
 
     Parameters
     ----------
@@ -586,8 +544,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
 
 
 def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
-    """
-    Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
+    """Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
     to a single Quantity.
 
     Parameters
@@ -597,7 +554,7 @@ def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:
 
     Returns
     -------
-    u.Quantity["angle"]
+    u.Quantity['angle']
         Combined angle.
     """
 
@@ -609,8 +566,7 @@ def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:
 
 
 def time_to_timedelta(time_object: time) -> timedelta:
-    """
-    Converts a `time` object to a `timedelta`.
+    """Converts a `time` object to a `timedelta`.
 
     Parameters
     ----------
@@ -635,8 +591,7 @@ def get_config_option(
     default_config: TOMLConfig,
     default_key: Optional[str] = None,
 ) -> ConfigValue:
-    """
-    Access a config value from the TOML config provided, and if not present, search the
+    """Access a config value from the TOML config provided, and if not present, search the
     provded default config.
 
     Parameters
@@ -665,8 +620,7 @@ def get_config_option(
 
 # TODO: type filename as path (pathlib?)
 def load_from_toml(filename: str) -> SettingsPair:
-    """
-    Load configuration options from a TOML file and parse them into `Settings` objects.
+    """Load configuration options from a TOML file and parse them into `Settings` objects.
 
     Parameters
     ----------

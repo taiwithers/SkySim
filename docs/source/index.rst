@@ -2,7 +2,7 @@ SkySim documentation
 ====================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    about
-   API documentation <generated/modules>
+   API Documentation <api/index>

@@ -15,23 +15,15 @@ type InputColour = list[float | int] | str
 
 @dataclass
 class RGB:  # type: ignore[misc]
-    """
-    Tuple of RGB values.
-    """
-
-    # Attributes
-    # ----------
-    # rgb
-    # original : InputColour
-    #     Whatever was passed to the constructor
+    """Tuple of RGB values."""
 
     original: InputColour
+    """Whatever was passed to the constructor."""
 
     @computed_field()
     @property
     def rgb(self) -> RGBTuple:
-        """
-        Generate an rgb tuple with values [0,1].
+        """Generate an rgb tuple with values [0,1].
 
         Returns
         -------

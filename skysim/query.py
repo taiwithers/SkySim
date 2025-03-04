@@ -62,6 +62,7 @@ BASIC_TABLE = {
 
 FALLBACK_SPECTRAL_TYPE = "fallback"
 
+
 # Methods
 
 
