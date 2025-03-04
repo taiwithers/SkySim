@@ -78,11 +78,13 @@ checks = [
     "SS05", # some stuff about verb tenses
     "SS06", # allow multi-line summaries
     "GL08", # let other checkers complain about a lack of docstrings
+    "GL01", # don't start docstrings on the same line
 ]
 
 [tool.pyright]
 reportAttributeAccessIssue = false
 reportReturnType = false           # pylint does this already
+reportArgumentType = false
 exclude = ['mvp/']
 
 [tool.pylint]

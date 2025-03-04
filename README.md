@@ -30,3 +30,11 @@ xdg-open docs/build/html/index.html
 # Missing docstring
     # pylint: disable=missing-function-docstring
 ```
+## Style Notes
+- Markdown-style headings to give rough structure
+- two blank lines for major spacing (before and after headings, constants, function defs, etc)
+- Docstrings do not start on new line
+- Docstrings wrap at 80 characters
+- Constants are given a docstring
+- Internal imports are all relative
+- Preferred method for class attribute docstrings? (core.config.RamotsweConfig vs core.models.ObservatoryPost)

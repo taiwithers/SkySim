@@ -28,7 +28,9 @@ from pydantic import (
 )
 from timezonefinder import TimezoneFinder
 
-from skysim.colours import InputColour, RGBTuple, convert_colour
+from .colours import InputColour, RGBTuple, convert_colour
+
+# TODO: look for tomllib typing
 
 type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
     int | float, int
@@ -108,7 +110,9 @@ class Settings(BaseModel):  # type: ignore[misc]
 
     @field_validator("field_of_view", "altitude_angle", "azimuth_angle", mode="after")
     @classmethod
-    def convert_to_deg(cls, angular: u.Quantity["angle"]) -> u.Quantity["degree"]:
+    def convert_to_deg(
+        cls, angular: u.Quantity["angle"]
+    ) -> u.Quantity["degree"]:  # type: ignore[type-arg, name-defined]
         # pylint: disable=missing-function-docstring
         return angular.to(u.deg)
 
