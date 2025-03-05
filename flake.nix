@@ -93,6 +93,7 @@
               libmysqlclient
             ]
           );
+
         in
         pkgs.mkShell {
           name = "skysim"; # name of dev env
