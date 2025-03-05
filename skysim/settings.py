@@ -13,7 +13,6 @@ from astropy import units as u
 from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
 from matplotlib.colors import LinearSegmentedColormap
-from numpy.typing import NDArray
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -29,6 +28,7 @@ from pydantic import (
 from timezonefinder import TimezoneFinder
 
 from .colours import InputColour, RGBTuple, convert_colour
+from .utils import FloatArray
 
 # TODO: look for tomllib typing
 
@@ -41,7 +41,7 @@ type TOMLConfig = dict[  # pylint: disable=invalid-name
 ]
 type SettingsPair = tuple["ImageSettings", "PlotSettings"]
 
-dataclass_config = ConfigDict(
+DATACLASS_CONFIG = ConfigDict(
     arbitrary_types_allowed=True,
     extra="forbid",
     frozen=True,
@@ -51,7 +51,7 @@ dataclass_config = ConfigDict(
 class Settings(BaseModel):  # type: ignore[misc]
     """Base class to interpret often-used configuration values."""
 
-    model_config = dataclass_config
+    model_config = DATACLASS_CONFIG
 
     # Stored on initialization
     input_location: str
@@ -278,7 +278,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
     it inherits from.
     """
 
-    model_config = dataclass_config
+    model_config = DATACLASS_CONFIG
 
     # Stored on initialization
     object_colours: dict[str, RGBTuple] = Field()
@@ -342,13 +342,13 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
     @computed_field()
     @property
-    def magnitude_mapping(self) -> NDArray[np.float64]:
+    def magnitude_mapping(self) -> FloatArray:
         """Interpolate between the magnitude-time mappings indicated by `magnitude_values` and
         `magnitude_time_indices` to generate an addressable mapping.
 
         Returns
         -------
-        NDArray[np.float64]
+        FloatArray
             Array containing the calculated magnitude value for each second of the day.
         """
         magnitude_day_percentage = [
@@ -368,7 +368,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
     it inherits from.
     """
 
-    model_config = dataclass_config
+    model_config = DATACLASS_CONFIG
 
     # Stored on initialization
     fps: NonNegativeFloat
@@ -619,13 +619,18 @@ def get_config_option(
 
 
 # TODO: type filename as path (pathlib?)
-def load_from_toml(filename: str) -> SettingsPair:
+def load_from_toml(
+    filename: str, return_settings: bool = False
+) -> Settings | SettingsPair:
     """Load configuration options from a TOML file and parse them into `Settings` objects.
 
     Parameters
     ----------
     filename : str
         Location of the configuration file.
+    return_settings : bool, optional
+        Whether to return the Settings object (true) or ImageSettings and
+        PlotSettings objects (false). Default false.
 
     Returns
     -------
@@ -680,21 +685,13 @@ def load_from_toml(filename: str) -> SettingsPair:
     }
 
     settings = Settings(**settings_config)
+    if return_settings:
+        return settings
+
     image_settings = settings.get_image_settings(**image_config)
     plot_settings = settings.get_plot_settings(**plot_config)
 
     return image_settings, plot_settings
-
-
-######## Worker Functions
-
-
-# def get_star_table(settings, obs_time, obs_radius, obs_ra_dec):
-#     return
-
-
-# def get_planet_table(settings, obs_time, obs_frame):
-#     return
 
 
 # def get_maximum_magnitude(image_settings, magnitude_values, obs_time, key_times):

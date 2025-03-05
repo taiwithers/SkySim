@@ -4,7 +4,7 @@ default:
 
 # run pre-commit on all files
 validate:
-  pre-commit run --hook-stage="manual" --all-files
+  pre-commit run --hook-stage="manual" --all-files && just todo
 
 build-docs:
   trash docs/build
@@ -20,7 +20,7 @@ add package group="main":
 
 # run (needed) tests with testmon
 qtest:
-  pytest --testmon
+  pytest --testmon --durations=0 --exitfirst
 
 # run pytest with debugging enabled
 itest:
@@ -29,6 +29,10 @@ itest:
 # use pylint to locate TODO comments
 todo:
   pylint . --disable=all --enable=fixme --score=false --exit-zero
+
+# run a python file with ipdb enabled
+debug filename:
+  ipdb3 -c continue {{filename}}
 
 # generate and activate completions
 complete shell="bash":

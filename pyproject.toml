@@ -87,6 +87,8 @@ checks = [
 reportAttributeAccessIssue = false
 reportReturnType = false           # pylint does this already
 reportArgumentType = false
+reportOperatorIssue = false
+reportCallIssue = false
 exclude = ['mvp/']
 
 [tool.pylint]
@@ -106,7 +108,8 @@ reports.output-format = "colorized"
 testpaths = ["tests"] # avoid searching mvp/
 addopts = [
     "--cov=skysim",
-    "--capture=no",
+    # "--capture=no",
     "--pdbcls=IPython.terminal.debugger:TerminalPdb",
     "--color=yes",
+    "--no-cov-on-fail",
 ]

@@ -15,6 +15,7 @@ from astroquery.simbad import Simbad
 from pydantic import PositiveFloat
 
 from .colours import RGBTuple
+from .utils import round_columns
 
 # Constants
 
@@ -54,7 +55,7 @@ BASIC_TABLE = {
         "object_type",
         "spectral_type",
     ],
-    "dtype": [object, float, float, float, object, str],
+    "dtype": [str, float, float, float, object, str],
     "units": [None, "deg", "deg", None, None, None],
 }
 """Basic table structure used for celestial objects."""
@@ -69,33 +70,50 @@ FALLBACK_SPECTRAL_TYPE = "fallback"
 ## Primary Query Methods
 
 
+def get_body_locations(
+    observation_times: Time, earth_location: EarthLocation
+) -> dict[str, SkyCoord]:
+    """Get ephemeris for the sun/earth/planets.
+
+    Parameters
+    ----------
+    observation_times : Time
+        Times to check for.
+    earth_location : EarthLocation
+        Viewing location.
+
+    Returns
+    -------
+    dict[str, SkyCoord]
+        Locations for sun, earth, planets as dictionary.
+    """
+
+    locations = {
+        name: get_body(name, observation_times, location=earth_location)
+        for name in (list(SOLARSYSTEM_BODIES["name"].data) + ["sun", "earth"])
+    }
+    return locations
+
+
 def get_planet_table(
-    earth_location: EarthLocation, observation_times: Time
+    body_locations: dict[str, SkyCoord],
 ) -> list[QTable]:
     """
     Get the planetary information at each observing time.
 
     Parameters
     ----------
-    earth_location : EarthLocation
-        Location of observation.
-    observation_times : Time
-        Time(s) of observation.
+    body_locations : dict[str,SkyCoord]
+        Dictionary of sun and planet locations for each observation time
+        (includes earth).
 
     Returns
     -------
     list[QTable]
         QTable of planetary info for each observing time.
     """
-
-    sun_locations = get_body("sun", observation_times, location=earth_location)
-    earth_locations = get_body("earth", observation_times, location=earth_location)
-
-    body_locations = {
-        name: get_body(name, observation_times, location=earth_location)
-        for name in SOLARSYSTEM_BODIES["name"]
-    }
-
+    sun_locations = body_locations.pop("sun")
+    earth_locations = body_locations.pop("earth")
     planet_table = []
 
     for i, (sun, earth) in enumerate(zip(sun_locations, earth_locations)):
@@ -155,24 +173,21 @@ def get_star_table(
         radius=field_of_view / 2,
         criteria=f"otype != 'err' AND V < {maximum_magnitude}",
     )
-    if len(query_result) == 0:
-        return query_result
-
     # remove/rename columns
     query_result = clean_simbad_table_columns(query_result)
 
+    # remove the "ids" column & repurposes the "id" column
+    query_result = get_star_name_column(query_result)
+
+    if len(query_result) == 0:
+        return query_result
+
     # spectral types
-    spectral_types = [
-        i for i in object_colours.keys() if i not in SOLARSYSTEM_BODIES["name"]
-    ]
-    spectral_types = [i for i in spectral_types if i != FALLBACK_SPECTRAL_TYPE]
+    spectral_types = get_spectral_types(object_colours)
     query_result = simplify_spectral_types(query_result, spectral_types)
 
     # remove child elements
     query_result = remove_child_stars(query_result)
-
-    # remove the "ids" column & repurposes the "id" column
-    query_result = get_star_name_column(query_result)
 
     # final general cleanup
     query_result = round_columns(query_result)
@@ -182,6 +197,26 @@ def get_star_table(
 
 
 ## Helper Methods
+
+
+def get_spectral_types(object_colours: dict[str, RGBTuple]) -> list[str]:
+    """Convert the user-input object colours dictionary to a list of valid
+    spectral types.
+
+    Parameters
+    ----------
+    object_colours : dict[str, RGBTuple]
+        User input.
+
+    Returns
+    -------
+    list[str]
+        Acceptable spectral types.
+    """
+    spectral_types = [
+        i for i in object_colours.keys() if i not in SOLARSYSTEM_BODIES["name"]
+    ]
+    return [i for i in spectral_types if i != FALLBACK_SPECTRAL_TYPE]
 
 
 def run_simbad_query(query_type: str, **kwargs: Mapping) -> QTable:
@@ -215,41 +250,6 @@ def run_simbad_query(query_type: str, **kwargs: Mapping) -> QTable:
                 f'{query_type=} is invalid, should be one of ["region","tap"].'
             )
     return result
-
-
-def round_columns(
-    table: QTable,
-    column_names: Collection[str] = ("ra", "dec", "magnitude"),
-    decimals: int | Collection[int] = 5,
-) -> QTable:
-    """
-    Round columns of an Astropy Table.
-
-    Parameters
-    ----------
-    table : Table
-        Table.
-    column_names : list[str], optional
-        Names of columns to be rounded, by default ["ra","dec","magnitude"].
-    decimals : int|list[int], optional
-        Number of decimal places to keep, can be list of ints (same size as
-        `column_names`) or a single value, by default 5.
-
-    Returns
-    -------
-    Table
-        `table` with `column_names` rounded to `decimals`.
-    """
-
-    if isinstance(decimals, int):
-        decimals = [decimals] * len(column_names)
-    else:
-        if len(decimals) != len(column_names):
-            raise ValueError
-    for name, roundto in zip(column_names, decimals):
-        table[name] = table[name].round(roundto)
-
-    return table
 
 
 def get_planet_magnitude(
@@ -310,6 +310,38 @@ def get_star_name_column(star_table: QTable) -> QTable:
     return star_table
 
 
+def get_child_stars(parent_stars: tuple[str]) -> Collection[str]:
+    """Query SIMBAD for any child objects of `parent_stars`.
+
+    Parameters
+    ----------
+    parent_stars : tuple[str]
+        SIMAD ids.
+
+    Returns
+    -------
+    Collection[str]
+        Child ids.
+    """
+    # str(tuple-with-one-element) adds a trailing comma, which trips up SIMBAD,
+    # so we do the string conversion ourself in this case
+    if len(parent_stars) == 1:
+        parent_stars_string = f"('{parent_stars[0]}')"
+    else:
+        parent_stars_string = tuple(str(i) for i in parent_stars)
+
+    parent_query_adql = f"""
+            SELECT main_id AS "child_id",
+            parent_table.id AS "parent_id"
+            FROM (SELECT oidref, id FROM ident WHERE id IN {parent_stars_string})
+                AS parent_table,
+            basic JOIN h_link ON basic.oid = h_link.child
+            WHERE h_link.parent = parent_table.oidref;
+        """
+    children = run_simbad_query("tap", query=parent_query_adql)
+    return children["child_id"].data
+
+
 def remove_child_stars(star_table: QTable) -> QTable:
     """Check the given table for parent-child pairs, and remove the children if
     they exist.
@@ -325,15 +357,7 @@ def remove_child_stars(star_table: QTable) -> QTable:
         Table with only parent items.
     """
     parents = star_table["id"]  # check all items, regardless of type
-    parents_string = tuple(parents.data)
-    parent_query_adql = f"""
-            SELECT main_id AS "child_id",
-            parent_table.id AS "parent_id"
-            FROM (SELECT oidref, id FROM ident WHERE id IN {parents_string}) AS parent_table,
-            basic JOIN h_link ON basic.oid = h_link.child
-            WHERE h_link.parent = parent_table.oidref;
-        """
-    child_items = run_simbad_query("tap", query=parent_query_adql)["child_id"].data
+    child_items = get_child_stars(tuple(parents.data))
 
     star_table.add_index("id")
     for child_id in child_items:
@@ -366,7 +390,7 @@ def get_single_spectral_type(
         return FALLBACK_SPECTRAL_TYPE
 
     # start with most specific type, and work backwards
-    for i in range(len(spectral_type), 1, -1):
+    for i in range(len(spectral_type), 0, -1):
         if spectral_type[:i] in acceptable_types:
             return spectral_type[:i]
 
