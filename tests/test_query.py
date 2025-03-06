@@ -25,8 +25,8 @@ from skysim.settings import (  # pylint: disable=unused-import
 
 # need to import minimal_config_path for settings/image_settings to work?
 from .test_settings import (  # pylint: disable=unused-import
+    config_path,
     image_settings,
-    minimal_config_path,
     settings,
 )
 

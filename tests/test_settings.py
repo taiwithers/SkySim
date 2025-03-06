@@ -32,28 +32,28 @@ ROOT_PATH = TEST_ROOT_PATH.parent
 # https://docs.pytest.org/en/stable/how-to/fixtures.html#parametrizing-fixtures
 
 
-@pytest.fixture()
-def minimal_config_path() -> str:
+@pytest.fixture(params=["minimal", "minimal_multiframe"])
+def config_path(request: pytest.FixtureRequest) -> str:
     # pylint: disable=missing-function-docstring
-    return f"{TEST_ROOT_PATH}/minimal.toml"
-
-
-@pytest.fixture()
-def settings(minimal_config_path: str) -> Settings:
-    # pylint: disable=missing-function-docstring
-    return load_from_toml(minimal_config_path, return_settings=True)
+    return f"{TEST_ROOT_PATH}/{request.param}.toml"
 
 
 @pytest.fixture()
-def image_settings(minimal_config_path: str) -> ImageSettings:
+def settings(config_path: str) -> Settings:
     # pylint: disable=missing-function-docstring
-    return load_from_toml(minimal_config_path)[0]
+    return load_from_toml(config_path, return_settings=True)
 
 
 @pytest.fixture()
-def plot_settings(minimal_config_path: str) -> PlotSettings:
+def image_settings(config_path: str) -> ImageSettings:
     # pylint: disable=missing-function-docstring
-    return load_from_toml(minimal_config_path)[1]
+    return load_from_toml(config_path)[0]
+
+
+@pytest.fixture()
+def plot_settings(config_path: str) -> PlotSettings:
+    # pylint: disable=missing-function-docstring
+    return load_from_toml(config_path)[1]
 
 
 def _test_any_settings(settings: Settings) -> None:
@@ -66,7 +66,6 @@ def _test_any_settings(settings: Settings) -> None:
     settings : Settings
         `Settings` object initialized from the settings() fixture.
     """
-    assert settings.frames == 1
     assert len(settings.observation_times) == settings.frames
     assert settings.degrees_per_pixel == 0.06 * u.deg
     assert settings.timezone == ZoneInfo("America/Toronto")
