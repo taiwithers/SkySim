@@ -5,8 +5,8 @@ from astropy.wcs import WCS
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
-from .settings import PlotSettings
-from .utils import FloatArray
+from skysim.settings import PlotSettings
+from skysim.utils import FloatArray
 
 
 def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:

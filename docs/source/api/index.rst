@@ -1,10 +1,12 @@
 API
 ===
 
-
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    settings
    query
+   populate
+   plot
    colours
+   utils

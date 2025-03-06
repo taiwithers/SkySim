@@ -7,8 +7,7 @@ validate:
   pre-commit run --hook-stage="manual" --all-files && just todo
 
 build-docs:
-  trash docs/build
-  sphinx-apidoc --output-dir docs/build/generated skysim/
+  trash docs/build docs/source/generated
   sphinx-build -M html docs/source docs/build/ --write-all
 
 open-docs:

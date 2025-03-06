@@ -2,6 +2,9 @@
 Configuration for Sphinx.
 """
 
+# disable [W]arning, [C]onvention, and [R]efactoring checks
+# pylint: disable=W,C,R
+
 import sys
 from pathlib import Path
 
@@ -38,14 +41,6 @@ html_static_path = ["_static"]
 # -- Extension settings ------------------------------------------------------
 
 
-## autoapi
-extensions.append("autoapi.extension")
-autoapi_dirs = ["../../skysim"]
-autoapi_root = "autoapi"  # under docs/build/doctrees
-autoapi_generate_api_docs = False
-autoapi_add_toctree_entry = False
-
-
 ## autodoc
 extensions.append("sphinx.ext.autodoc")
 autodoc_typehints = "none"  # napoleon deals with these
@@ -58,14 +53,32 @@ extensions.append("sphinxcontrib.autodoc_pydantic")
 autodoc_pydantic_model_show_json = False
 # autodoc_pydantic_model_undoc_members = False
 
+
+## autosummary
+extensions.append("sphinx.ext.autosummary")
+autosummary_generate = True
+
+
+## intersphinx
+extensions.append("sphinx.ext.intersphinx")
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
+}
+
+
 # MyST
 extensions.append("myst_parser")
 myst_links_external_new_tab = True
+
 
 ## napoleon
 extensions.append("sphinx.ext.napoleon")
 napoleon_use_rtype = False  # put return types inline
 napoleon_preprocess_types = True
+
 
 ## ViewCode
 extensions.append("sphinx.ext.viewcode")

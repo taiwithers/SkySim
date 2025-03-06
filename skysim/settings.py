@@ -29,8 +29,8 @@ from pydantic import (
 )
 from timezonefinder import TimezoneFinder
 
-from .colours import InputColour, RGBTuple, convert_colour
-from .utils import FloatArray, IntArray
+from skysim.colours import InputColour, RGBTuple, convert_colour
+from skysim.utils import FloatArray, IntArray
 
 type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
     int | float, int
@@ -706,7 +706,7 @@ def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:
 
     Returns
     -------
-    u.Quantity['angle']
+    u.Quantity (angle)
         Combined angle.
     """
 

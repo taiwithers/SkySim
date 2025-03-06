@@ -1,20 +1,44 @@
+.. currentmodule:: skysim.settings
+
 Settings
 ========
 
-.. autoapimodule:: skysim.settings
-    :members:
-    :exclude-members: Settings, ImageSettings, PlotSettings
+.. gets the module docstring
+.. automodule:: settings
 
+.. rubric:: Classes
+.. autosummary::
+   :toctree: ../generated
 
-.. autopydantic_model:: skysim.settings.Settings
-    :members:
+   Settings
+   ImageSettings
+   PlotSettings
 
+.. rubric:: Constants
+.. autosummary::
+   :toctree: ../generated
 
+   AIRY_DISK_RADIUS
+   MAXIMUM_LIGHT_SPREAD
 
-.. autopydantic_model:: skysim.settings.ImageSettings
-    :members:
+.. rubric:: Functions
+.. autosummary::
+   :toctree: ../generated
 
+   access_nested_dictionary
+   check_key_exists
+   check_mandatory_toml_keys
+   get_config_option
+   load_from_toml
+   parse_angle_dict
+   split_nested_key
+   time_to_timedelta
 
+.. rubric:: Type Aliases
+.. autosummary::
+    :toctree: ../generated
 
-.. autopydantic_model:: skysim.settings.PlotSettings
-    :members:
+    ConfigValue
+    ConfigMapping
+    TOMLConfig
+    SettingsPair

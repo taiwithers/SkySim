@@ -15,8 +15,8 @@ from astroquery.exceptions import NoResultsWarning
 from astroquery.simbad import Simbad
 from pydantic import PositiveFloat
 
-from .colours import RGBTuple
-from .utils import round_columns
+from skysim.colours import RGBTuple
+from skysim.utils import round_columns
 
 # Constants
 

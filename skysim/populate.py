@@ -13,9 +13,9 @@ from matplotlib.colors import LinearSegmentedColormap
 from numpy.typing import ArrayLike
 from pydantic import NonNegativeFloat, PositiveInt
 
-from .colours import RGBTuple
-from .settings import ImageSettings
-from .utils import (
+from skysim.colours import RGBTuple
+from skysim.settings import ImageSettings
+from skysim.utils import (
     FloatArray,
     IntArray,
     round_columns,
