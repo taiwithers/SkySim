@@ -3,7 +3,8 @@ Query Simbad & Astropy to get information about celestial objects.
 """
 
 import warnings
-from collections.abc import Collection, Mapping
+from collections.abc import Collection
+from typing import Any
 
 import numpy as np
 from astropy import units as u
@@ -52,11 +53,11 @@ BASIC_TABLE = {
         "ra",
         "dec",
         "magnitude",
-        "object_type",
+        # "object_type",
         "spectral_type",
     ],
-    "dtype": [str, float, float, float, object, str],
-    "units": [None, "deg", "deg", None, None, None],
+    "dtype": [str, float, float, float, str],
+    "units": [None, "deg", "deg", None, None],
 }
 """Basic table structure used for celestial objects."""
 
@@ -167,7 +168,7 @@ def get_star_table(
     """
     Simbad.reset_votable_fields()
     Simbad.add_votable_fields("otype", "V", "ids", "sp_type")
-    query_result = run_simbad_query(
+    query_result = run_simbad_query(  # type: ignore[arg-type]
         "region",
         coordinates=observation_radec,
         radius=field_of_view / 2,
@@ -219,7 +220,7 @@ def get_spectral_types(object_colours: dict[str, RGBTuple]) -> list[str]:
     return [i for i in spectral_types if i != FALLBACK_SPECTRAL_TYPE]
 
 
-def run_simbad_query(query_type: str, **kwargs: Mapping) -> QTable:
+def run_simbad_query(query_type: str, **kwargs: Any) -> QTable:
     """Query SIMBAD with either a region or TAP request.
 
     Parameters
@@ -244,7 +245,7 @@ def run_simbad_query(query_type: str, **kwargs: Mapping) -> QTable:
         if query_type == "region":
             result = QTable(Simbad.query_region(**kwargs))
         elif query_type == "tap":
-            result = QTable(Simbad.query_tap(**kwargs))
+            result = QTable(Simbad.query_tap(**kwargs))  # type: ignore[arg-type]
         else:
             raise ValueError(
                 f'{query_type=} is invalid, should be one of ["region","tap"].'
@@ -443,6 +444,7 @@ def clean_simbad_table_columns(table: QTable) -> QTable:
         "coo_wavelength",
         "coo_bibcode",
         "coo_err_maj",
+        "otype",
     ]
     for colname in columns_to_remove:
         if colname in table.colnames:
@@ -450,7 +452,7 @@ def clean_simbad_table_columns(table: QTable) -> QTable:
 
     renames = {
         "main_id": "id",
-        "otype": "object_type",
+        # "otype": "object_type",
         "V": "magnitude",
         "sp_type": "spectral_type",
     }
