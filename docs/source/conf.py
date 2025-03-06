@@ -66,6 +66,8 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "pydantic": ("https://docs.pydantic.dev/latest", None),
+    "timezonefinder": ("https://timezonefinder.readthedocs.io/en/latest/", None),
 }
 
 
