@@ -5,6 +5,7 @@ Initial outline for SkySim.
 import tomllib
 from collections.abc import Mapping
 from datetime import date, datetime, time, timedelta
+from functools import cached_property
 from typing import Any, ForwardRef, Optional, Self  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
@@ -116,7 +117,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
     # Derived and stored
     @computed_field()
-    @property
+    @cached_property
     def frames(self) -> PositiveInt:
         """
         Calculates number of frames for GIF/observations to take.
@@ -131,7 +132,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         return 1
 
     @computed_field()
-    @property
+    @cached_property
     def earth_location(self) -> EarthLocation:
         """
         Looks up where on Earth the user requested the observation be taken from.
@@ -153,7 +154,7 @@ class Settings(BaseModel):  # type: ignore[misc]
             raise NotImplementedError  # pylint: disable=raise-missing-from
 
     @computed_field()
-    @property
+    @cached_property
     def timezone(self) -> ZoneInfo:  # pylint: disable=inconsistent-return-statements
         """
         Look up timezone based on Lat/Long.
@@ -181,7 +182,7 @@ class Settings(BaseModel):  # type: ignore[misc]
             raise NotImplementedError
 
     @computed_field()
-    @property
+    @cached_property
     def observation_times(self) -> Time:
         """
         Calculates the times at which to take a snapshot.
@@ -206,7 +207,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         )
 
     @computed_field()
-    @property
+    @cached_property
     def observation_radec(self) -> SkyCoord:
         """
         Calculates the observed RA/Dec position for each observation snapshot.
@@ -225,7 +226,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         return SkyCoord(earth_frame.transform_to(ICRS()))
 
     @computed_field()
-    @property
+    @cached_property
     def degrees_per_pixel(self) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
         """
         Calculates the number of degrees spanned by each pixel in the resulting image.
@@ -312,7 +313,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
     # Derived and stored
     @computed_field()
-    @property
+    @cached_property
     def maximum_magnitude(self) -> float:
         """The highest magnitude that will ever be visible in the image.
 
@@ -324,7 +325,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
         return max(self.magnitude_values)
 
     @computed_field()
-    @property
+    @cached_property
     def colour_mapping(self) -> LinearSegmentedColormap:
         """Interpolate between the colour-time mappings indicated by `colour_values` and
         `colour_time_indices` to generate an addressable mapping.
@@ -341,7 +342,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
         return LinearSegmentedColormap.from_list("sky", colour_by_time)
 
     @computed_field()
-    @property
+    @cached_property
     def magnitude_mapping(self) -> FloatArray:
         """Interpolate between the magnitude-time mappings indicated by `magnitude_values` and
         `magnitude_time_indices` to generate an addressable mapping.
@@ -385,7 +386,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
     """Dots per inch, passed to `matplotlib`."""
 
     @computed_field()
-    @property
+    @cached_property
     def observation_info(self) -> str:
         """Generate a string containing information about the observation for the plot.
         Only contains information which is constant throughout all snapshots.
