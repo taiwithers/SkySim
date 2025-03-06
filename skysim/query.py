@@ -331,6 +331,7 @@ def get_child_stars(parent_stars: tuple[str]) -> Collection[str]:
     else:
         parent_stars_string = tuple(str(i) for i in parent_stars)
 
+    # TODO: add magnitude qualifier to parent query to reduce # children
     parent_query_adql = f"""
             SELECT main_id AS "child_id",
             parent_table.id AS "parent_id"
@@ -358,7 +359,15 @@ def remove_child_stars(star_table: QTable) -> QTable:
         Table with only parent items.
     """
     parents = star_table["id"]  # check all items, regardless of type
-    child_items = get_child_stars(tuple(parents.data))
+
+    # TODO: add some qualifier like this to the general querying
+    blocksize = 1000
+    all_children = []
+    n_blocks = int(len(parents) / blocksize)
+    for i in range(n_blocks):
+        all_children.append(tuple(parents.data[i * blocksize : (i + 1) * blocksize]))
+    all_children.append(get_child_stars(tuple(parents.data[n_blocks * blocksize :])))
+    child_items = np.concatenate(all_children)
 
     star_table.add_index("id")
     for child_id in child_items:
