@@ -536,6 +536,25 @@ class PlotSettings(Settings):  # type: ignore[misc]
             f"Azimuth: {azimuth} , FOV: {fov}"
         )
 
+    @computed_field
+    @cached_property
+    def datetime_strings(self) -> list[str]:
+        """Printable observation times.
+
+        Returns
+        -------
+        list[str]
+            List of strings for each time.
+        """
+        if (self.start_time.second == 0) and divmod(
+            self.snapshot_frequency.total_seconds(), 60
+        )[1] == 0:
+            fmt_string = "%Y-%m-%d %H:%M %Z"
+        else:
+            fmt_string = "%Y-%m-%d %X %Z"
+
+        return [i.strftime(fmt_string) for i in self.local_datetimes]
+
     @field_validator("fps", mode="after")
     @classmethod
     def validate_fps(
