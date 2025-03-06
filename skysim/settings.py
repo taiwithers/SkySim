@@ -93,7 +93,7 @@ class Settings(BaseModel):  # type: ignore[misc]
     @field_validator("field_of_view", "altitude_angle", "azimuth_angle", mode="after")
     @classmethod
     def convert_to_deg(
-        cls, angular: u.Quantity["angle"]
+        cls, angular: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
     ) -> u.Quantity["degree"]:  # type: ignore[type-arg, name-defined]
         # pylint: disable=missing-function-docstring
         return angular.to(u.deg)
@@ -153,7 +153,7 @@ class Settings(BaseModel):  # type: ignore[misc]
             Raised if location lookup fails.
         """
         try:
-            return EarthLocation.of_address(self.input_location)  # type: ignore[no-any-return]
+            return EarthLocation.of_address(self.input_location)
         except:
             # TODO: location validation
             raise NotImplementedError  # pylint: disable=raise-missing-from
@@ -241,7 +241,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         u.Quantity["angle"]
             Degrees per pixel (pixel considered unitless).
         """
-        return (self.field_of_view / self.image_pixels).to(u.deg)  # type: ignore[no-any-return]
+        return (self.field_of_view / self.image_pixels).to(u.deg)
 
     @computed_field()
     @cached_property
@@ -402,7 +402,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
             for index in self.magnitude_time_indices.values()
         ]
         day_percentages = np.linspace(0, 1, 24 * 60 * 60)
-        return np.interp(day_percentages, magnitude_day_percentage, magnitude_by_time)  # type: ignore[no-any-return]
+        return np.interp(day_percentages, magnitude_day_percentage, magnitude_by_time)
 
     @computed_field()
     @cached_property
@@ -476,7 +476,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
             for x, y in p:
                 mesh[y, x] = brightness_scale
 
-        return mesh  # type: ignore[no-any-return]
+        return mesh
 
     def brightness_gaussian(self, radius: NonNegativeFloat) -> NonNegativeFloat:
         """Calculate how much light is observed from a star at some radius away
@@ -594,7 +594,7 @@ def access_nested_dictionary(
     subdictionary = dictionary.copy()
     for key in keys[:-1]:
         subdictionary = subdictionary[key]
-    return subdictionary[keys[-1]]  # type: ignore[no-any-return]
+    return subdictionary[keys[-1]]
 
 
 def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
@@ -695,7 +695,7 @@ def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:
         dictionary.get(key, 0) * u.Unit(key[:-1])
         for key in ["degrees", "arcminutes", "arcseconds"]
     )
-    return degrees + arcminutes + arcseconds  # type: ignore[no-any-return]
+    return degrees + arcminutes + arcseconds
 
 
 def time_to_timedelta(time_object: time) -> timedelta:
