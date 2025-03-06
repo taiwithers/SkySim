@@ -13,6 +13,7 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
+from astropy.wcs import WCS
 from matplotlib.colors import LinearSegmentedColormap
 from pydantic import (
     BaseModel,
@@ -29,9 +30,7 @@ from pydantic import (
 from timezonefinder import TimezoneFinder
 
 from .colours import InputColour, RGBTuple, convert_colour
-from .utils import FloatArray
-
-# TODO: look for tomllib typing
+from .utils import FloatArray, IntArray
 
 type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
     int | float, int
@@ -47,6 +46,12 @@ DATACLASS_CONFIG = ConfigDict(
     extra="forbid",
     frozen=True,
 )
+
+AIRY_DISK_RADIUS = 23 * u.arcmin / 2
+"""How far light from an object should spread. Based on the SIMBAD image of Vega."""
+
+MAXIMUM_LIGHT_SPREAD = 10
+"""Calculate the spread of light from an object out to this many standard deviations."""
 
 
 class Settings(BaseModel):  # type: ignore[misc]
@@ -238,6 +243,43 @@ class Settings(BaseModel):  # type: ignore[misc]
         """
         return (self.field_of_view / self.image_pixels).to(u.deg)  # type: ignore[no-any-return]
 
+    @computed_field()
+    @cached_property
+    def local_datetimes(self) -> list[time]:
+        """Observation snapshot times as timezone-aware python times.
+
+        Returns
+        -------
+        list[time]
+            List of observation times.
+        """
+        utc = [
+            t.to_datetime().replace(tzinfo=ZoneInfo("UTC"))
+            for t in self.observation_times
+        ]
+        return [u.astimezone(tz=self.timezone) for u in utc]
+
+    @computed_field()
+    @cached_property
+    def wcs_objects(self) -> list[WCS]:
+        """WCS objects for each timestep.
+
+        Returns
+        -------
+        list[WCS]
+            WCS objects for each timestep.
+        """
+        wcs_by_frame = []
+        for radec in self.observation_radec:
+            wcs = WCS(naxis=2)
+            wcs.wcs.crpix = [self.image_pixels / 2] * 2
+            wcs.wcs.cdelt = [self.degrees_per_pixel.value, self.degrees_per_pixel.value]
+            wcs.wcs.crval = [radec.ra.value, radec.dec.value]
+            wcs.wcs.ctype = ["RA", "DEC"]
+            wcs.wcs.cunit = [u.deg, u.deg]
+            wcs_by_frame.append(wcs)
+        return wcs_by_frame
+
     def get_image_settings(self: "Settings", **kwargs: Any) -> "ImageSettings":
         """
         Generate an `ImageSettings` object inheriting this object's information.
@@ -361,6 +403,96 @@ class ImageSettings(Settings):  # type: ignore[misc]
         ]
         day_percentages = np.linspace(0, 1, 24 * 60 * 60)
         return np.interp(day_percentages, magnitude_day_percentage, magnitude_by_time)  # type: ignore[no-any-return]
+
+    @computed_field()
+    @cached_property
+    def light_spread_stddev(self) -> PositiveFloat:
+        """Standard deviation for the Gaussian which defines the spread of starlight.
+
+        Returns
+        -------
+        PositiveFloat
+            Standard deviation.
+        """
+        airy_disk_pixels = AIRY_DISK_RADIUS.to(u.deg) / self.degrees_per_pixel
+        airy_disk_pixels = airy_disk_pixels.decompose()
+
+        # assume the airy disk is at 3x standard deviation of the Gaussian
+        std_dev = airy_disk_pixels / 3
+
+        # standard deviation is "diameter" whilst airy is "radius"
+        std_dev *= 2
+
+        return float(std_dev)
+
+    @computed_field()
+    @cached_property
+    def area_mesh(self) -> IntArray:
+        """Create a mesh of indices that spread out from a central point.
+
+        Returns
+        -------
+        IntArray
+            (2, X, X) array.
+        """
+        maximum_radius = np.ceil(
+            MAXIMUM_LIGHT_SPREAD * self.light_spread_stddev
+        ).astype(int)
+
+        radius_vector = np.arange(-maximum_radius, maximum_radius + 1)
+
+        # mesh of points which will map to the region around the star
+        return np.array(np.meshgrid(radius_vector, radius_vector))
+
+    @computed_field()
+    @cached_property
+    def brightness_scale_mesh(self) -> FloatArray:
+        """Create a mesh of scaling factors that will dictate how a star's light
+        falls off with distance.
+
+        Returns
+        -------
+        FloatArray
+            2D mesh of [0,1] values.
+        """
+
+        # radius measurement at each mesh point
+        radial_distance = np.sqrt(self.area_mesh[0] ** 2 + self.area_mesh[1] ** 2)
+
+        unique_radii = np.unique(radial_distance)
+
+        # all of the locations where each unique radius is found
+        radius_locations = []
+        for r in unique_radii:
+            locations = np.array(np.where(radial_distance == r)).T
+            radius_locations.append(locations)
+
+        mesh = np.zeros_like(self.area_mesh[0])  # instantiate brightness_scale_mesh
+
+        for r, p in zip(unique_radii, radius_locations):
+            brightness_scale = self.brightness_gaussian(r)
+            # TODO: remove this loop by using a smarter numpy-based way to store
+            # radius_locations entries
+            for x, y in p:
+                mesh[y, x] = brightness_scale
+
+        return mesh  # type: ignore[no-any-return]
+
+    def brightness_gaussian(self, radius: NonNegativeFloat) -> NonNegativeFloat:
+        """Calculate how much light is observed from a star at some radius away
+        from it.
+
+        Parameters
+        ----------
+        radius : NonNegativeFloat
+            Distance in pixels.
+
+        Returns
+        -------
+        NonNegativeFloat
+            Scaling factor for brightness.
+        """
+        return np.exp(-(radius**2) / (self.light_spread_stddev**2))
 
 
 class PlotSettings(Settings):  # type: ignore[misc]
