@@ -2,6 +2,7 @@
 
 from astropy.visualization.wcsaxes.frame import EllipticalFrame
 from astropy.wcs import WCS
+from ffmpeg import FFmpeg
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
@@ -19,31 +20,74 @@ def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
     image_matrix : FloatArray
         RGB images.
     """
+
+    results = []
+    for i in range(plot_settings.frames):
+        results.append(save_frame(i, plot_settings, image_matrix[i]))
+
+    results.sort(key=lambda item: item[0])
+
+    generic_fname = f"{plot_settings.filename}_%d.png"
+
+    call = (
+        FFmpeg()
+        .input(generic_fname)
+        .output("test2.mp4")
+        .option("framerate", plot_settings.fps)
+        .option("y")  # overwrite existing files
+    )
+
+    call.execute()
+
+    return
+
+
+def save_frame(
+    index: int,
+    plot_settings: PlotSettings,
+    frame: FloatArray,
+) -> tuple[int, str]:
+    """Create and save a figure for a single frame.
+
+    Parameters
+    ----------
+    index : int
+        Index of the frame.
+    plot_settings : PlotSettings
+        Configuration.
+    frame : FloatArray
+        RGB image.
+
+    Returns
+    -------
+    tuple[int, str]
+        Index and filename.
+    """
     fig, ax = plt.subplots(
         figsize=plot_settings.figure_size,
         subplot_kw={
             "frame_on": False,
-            "projection": plot_settings.wcs_objects[0],
+            "projection": plot_settings.wcs_objects[index],
             "frame_class": EllipticalFrame,
         },
     )
 
     ax.set(xticks=[], yticks=[])
     fig.suptitle(plot_settings.observation_info)
-
-    for i in range(plot_settings.frames):
-        ax = display_frame(
-            ax,
-            plot_settings.wcs_objects[i],
-            image_matrix[i],
-            plot_settings.datetime_strings[i],
-        )
-        plt.savefig(
-            f"{plot_settings.filename}_{i}",
-            dpi=plot_settings.dpi,
-            bbox_inches="tight",
-        )
-    return
+    display_frame(
+        ax,
+        plot_settings.wcs_objects[index],
+        frame,
+        plot_settings.datetime_strings[index],
+    )
+    filename = f"{plot_settings.filename}_{index}.png"
+    plt.savefig(
+        filename,
+        dpi=plot_settings.dpi,
+        bbox_inches="tight",
+    )
+    plt.close()
+    return (index, filename)
 
 
 def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Axes:

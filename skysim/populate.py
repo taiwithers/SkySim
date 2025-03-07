@@ -375,6 +375,12 @@ def create_image_matrix(
 
     image_matrix = np.moveaxis(image_matrix, 1, -1)  # put the RGB axis at the end
 
+    image_matrix = np.swapaxes(
+        image_matrix, 1, 2
+    )  # put the x and y in the correct spots
+
+    image_matrix = np.flip(image_matrix, axis=2)  # put the x-axis the right way round
+
     return image_matrix
 
 

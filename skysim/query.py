@@ -354,7 +354,7 @@ def get_child_stars(
     if len(parent_stars_list) == 1:
         parent_stars_string = f"('{parent_stars_list[0]}')"
     else:
-        parent_stars_string = tuple(str(i) for i in parent_stars_list)
+        parent_stars_string = f"{tuple(str(i) for i in parent_stars_list)}"
 
     # write the query
     parent_query_adql = f"""
@@ -387,7 +387,7 @@ def get_child_stars(
             parent_query_adql = "\n".join(query_split)
             children = run_simbad_query("tap", query=parent_query_adql)
         else:
-            children = []
+            children = []  # type: ignore[assignment]
             raise e
     return children["child"].data
 
@@ -410,7 +410,6 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
     """
     parents = star_table["id"]  # check all items, regardless of type
 
-    # TODO: add some qualifier like this to the general querying
     blocksize = 1000
     all_children = []
     n_blocks = int(len(parents) / blocksize)
@@ -424,7 +423,7 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
     all_children.append(
         get_child_stars(tuple(parents.data[n_blocks * blocksize :]), maximum_magnitude)
     )
-    child_items = np.concatenate(all_children)
+    child_items = np.concatenate(all_children)  # type: ignore[var-annotated,arg-type]
 
     star_table.add_index("id")
     for child_id in child_items:

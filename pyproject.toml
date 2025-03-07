@@ -15,6 +15,7 @@ jupyter = "^1.1.1"
 timezonefinder = "^6.5.8"
 pydantic = "^2.10.6"
 pydantic-extra-types = "^2.10.2"
+python-ffmpeg = "^2.0.12"
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
@@ -116,4 +117,5 @@ addopts = [
     "--color=yes",
     "--no-cov-on-fail",
     "--durations=0",
+    "--durations-min=1.0",
 ]
