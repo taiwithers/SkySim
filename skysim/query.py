@@ -14,6 +14,7 @@ from astropy.time import Time
 from astroquery.exceptions import NoResultsWarning
 from astroquery.simbad import Simbad
 from pydantic import PositiveFloat
+from pyvo.dal.exceptions import DALQueryError
 
 from skysim.colours import RGBTuple
 from skysim.utils import round_columns
@@ -166,10 +167,9 @@ def get_star_table(
     QTable
         Table of all valid celestial objects.
     """
-    Simbad.reset_votable_fields()
-    Simbad.add_votable_fields("otype", "V", "ids", "sp_type")
     query_result = run_simbad_query(  # type: ignore[arg-type]
         "region",
+        extra_columns=["otype", "V", "ids", "sp_type"],
         coordinates=observation_radec,
         radius=field_of_view / 2,
         criteria=f"otype != 'err' AND V < {maximum_magnitude}",
@@ -188,7 +188,7 @@ def get_star_table(
     query_result = simplify_spectral_types(query_result, spectral_types)
 
     # remove child elements
-    query_result = remove_child_stars(query_result)
+    query_result = remove_child_stars(query_result, maximum_magnitude)
 
     # final general cleanup
     query_result = round_columns(query_result)
@@ -220,13 +220,18 @@ def get_spectral_types(object_colours: dict[str, RGBTuple]) -> list[str]:
     return [i for i in spectral_types if i != FALLBACK_SPECTRAL_TYPE]
 
 
-def run_simbad_query(query_type: str, **kwargs: Any) -> QTable:
+def run_simbad_query(
+    query_type: str, extra_columns: Collection[str] = (), **kwargs: Any
+) -> QTable:
     """Query SIMBAD with either a region or TAP request.
 
     Parameters
     ----------
     query_type : str
         "region" or "tap" - the type of request to send.
+    extra_columns : Collection[str], optional
+        Extra columns to add to SIMBAD outputs. Only valid for "region" query
+        type. Default is ().
     **kwargs : Mapping
         Unpacked and passed to the query function.
 
@@ -240,16 +245,23 @@ def run_simbad_query(query_type: str, **kwargs: Any) -> QTable:
     ValueError
         Raised if `query_type` is not "region" or "tap".
     """
+
     result = QTable(**BASIC_TABLE)
     with warnings.catch_warnings(action="ignore", category=NoResultsWarning):
         if query_type == "region":
+            Simbad.add_votable_fields(*extra_columns)
             result = QTable(Simbad.query_region(**kwargs))
         elif query_type == "tap":
+            if len(extra_columns) > 0:
+                raise ValueError(
+                    f"{extra_columns=} was passed to run_simbad_query, but {query_type=} which doesn't support that."
+                )
             result = QTable(Simbad.query_tap(**kwargs))  # type: ignore[arg-type]
         else:
             raise ValueError(
                 f'{query_type=} is invalid, should be one of ["region","tap"].'
             )
+    Simbad.reset_votable_fields()
     return result
 
 
@@ -311,40 +323,76 @@ def get_star_name_column(star_table: QTable) -> QTable:
     return star_table
 
 
-def get_child_stars(parent_stars: tuple[str]) -> Collection[str]:
+def get_child_stars(
+    parent_stars: tuple[str], maximum_magnitude: float
+) -> Collection[str]:
     """Query SIMBAD for any child objects of `parent_stars`.
 
     Parameters
     ----------
     parent_stars : tuple[str]
         SIMAD ids.
+    maximum_magnitude : float
+        Filtering value for the children.
 
     Returns
     -------
     Collection[str]
         Child ids.
     """
+
+    parent_stars_list = []
+    for star in parent_stars:
+        if "/" in star:
+            star = star[: star.index("/")]
+        if "'" in star:
+            star = star.replace("'", "''")
+        parent_stars_list.append(star)
+
     # str(tuple-with-one-element) adds a trailing comma, which trips up SIMBAD,
     # so we do the string conversion ourself in this case
-    if len(parent_stars) == 1:
-        parent_stars_string = f"('{parent_stars[0]}')"
+    if len(parent_stars_list) == 1:
+        parent_stars_string = f"('{parent_stars_list[0]}')"
     else:
-        parent_stars_string = tuple(str(i) for i in parent_stars)
+        parent_stars_string = tuple(str(i) for i in parent_stars_list)
 
-    # TODO: add magnitude qualifier to parent query to reduce # children
+    # write the query
     parent_query_adql = f"""
-            SELECT main_id AS "child_id",
-            parent_table.id AS "parent_id"
-            FROM (SELECT oidref, id FROM ident WHERE id IN {parent_stars_string})
-                AS parent_table,
-            basic JOIN h_link ON basic.oid = h_link.child
-            WHERE h_link.parent = parent_table.oidref;
-        """
-    children = run_simbad_query("tap", query=parent_query_adql)
-    return children["child_id"].data
+        SELECT main_id as "child", allfluxes.V
+        FROM h_link
+        JOIN ident as p on p.oidref=parent
+        JOIN basic on oid="child"
+        JOIN allfluxes on oid = allfluxes.oidref
+        WHERE p.id in {parent_stars_string}
+        AND V <= {maximum_magnitude};
+    """
+
+    try:
+        children = run_simbad_query("tap", query=parent_query_adql)  # type: ignore[arg-type]
+    except DALQueryError as e:
+        # Sometimes one of the parent ids is...problematic
+        # if that's the case, just boot it out
+        if "1 unresolved identifiers" in e.reason:
+            bad_region = e.reason[e.reason.index("[") + 1 : e.reason.index("]")]
+            lineno = int(bad_region[2 : bad_region.index(" ")])
+            get_col = lambda colstring: int(colstring[colstring.index(" ") + 3 :])
+            col_start, col_end = [get_col(a) for a in bad_region.split(" - ")]
+
+            query_split = parent_query_adql.splitlines()
+            query_split[lineno - 1] = (
+                query_split[lineno - 1][: col_start - 1]
+                + query_split[lineno - 1][col_end + 1 :]
+            )
+
+            parent_query_adql = "\n".join(query_split)
+            children = run_simbad_query("tap", query=parent_query_adql)
+        else:
+            children = []
+            raise e
+    return children["child"].data
 
 
-def remove_child_stars(star_table: QTable) -> QTable:
+def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
     """Check the given table for parent-child pairs, and remove the children if
     they exist.
 
@@ -352,6 +400,8 @@ def remove_child_stars(star_table: QTable) -> QTable:
     ----------
     star_table : QTable
         Table to checked.
+    maximum_magnitude : float
+        Filtering value for the children.
 
     Returns
     -------
@@ -365,8 +415,15 @@ def remove_child_stars(star_table: QTable) -> QTable:
     all_children = []
     n_blocks = int(len(parents) / blocksize)
     for i in range(n_blocks):
-        all_children.append(tuple(parents.data[i * blocksize : (i + 1) * blocksize]))
-    all_children.append(get_child_stars(tuple(parents.data[n_blocks * blocksize :])))
+        all_children.append(
+            get_child_stars(
+                tuple(parents.data[i * blocksize : (i + 1) * blocksize]),
+                maximum_magnitude,
+            )
+        )
+    all_children.append(
+        get_child_stars(tuple(parents.data[n_blocks * blocksize :]), maximum_magnitude)
+    )
     child_items = np.concatenate(all_children)
 
     star_table.add_index("id")

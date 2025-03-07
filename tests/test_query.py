@@ -90,8 +90,15 @@ def test_simbad_query() -> None:
     with pytest.raises(ValueError):
         run_simbad_query("fake_query_type")
 
-    children = get_child_stars(tuple(["NGC 1981"]))
+    maximum_magnitude = 100
+    children = get_child_stars(tuple(["NGC 1981"]), maximum_magnitude)
     assert len(children) > 0  # confirm that the parent query is working
+
+    maximum_magnitude = 6
+    children = get_child_stars(["Lower Sword"], maximum_magnitude)
+    assert (
+        len(children) == 2
+    )  # confirm that the cluster lower sword has 2 children with magnitude <= 6
 
 
 def test_planet_magnitude() -> None:
