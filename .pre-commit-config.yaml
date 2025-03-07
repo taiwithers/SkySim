@@ -1,13 +1,12 @@
 fail_fast : true
 exclude: .gitignore
+default_stages: ["pre-commit", "pre-merge-commit", "pre-push"]
 
 default_language_version:
   python: python3.12 # minimum as in pyproject.toml
 
-dependencies: &dependency-anchor ["astropy", "matplotlib", "timezonefinder"]
+all_stages: &all_stages ["manual", "pre-commit", "pre-merge-commit", "pre-push"]
 
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -38,24 +37,9 @@ repos:
     hooks:
       - id: isort
 
-  # nbqa (linting for jupyter notebooks)
-  # - repo: https://github.com/nbQA-dev/nbQA
-  #   rev: 1.9.1
-  #   hooks:
-  #    - id: nbqa-black
-  #    - id: nbqa-isort
-  #    - id: nbqa-mypy
-  #    - id: nbqa-pylint
-
   - repo: local
     hooks:
-      - id: pylint
-        name: pylint
-        entry: pylint
-        language: system
-        types: ["python"]
-        args: [ "--score=false", "--disable=fixme"]
-
+      # all actions
       - id: mypy
         name: mypy
         entry: "dmypy run -- --package skysim"
@@ -63,20 +47,13 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
+        stages: *all_stages
         exclude: "conf.py"
 
-      - id: pytest
-        name: pytest
-        entry: pytest
-        language: system
-        pass_filenames: false
-        require_serial: true
-        types: ["python"]
-        stages: ["pre-commit", "pre-merge-commit", "pre-push"]
-        exclude: "conf.py"
 
+      # manual (just validate) only
       - id: pytest-testmon
-        name: pytest-testmon
+        name: pytest [testmon]
         entry: pytest
         language: system
         pass_filenames: false
@@ -85,6 +62,33 @@ repos:
         stages: ["manual"]
         exclude: "conf.py"
         args: ["--testmon"]
+
+      - id: pylint-manual
+        name: pylint [manual]
+        entry: pylint
+        language: system
+        stages: ["manual"]
+        types: ["python"]
+        args: [ "--score=false",]
+
+
+      # git action only
+      - id: pytest-full
+        name: pytest [full]
+        entry: pytest
+        language: system
+        pass_filenames: false
+        require_serial: true
+        types: ["python"]
+        exclude: "conf.py"
+
+      - id: pylint-full
+        name: pylint [full]
+        entry: pylint
+        language: system
+        types: ["python"]
+        args: [ "--score=false","--enable=redefined-builtin", "--enable=unused-import"]
+
 
 
   # validate pyproject.toml

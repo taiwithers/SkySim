@@ -101,6 +101,9 @@ main.jobs = 0
     "useless-return",
     "too-many-locals",
     "unnecessary-lambda-assignment",
+    "redefined-builtin",             # specifically enabled in pre-commit pylint[full]
+    "unused-import",                 # specifically enabled in pre-commit pylint[full]
+    "fixme",                         # specifically enabled in just recipe todo
 ]
 reports.output-format = "colorized"
 
@@ -108,8 +111,9 @@ reports.output-format = "colorized"
 testpaths = ["tests"] # avoid searching mvp/
 addopts = [
     "--cov=skysim",
-    # "--capture=no",
+    "--capture=no",
     "--pdbcls=IPython.terminal.debugger:TerminalPdb",
     "--color=yes",
     "--no-cov-on-fail",
+    "--durations=0",
 ]

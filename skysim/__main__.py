@@ -1,4 +1,5 @@
 # pylint: disable=all
+# mypy: ignore-errors
 
 # skysim. is required to run file as python <file>, but not for poetry install
 from skysim.plot import create_plot
@@ -30,7 +31,6 @@ def main() -> None:
     image = create_image_matrix(image_settings, planet_tables, star_table, PROFILING)
 
     create_plot(plot_settings, image)
-
     # from matplotlib import pyplot as plt
 
     # plt.imshow(image[0])
