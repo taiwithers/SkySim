@@ -7,7 +7,7 @@ validate:
   pre-commit run --hook-stage="manual" --all-files && just todo
 
 build-docs:
-  trash docs/build docs/source/generated
+  trash docs/source/generated docs/build
   sphinx-build -M html docs/source docs/build/ --write-all
 
 open-docs:

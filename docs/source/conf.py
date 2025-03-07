@@ -5,6 +5,7 @@ Configuration for Sphinx.
 # disable [W]arning, [C]onvention, and [R]efactoring checks
 # pylint: disable=W,C,R
 
+import os
 import sys
 from pathlib import Path
 
@@ -20,6 +21,7 @@ project = "SkySim"
 copyright = "2025, Tai Withers"
 author = "Tai Withers"
 release = "0.1"
+language = "en"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -29,6 +31,7 @@ extensions = []
 
 templates_path = ["_templates"]
 exclude_patterns = []
+add_module_names = False  # hide the module name in the signature line for objects
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -36,7 +39,18 @@ exclude_patterns = []
 
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
-
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/taiwithers/SkySim",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-brands fa-square-github",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        }
+    ]
+}
 
 # -- Extension settings ------------------------------------------------------
 

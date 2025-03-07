@@ -63,6 +63,7 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
+        exclude: "conf.py"
 
       - id: pytest
         name: pytest
@@ -72,6 +73,7 @@ repos:
         require_serial: true
         types: ["python"]
         stages: ["pre-commit", "pre-merge-commit", "pre-push"]
+        exclude: "conf.py"
 
       - id: pytest-testmon
         name: pytest-testmon
@@ -81,6 +83,7 @@ repos:
         require_serial: true
         types: ["python"]
         stages: ["manual"]
+        exclude: "conf.py"
         args: ["--testmon"]
 
 
