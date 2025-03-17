@@ -24,6 +24,12 @@ repos:
         exclude: .ipynb
     -   id: trailing-whitespace
 
+  # validate pyproject.toml
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: 'v0.23'
+    hooks:
+      - id: validate-pyproject
+
   # black
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 25.1.0
@@ -73,6 +79,13 @@ repos:
 
 
       # git action only
+      - id: pylint-full
+        name: pylint [full]
+        entry: pylint
+        language: system
+        types: ["python"]
+        args: [ "--score=false","--enable=redefined-builtin", "--enable=unused-import"]
+
       - id: pytest-full
         name: pytest [full]
         entry: pytest
@@ -81,21 +94,6 @@ repos:
         require_serial: true
         types: ["python"]
         exclude: "conf.py"
-
-      - id: pylint-full
-        name: pylint [full]
-        entry: pylint
-        language: system
-        types: ["python"]
-        args: [ "--score=false","--enable=redefined-builtin", "--enable=unused-import"]
-
-
-
-  # validate pyproject.toml
-  - repo: https://github.com/abravalheri/validate-pyproject
-    rev: 'v0.23'
-    hooks:
-      - id: validate-pyproject
 
   - repo: https://github.com/numpy/numpydoc
     rev: 'v1.8.0'
