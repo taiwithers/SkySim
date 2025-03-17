@@ -6,6 +6,7 @@ import tomllib
 from collections.abc import Mapping
 from datetime import date, datetime, time, timedelta
 from functools import cached_property
+from pathlib import Path
 from typing import Any, ForwardRef, Optional, Self  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
@@ -40,6 +41,8 @@ type TOMLConfig = dict[  # pylint: disable=invalid-name
     str, dict[str, ConfigValue | dict[str, ConfigValue]]
 ]
 type SettingsPair = tuple["ImageSettings", "PlotSettings"]
+
+DEFAULT_CONFIG_PATH = Path(__file__).parent / "default.toml"
 
 DATACLASS_CONFIG = ConfigDict(
     arbitrary_types_allowed=True,
@@ -508,7 +511,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
     """Frames per second of the GIF/video generated. Zero if there is only one
     frame."""
 
-    filename: str
+    filename: Path
     """Location to save the plot."""
 
     figure_size: tuple[PositiveFloat, PositiveFloat]
@@ -533,7 +536,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
         fov = self.field_of_view.to_string(format="latex")
         return (
             f"{self.input_location}\n Altitude: {altitude}, "
-            f"Azimuth: {azimuth} , FOV: {fov}"
+            f"Azimuth: {azimuth}, FOV: {fov}"
         )
 
     @computed_field
@@ -554,6 +557,30 @@ class PlotSettings(Settings):  # type: ignore[misc]
             fmt_string = "%Y-%m-%d %X %Z"
 
         return [i.strftime(fmt_string) for i in self.local_datetimes]
+
+    @computed_field
+    @cached_property
+    def tempfile_path(self) -> Path:
+        """Path to store video frame files.
+
+        Returns
+        -------
+        Path
+            Directory.
+        """
+        return self.filename.parent / "SkySimFiles"
+
+    @computed_field
+    @cached_property
+    def tempfile_zfill(self) -> int:
+        """How much zero-padding to use when writing the video frame filenames.
+
+        Returns
+        -------
+        int
+            Number of digits.
+        """
+        return np.ceil(np.log10(self.frames)).astype(int)
 
     @field_validator("fps", mode="after")
     @classmethod
@@ -770,9 +797,8 @@ def get_config_option(
     return access_nested_dictionary(default_config, split_nested_key(default_key))
 
 
-# TODO: type filename as path (pathlib?)
 def load_from_toml(
-    filename: str, return_settings: bool = False
+    filename: Path, return_settings: bool = False
 ) -> Settings | SettingsPair:
     """Load configuration options from a TOML file and parse them into `Settings` objects.
 
@@ -789,12 +815,12 @@ def load_from_toml(
     tuple[ImageSettings, PlotSettings]
         `Settings` objects generated from the configuration.
     """
-    with open(filename, "rb") as opened:
+    with filename.open(mode="rb") as opened:
         toml_config = tomllib.load(opened)
 
     check_mandatory_toml_keys(toml_config)
 
-    with open("skysim/default.toml", "rb") as default:
+    with DEFAULT_CONFIG_PATH.open(mode="rb") as default:
         default_config = tomllib.load(default)
 
     load_entry = lambda toml_key, default_key=None: get_config_option(
@@ -829,7 +855,7 @@ def load_from_toml(
 
     plot_config = {
         # Mandatory
-        "filename": toml_config["image"]["filename"],
+        "filename": Path(toml_config["image"]["filename"]).resolve(),
         # Optional
         "fps": load_entry("image.fps"),
         "dpi": load_entry("image.dpi"),

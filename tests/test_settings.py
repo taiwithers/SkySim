@@ -33,9 +33,9 @@ ROOT_PATH = TEST_ROOT_PATH.parent
 
 
 @pytest.fixture(params=["minimal", "minimal_multiframe"])
-def config_path(request: pytest.FixtureRequest) -> str:
+def config_path(request: pytest.FixtureRequest) -> Path:
     # pylint: disable=missing-function-docstring
-    return f"{TEST_ROOT_PATH}/{request.param}.toml"
+    return Path(f"{TEST_ROOT_PATH}/{request.param}.toml")
 
 
 @pytest.fixture()
