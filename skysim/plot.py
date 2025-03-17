@@ -1,13 +1,19 @@
 """Plotting module for SkySim."""
 
+import os
+from collections.abc import Collection
+from pathlib import Path
+
+import numpy as np
 from astropy.visualization.wcsaxes.frame import EllipticalFrame
 from astropy.wcs import WCS
-from ffmpeg import FFmpeg
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
 from skysim.settings import PlotSettings
 from skysim.utils import FloatArray
+
+TEMPFILE_SUFFIX = ".png"
 
 
 def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
@@ -20,33 +26,130 @@ def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
     image_matrix : FloatArray
         RGB images.
     """
+    if plot_settings.frames == 1:
+        create_single_plot(plot_settings, image_matrix)
 
-    results = []
-    for i in range(plot_settings.frames):
-        results.append(save_frame(i, plot_settings, image_matrix[i]))
-
-    results.sort(key=lambda item: item[0])
-
-    generic_fname = f"{plot_settings.filename}_%d.png"
-
-    call = (
-        FFmpeg()
-        .input(generic_fname)
-        .output("test2.mp4")
-        .option("framerate", plot_settings.fps)
-        .option("y")  # overwrite existing files
-    )
-
-    call.execute()
+    else:
+        create_multi_plot(plot_settings, image_matrix)
 
     return
 
 
+def create_single_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
+    """Plotting function for a still image.
+
+    Parameters
+    ----------
+    plot_settings : PlotSettings
+        Configuration.
+    image_matrix : FloatArray
+        Single frame RGB image.
+    """
+    save_frame(0, plot_settings, image_matrix[0], plot_settings.filename)
+    print(f"{plot_settings.filename} saved.")
+    return
+
+
+def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
+    """Construct the command to call ffmpeg with.
+
+    Parameters
+    ----------
+    plot_settings : PlotSettings
+        Configuration.
+
+    Returns
+    -------
+    str
+        Command to run.
+    """
+    output_pixels = np.ceil(max(plot_settings.figure_size) * plot_settings.dpi).astype(
+        int
+    )
+    if output_pixels % 2 != 0:
+        output_pixels += 1
+    output_filter = (
+        "-filter_complex"
+        '"'
+        f"scale={output_pixels}:{output_pixels}:force_original_aspect_ratio=decrease,"
+        f"pad={output_pixels}:{output_pixels}:(ow-iw)/2:(oh-ih)/2"
+        '"'
+    )
+
+    global_options = "-loglevel warning -hide_banner"
+    input_options = f"-framerate {plot_settings.fps}"
+    input_files = f"{plot_settings.tempfile_path}/%0{plot_settings.tempfile_zfill}d.png"
+    output_options = (
+        f"-y -r {plot_settings.fps} -codec:v libx264 {output_filter} -pix_fmt yuv420p"
+    )
+    return f"ffmpeg {global_options} {input_options} -i {input_files} {output_options} {plot_settings.filename}"
+
+
+def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
+    """Plotting function for creating a video.
+
+    Parameters
+    ----------
+    plot_settings : PlotSettings
+        Configuration.
+    image_matrix : FloatArray
+        Multi-frame RGB image.
+    """
+    if not plot_settings.tempfile_path.is_dir():
+        plot_settings.tempfile_path.mkdir()
+
+    results = []
+    for i in range(plot_settings.frames):
+        results.append(
+            save_frame(
+                i,
+                plot_settings,
+                image_matrix[i],
+                plot_settings.tempfile_path
+                / f"{str(i).zfill(plot_settings.tempfile_zfill)}.png",
+            )
+        )
+
+    ffmpeg_call = construct_ffmpeg_call(plot_settings)
+    # print(ffmpeg_call)
+    os.system(ffmpeg_call)
+
+    print(f"{plot_settings.filename} saved.")
+
+    movie_cleanup([i[1] for i in results], plot_settings.tempfile_path)
+
+    return
+
+
+def movie_cleanup(filenames: Collection[Path], directory: Path) -> None:
+    """Clean up the tempfiles used in creating a video.
+
+    Parameters
+    ----------
+    filenames : Collection[Path]
+        The image files to delete.
+    directory : Path
+        The directory to delete.
+
+    Raises
+    ------
+    ValueError
+        Raised if the directory cannot be deleted.
+    """
+    for path in filenames:
+        if path.suffix == TEMPFILE_SUFFIX:
+            path.unlink()
+    try:
+        directory.rmdir()
+    except OSError as e:
+        raise ValueError(
+            f"Can't remove temporary directory {directory}. {e.strerror}"
+        ) from e
+
+
 def save_frame(
-    index: int,
-    plot_settings: PlotSettings,
-    frame: FloatArray,
-) -> tuple[int, str]:
+    index: int, plot_settings: PlotSettings, frame: FloatArray, filename: Path
+) -> tuple[int, Path]:
     """Create and save a figure for a single frame.
 
     Parameters
@@ -57,6 +160,8 @@ def save_frame(
         Configuration.
     frame : FloatArray
         RGB image.
+    filename : Path
+        Location to save the image.
 
     Returns
     -------
@@ -80,7 +185,7 @@ def save_frame(
         frame,
         plot_settings.datetime_strings[index],
     )
-    filename = f"{plot_settings.filename}_{index}.png"
+
     plt.savefig(
         filename,
         dpi=plot_settings.dpi,
