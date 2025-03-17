@@ -203,6 +203,32 @@ def magnitude_to_flux(magnitude: ArrayLike) -> ArrayLike:
     return 10 ** (-magnitude / 2.5)  # type: ignore[operator]
 
 
+def linear_rescale(
+    data: ArrayLike, new_min: float = 0, new_max: float = 1
+) -> ArrayLike:
+    """Generic function to linearly scale data between some minimum and maximum.
+
+    Parameters
+    ----------
+    data : ArrayLike
+        Data to be scaled.
+    new_min : float, optional
+        New minimum, by default 0.
+    new_max : float, optional
+        New maximum, by default 1.
+
+    Returns
+    -------
+    ArrayLike
+        Scaled data.
+    """
+    data_min, data_max = np.min(data), np.max(data)
+    data_range = data_max - data_min
+    new_range = new_max - new_min
+
+    return (data - data_min) * (new_range / data_range) + new_min
+
+
 def get_scaled_brightness(object_table: QTable) -> QTable:
     """Add a new column to `object_table` with a relative [0,1] brightness value
     based on the "magnitude" column.
@@ -221,11 +247,11 @@ def get_scaled_brightness(object_table: QTable) -> QTable:
     object_table["brightness"] = np.log10(
         object_table["flux"]
     )  # since humans see brightness log-scaled
-    object_table["brightness"] -= np.nanmin(
-        object_table["brightness"]
-    )  # set minimum to 0
-    object_table["brightness"] += MINIMUM_BRIGHTNESS
-    object_table["brightness"] /= np.nanmax(object_table["brightness"])
+
+    object_table["brightness"] = linear_rescale(
+        object_table["brightness"], new_min=MINIMUM_BRIGHTNESS, new_max=1
+    )
+
     object_table.remove_column("flux")
     return round_columns(object_table, ["brightness"])
 
