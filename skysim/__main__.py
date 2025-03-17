@@ -12,8 +12,7 @@ from skysim.populate import create_image_matrix, get_empty_image
 from skysim.query import get_body_locations, get_planet_table, get_star_table
 from skysim.settings import confirm_config_file, load_from_toml
 
-FAST = True
-PROFILING = False
+FAST = False
 
 
 def main() -> None:
@@ -37,9 +36,7 @@ def main() -> None:
         )
         planet_tables = get_planet_table(body_locations)
 
-        image = create_image_matrix(
-            image_settings, planet_tables, star_table, PROFILING
-        )
+        image = create_image_matrix(image_settings, planet_tables, star_table)
 
     create_plot(plot_settings, image)
     # from matplotlib import pyplot as plt

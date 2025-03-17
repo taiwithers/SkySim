@@ -2,7 +2,6 @@
 
 from datetime import time, timedelta
 from multiprocessing import Pool, cpu_count
-from timeit import default_timer
 
 import numpy as np
 from astropy import units as u
@@ -300,7 +299,6 @@ def create_image_matrix(
     image_settings: ImageSettings,
     planet_tables: list[QTable],
     star_table: QTable,
-    PROFILING: bool = False,  # pylint: disable=invalid-name
 ) -> FloatArray:
     """Primary function for the populate module. Creates and fills in the image
     matrix.
@@ -313,8 +311,6 @@ def create_image_matrix(
         Result of planet queries.
     star_table : QTable
         Result of SIMBAD queries.
-    PROFILING : bool, optional
-        Whether or not to compare single and multithreaded execution.
 
     Returns
     -------
@@ -334,7 +330,6 @@ def create_image_matrix(
         for i in range(image_settings.frames)
     ]
 
-    multi_start = default_timer()
     with Pool(cpu_count() - 1) as pool:
         filled_frames = pool.starmap(
             fill_frame_objects,
@@ -348,21 +343,6 @@ def create_image_matrix(
                 for i in range(image_settings.frames)
                 if len(object_tables[i]) > 0
             ],
-        )
-    multi_end = default_timer()
-
-    if PROFILING:
-        single_start = default_timer()
-        filled_frames = []
-        for i in range(image_settings.frames):
-            if len(object_tables[i]) > 0:
-                result = fill_frame_objects(
-                    i, image_matrix[i], object_tables[i], image_settings
-                )
-                filled_frames.append(result)
-        single_end = default_timer()
-        print(
-            f"single: {single_end-single_start:.2f} multi: {multi_end-multi_start:.2f}"
         )
 
     for index, frame in filled_frames:
