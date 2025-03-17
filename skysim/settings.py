@@ -33,6 +33,9 @@ from timezonefinder import TimezoneFinder
 from skysim.colours import InputColour, RGBTuple, convert_colour
 from skysim.utils import FloatArray, IntArray
 
+# Type Aliases
+
+
 type ConfigValue = str | date | time | int | float | dict[str, InputColour] | dict[
     int | float, int
 ] | list[int | float]
@@ -41,6 +44,10 @@ type TOMLConfig = dict[  # pylint: disable=invalid-name
     str, dict[str, ConfigValue | dict[str, ConfigValue]]
 ]
 type SettingsPair = tuple["ImageSettings", "PlotSettings"]
+
+
+# Constants
+
 
 DEFAULT_CONFIG_PATH = Path(__file__).parent / "default.toml"
 
@@ -55,6 +62,9 @@ AIRY_DISK_RADIUS = 23 * u.arcmin / 2
 
 MAXIMUM_LIGHT_SPREAD = 10
 """Calculate the spread of light from an object out to this many standard deviations."""
+
+
+# Classes
 
 
 class Settings(BaseModel):  # type: ignore[misc]
@@ -615,6 +625,128 @@ class PlotSettings(Settings):  # type: ignore[misc]
         return input_fps
 
 
+# Methods
+
+
+## Top-Level Settings Methods
+
+
+def confirm_config_file(py_argv: list[str]) -> Path:
+    """Pre-validate the existence of a config file.
+
+    Parameters
+    ----------
+    py_argv : list[str]
+        Python `sys.argv`.
+
+    Returns
+    -------
+    Path
+        Given config file path (if any).
+
+    Raises
+    ------
+    ValueError
+        Raised if
+        - No path is given on the command line.
+        - Path given does not exist.
+        - Path leads to a non-file object.
+        - Path does not have a ".toml" extension.
+    """
+
+    if len(py_argv) == 1:
+        raise ValueError("No config file given.")
+    input_config_path = py_argv[-1]
+    config_path = Path(input_config_path).resolve()
+
+    if not config_path.exists():
+        raise ValueError(f"{config_path} does not exist.")
+    if not config_path.is_file():
+        raise ValueError(f"{config_path} is not a file.")
+    if config_path.suffix != ".toml":
+        raise ValueError(f"{config_path} does not have a '.toml' extension.")
+
+    return config_path
+
+
+def load_from_toml(
+    filename: Path, return_settings: bool = False
+) -> Settings | SettingsPair:
+    """Load configuration options from a TOML file and parse them into `Settings` objects.
+
+    Parameters
+    ----------
+    filename : str
+        Location of the configuration file.
+    return_settings : bool, optional
+        Whether to return the Settings object (true) or ImageSettings and
+        PlotSettings objects (false). Default false.
+
+    Returns
+    -------
+    tuple[ImageSettings, PlotSettings]
+        `Settings` objects generated from the configuration.
+    """
+    with filename.open(mode="rb") as opened:
+        toml_config = tomllib.load(opened)
+
+    check_mandatory_toml_keys(toml_config)
+
+    with DEFAULT_CONFIG_PATH.open(mode="rb") as default:
+        default_config = tomllib.load(default)
+
+    load_entry = lambda toml_key, default_key=None: get_config_option(
+        toml_config, toml_key, default_config, default_key
+    )
+
+    settings_config = {
+        # Mandatory
+        "input_location": toml_config["observation"]["location"],
+        "field_of_view": parse_angle_dict(toml_config["observation"]["viewing-radius"]),
+        "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
+        "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
+        "start_date": toml_config["observation"]["date"],
+        "start_time": toml_config["observation"]["time"],
+        # Optional
+        "image_pixels": load_entry("image.pixels"),
+        "duration": time_to_timedelta(load_entry("observation.duration")),  # type: ignore[arg-type]
+        "snapshot_frequency": time_to_timedelta(load_entry("observation.interval")),  # type: ignore[arg-type]
+    }
+
+    image_config = {
+        k: load_entry(f"image.{v}", default_key=f"image.{v}")
+        for k, v in {
+            # Optional
+            "object_colours": "object-colours",
+            "colour_values": "sky-colours",
+            "colour_time_indices": "sky-colours-index-by-time",
+            "magnitude_values": "maximum-magnitudes",
+            "magnitude_time_indices": "maximum-magnitudes-index-by-time",
+        }.items()
+    }
+
+    plot_config = {
+        # Mandatory
+        "filename": Path(toml_config["image"]["filename"]).resolve(),
+        # Optional
+        "fps": load_entry("image.fps"),
+        "dpi": load_entry("image.dpi"),
+        "figure_size": (load_entry("image.width"), load_entry("image.height")),
+    }
+
+    settings = Settings(**settings_config)
+    if return_settings:
+        return settings
+
+    image_settings = settings.get_image_settings(**image_config)
+    plot_settings = settings.get_plot_settings(**plot_config)
+
+    return image_settings, plot_settings
+
+
+## Helper Methods
+
+
 def split_nested_key(full_key: str) -> list[str]:
     # pylint: disable=missing-function-docstring
     return full_key.split(".")
@@ -795,116 +927,3 @@ def get_config_option(
     if default_key is None:
         default_key = toml_key
     return access_nested_dictionary(default_config, split_nested_key(default_key))
-
-
-def load_from_toml(
-    filename: Path, return_settings: bool = False
-) -> Settings | SettingsPair:
-    """Load configuration options from a TOML file and parse them into `Settings` objects.
-
-    Parameters
-    ----------
-    filename : str
-        Location of the configuration file.
-    return_settings : bool, optional
-        Whether to return the Settings object (true) or ImageSettings and
-        PlotSettings objects (false). Default false.
-
-    Returns
-    -------
-    tuple[ImageSettings, PlotSettings]
-        `Settings` objects generated from the configuration.
-    """
-    with filename.open(mode="rb") as opened:
-        toml_config = tomllib.load(opened)
-
-    check_mandatory_toml_keys(toml_config)
-
-    with DEFAULT_CONFIG_PATH.open(mode="rb") as default:
-        default_config = tomllib.load(default)
-
-    load_entry = lambda toml_key, default_key=None: get_config_option(
-        toml_config, toml_key, default_config, default_key
-    )
-
-    settings_config = {
-        # Mandatory
-        "input_location": toml_config["observation"]["location"],
-        "field_of_view": parse_angle_dict(toml_config["observation"]["viewing-radius"]),
-        "altitude_angle": parse_angle_dict(toml_config["observation"]["altitude"]),
-        "azimuth_angle": parse_angle_dict(toml_config["observation"]["azimuth"]),
-        "start_date": toml_config["observation"]["date"],
-        "start_time": toml_config["observation"]["time"],
-        # Optional
-        "image_pixels": load_entry("image.pixels"),
-        "duration": time_to_timedelta(load_entry("observation.duration")),  # type: ignore[arg-type]
-        "snapshot_frequency": time_to_timedelta(load_entry("observation.interval")),  # type: ignore[arg-type]
-    }
-
-    image_config = {
-        k: load_entry(f"image.{v}", default_key=f"image.{v}")
-        for k, v in {
-            # Optional
-            "object_colours": "object-colours",
-            "colour_values": "sky-colours",
-            "colour_time_indices": "sky-colours-index-by-time",
-            "magnitude_values": "maximum-magnitudes",
-            "magnitude_time_indices": "maximum-magnitudes-index-by-time",
-        }.items()
-    }
-
-    plot_config = {
-        # Mandatory
-        "filename": Path(toml_config["image"]["filename"]).resolve(),
-        # Optional
-        "fps": load_entry("image.fps"),
-        "dpi": load_entry("image.dpi"),
-        "figure_size": (load_entry("image.width"), load_entry("image.height")),
-    }
-
-    settings = Settings(**settings_config)
-    if return_settings:
-        return settings
-
-    image_settings = settings.get_image_settings(**image_config)
-    plot_settings = settings.get_plot_settings(**plot_config)
-
-    return image_settings, plot_settings
-
-
-def confirm_config_file(py_argv: list[str]) -> Path:
-    """Pre-validate the existence of a config file.
-
-    Parameters
-    ----------
-    py_argv : list[str]
-        Python `sys.argv`.
-
-    Returns
-    -------
-    Path
-        Given config file path (if any).
-
-    Raises
-    ------
-    ValueError
-        Raised if
-        - No path is given on the command line.
-        - Path given does not exist.
-        - Path leads to a non-file object.
-        - Path does not have a ".toml" extension.
-    """
-
-    if len(py_argv) == 1:
-        raise ValueError("No config file given.")
-    input_config_path = py_argv[-1]
-    config_path = Path(input_config_path).resolve()
-
-    if not config_path.exists():
-        raise ValueError(f"{config_path} does not exist.")
-    if not config_path.is_file():
-        raise ValueError(f"{config_path} is not a file.")
-    if config_path.suffix != ".toml":
-        raise ValueError(f"{config_path} does not have a '.toml' extension.")
-
-    return config_path

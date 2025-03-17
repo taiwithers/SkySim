@@ -39,7 +39,3 @@ def main() -> None:
         image = create_image_matrix(image_settings, planet_tables, star_table)
 
     create_plot(plot_settings, image)
-    # from matplotlib import pyplot as plt
-
-    # plt.imshow(image[0])
-    # plt.savefig("test.png")

@@ -28,10 +28,6 @@ ROOT_PATH = TEST_ROOT_PATH.parent
 """
 
 
-# TODO: use parameterization to run tests of loaded[minimal, maximal] & still/gif ?
-# https://docs.pytest.org/en/stable/how-to/fixtures.html#parametrizing-fixtures
-
-
 @pytest.fixture(params=["minimal", "minimal_multiframe"])
 def config_path(request: pytest.FixtureRequest) -> Path:
     # pylint: disable=missing-function-docstring

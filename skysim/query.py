@@ -54,7 +54,6 @@ BASIC_TABLE = {
         "ra",
         "dec",
         "magnitude",
-        # "object_type",
         "spectral_type",
     ],
     "dtype": [str, float, float, float, str],
@@ -69,7 +68,7 @@ FALLBACK_SPECTRAL_TYPE = "fallback"
 # Methods
 
 
-## Primary Query Methods
+## Top-Level Query Methods
 
 
 def get_body_locations(
@@ -517,7 +516,6 @@ def clean_simbad_table_columns(table: QTable) -> QTable:
 
     renames = {
         "main_id": "id",
-        # "otype": "object_type",
         "V": "magnitude",
         "sp_type": "spectral_type",
     }

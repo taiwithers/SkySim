@@ -9,6 +9,8 @@ from matplotlib.colors import to_rgb
 from pydantic import computed_field
 from pydantic.dataclasses import dataclass
 
+# Type Aliases
+
 type RGBTuple = tuple[float, float, float]
 type InputColour = list[float | int] | str
 

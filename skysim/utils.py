@@ -4,13 +4,14 @@ from collections.abc import Collection
 
 import numpy as np
 from astropy.table import QTable
-
-# pylint: disable=redefined-builtin,unused-import
-from ipdb import set_trace as breakpoint
 from numpy.typing import NDArray
+
+# Type Aliases
 
 type FloatArray = NDArray[np.float64]
 type IntArray = NDArray[np.int64]
+
+# Methods
 
 
 def round_columns(

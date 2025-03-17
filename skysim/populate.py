@@ -19,10 +19,90 @@ from skysim.utils import (
     round_columns,
 )
 
+# Constants
+
+
 MINIMUM_BRIGHTNESS = 0.2
 """Minimum brightness for an object. An object with the highest allowed
 magnitude would have this brightness in order to keep it visible against the (0
 brightness) backdrop."""
+
+
+# Methods
+
+
+## Top-Level Populate Method
+
+
+def create_image_matrix(
+    image_settings: ImageSettings,
+    planet_tables: list[QTable],
+    star_table: QTable,
+) -> FloatArray:
+    """Primary function for the populate module. Creates and fills in the image
+    matrix.
+
+    Parameters
+    ----------
+    image_settings : ImageSettings
+        Configuration needed.
+    planet_tables : list[QTable]
+        Result of planet queries.
+    star_table : QTable
+        Result of SIMBAD queries.
+
+    Returns
+    -------
+    FloatArray
+        Array of RGB image frames.
+    """
+    image_matrix = get_empty_image(image_settings.frames, image_settings.image_pixels)
+
+    # fill all the backgrounds
+    for i in range(image_settings.frames):
+        background_colour = get_timed_background_colour(
+            image_settings.colour_mapping, image_settings.local_datetimes[i]
+        )
+        image_matrix[i] = fill_frame_background(background_colour, image_matrix[i])
+
+    # prepare tables for each frame
+    object_tables = [
+        prepare_object_table(image_settings, star_table, planet_tables, i)
+        for i in range(image_settings.frames)
+    ]
+
+    # add in all the objects
+    with Pool(cpu_count() - 1) as pool:
+        filled_frames = pool.starmap(
+            fill_frame_objects,
+            [
+                (
+                    i,
+                    image_matrix[i],
+                    object_tables[i],
+                    image_settings,
+                )
+                for i in range(image_settings.frames)
+                if len(object_tables[i]) > 0
+            ],
+        )
+
+    # re-sort the frames
+    for index, frame in filled_frames:
+        image_matrix[index] = frame
+
+    image_matrix = np.moveaxis(image_matrix, 1, -1)  # put the RGB axis at the end
+
+    image_matrix = np.swapaxes(
+        image_matrix, 1, 2
+    )  # put the x and y in the correct spots
+
+    image_matrix = np.flip(image_matrix, axis=2)  # put the x-axis the right way round
+
+    return image_matrix
+
+
+## Helper Methods
 
 
 def get_empty_image(
@@ -321,70 +401,6 @@ def add_object_to_frame(
     return frame
 
 
-def create_image_matrix(
-    image_settings: ImageSettings,
-    planet_tables: list[QTable],
-    star_table: QTable,
-) -> FloatArray:
-    """Primary function for the populate module. Creates and fills in the image
-    matrix.
-
-    Parameters
-    ----------
-    image_settings : ImageSettings
-        Configuration needed.
-    planet_tables : list[QTable]
-        Result of planet queries.
-    star_table : QTable
-        Result of SIMBAD queries.
-
-    Returns
-    -------
-    FloatArray
-        Array of RGB image frames.
-    """
-    image_matrix = get_empty_image(image_settings.frames, image_settings.image_pixels)
-
-    for i in range(image_settings.frames):
-        background_colour = get_timed_background_colour(
-            image_settings.colour_mapping, image_settings.local_datetimes[i]
-        )
-        image_matrix[i] = fill_frame_background(background_colour, image_matrix[i])
-
-    object_tables = [
-        prepare_object_table(image_settings, star_table, planet_tables, i)
-        for i in range(image_settings.frames)
-    ]
-
-    with Pool(cpu_count() - 1) as pool:
-        filled_frames = pool.starmap(
-            fill_frame_objects,
-            [
-                (
-                    i,
-                    image_matrix[i],
-                    object_tables[i],
-                    image_settings,
-                )
-                for i in range(image_settings.frames)
-                if len(object_tables[i]) > 0
-            ],
-        )
-
-    for index, frame in filled_frames:
-        image_matrix[index] = frame
-
-    image_matrix = np.moveaxis(image_matrix, 1, -1)  # put the RGB axis at the end
-
-    image_matrix = np.swapaxes(
-        image_matrix, 1, 2
-    )  # put the x and y in the correct spots
-
-    image_matrix = np.flip(image_matrix, axis=2)  # put the x-axis the right way round
-
-    return image_matrix
-
-
 def fill_frame_objects(
     index: int, frame: FloatArray, objects_table: QTable, image_settings: ImageSettings
 ) -> tuple[int, FloatArray]:
@@ -479,6 +495,5 @@ def prepare_object_table(
     ]
 
     object_table.remove_columns(["id", "magnitude", "spectral_type", "skycoord"])
-    # object_table.remove_columns(["id", "ra", "dec", "magnitude", "spectral_type"])
 
     return object_table
