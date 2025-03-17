@@ -8,7 +8,6 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.table import QTable, Row, vstack
-from astropy.wcs import WCS
 from matplotlib.colors import LinearSegmentedColormap
 from numpy.typing import ArrayLike
 from pydantic import NonNegativeFloat, PositiveInt
@@ -254,7 +253,6 @@ def pixel_in_frame(xy: IntArray, image_pixels: int) -> bool:
 
 
 def add_object_to_frame(
-    wcs: WCS,
     object_row: Row,
     frame: FloatArray,
     area_mesh: IntArray,
@@ -264,8 +262,6 @@ def add_object_to_frame(
 
     Parameters
     ----------
-    wcs : WCS
-        Coordinate system for the current time.
     object_row : Row
         Row of object table.
     frame : FloatArray
@@ -280,11 +276,10 @@ def add_object_to_frame(
     FloatArray
         `frame` with the object added in.
     """
-    object_sky = SkyCoord(ra=object_row["ra"] * u.deg, dec=object_row["dec"] * u.deg)
 
-    # TODO: consider passing this directly
-    object_xy = np.round(object_sky.to_pixel(wcs)).astype(int)
-    offset_xy = np.array([area_mesh[0] + object_xy[0], area_mesh[1] + object_xy[1]])
+    offset_xy = np.array(
+        [area_mesh[0] + object_row["x"], area_mesh[1] + object_row["y"]]
+    )
 
     for mesh_xy, _ in np.ndenumerate(area_mesh[0]):
         frame_xy = offset_xy[:, *mesh_xy]  # type: ignore[arg-type]
@@ -405,9 +400,19 @@ def fill_frame_objects(
     tuple[int, FloatArray]
         Frame number and updated image.
     """
+    # calculate the xy coordinates for objects for this wcs
+    objects_table["skycoord"] = SkyCoord(
+        ra=objects_table["ra"], dec=objects_table["dec"], unit="deg"
+    )
+    xy = np.round(
+        objects_table["skycoord"].to_pixel(image_settings.wcs_objects[index])
+    ).astype(int)
+    objects_table["x"] = xy[0]
+    objects_table["y"] = xy[1]
+    objects_table.remove_column("skycoord")
+
     for row in objects_table:
         frame = add_object_to_frame(
-            image_settings.wcs_objects[index],
             row,
             frame,
             image_settings.area_mesh,
