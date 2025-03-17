@@ -10,27 +10,7 @@ import numpy as np
 from skysim.plot import create_plot
 from skysim.populate import create_image_matrix, get_empty_image
 from skysim.query import get_body_locations, get_planet_table, get_star_table
-from skysim.settings import load_from_toml
-
-
-# todo: move this into settings.py
-def confirm_config_file():
-    # pylint: disable=missing-function-docstring
-    cwd = Path(".")  # path of calling shell, not current file
-    if len(sys.argv) == 1:
-        raise ValueError("No config file given.")
-    input_config_path = sys.argv[-1]
-    config_path = Path(input_config_path).resolve()
-
-    if not config_path.exists():
-        raise ValueError(f"{config_path} does not exist.")
-    if not config_path.is_file():
-        raise ValueError(f"{config_path} is not a file.")
-    if config_path.suffix != ".toml":
-        raise ValueError(f"{config_path} does not have a '.toml' extension.")
-
-    return config_path
-
+from skysim.settings import confirm_config_file, load_from_toml
 
 FAST = True
 PROFILING = False
@@ -38,7 +18,7 @@ PROFILING = False
 
 def main() -> None:
     # pylint: disable=missing-function-docstring
-    config_path = confirm_config_file()
+    config_path = confirm_config_file(sys.argv)
     image_settings, plot_settings = load_from_toml(config_path)
 
     if FAST:

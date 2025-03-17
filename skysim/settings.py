@@ -872,64 +872,39 @@ def load_from_toml(
     return image_settings, plot_settings
 
 
-# def get_maximum_magnitude(image_settings, magnitude_values, obs_time, key_times):
-#     return
+def confirm_config_file(py_argv: list[str]) -> Path:
+    """Pre-validate the existence of a config file.
 
+    Parameters
+    ----------
+    py_argv : list[str]
+        Python `sys.argv`.
 
-# def get_visible_objects(
-#     settings, maximum_magnitude, planet_table, star_table, obs_radius, obs_ra_dec
-# ):
-#     return
+    Returns
+    -------
+    Path
+        Given config file path (if any).
 
+    Raises
+    ------
+    ValueError
+        Raised if
+        - No path is given on the command line.
+        - Path given does not exist.
+        - Path leads to a non-file object.
+        - Path does not have a ".toml" extension.
+    """
 
-# def get_empty_image(image_settings, frames, image_pixels):
-#     return
+    if len(py_argv) == 1:
+        raise ValueError("No config file given.")
+    input_config_path = py_argv[-1]
+    config_path = Path(input_config_path).resolve()
 
+    if not config_path.exists():
+        raise ValueError(f"{config_path} does not exist.")
+    if not config_path.is_file():
+        raise ValueError(f"{config_path} is not a file.")
+    if config_path.suffix != ".toml":
+        raise ValueError(f"{config_path} does not have a '.toml' extension.")
 
-# def get_background_blue(image_settings, blue_values, obs_time):
-#     return
-
-
-# def get_background_image(background_blue, empty_image):
-#     return
-
-
-# def get_std_dev(settings, degrees_per_pixel):
-#     return
-
-
-# def get_filled_image(
-#     image_settings, object_colours, std_dev, visible_objects, background_image
-# ):
-#     return
-
-
-# ########
-
-
-# def get_wcs_object(image_settings, image_pixels, degrees_per_pixel, ra_dec):
-#     return
-
-
-# def get_printable_time(settings, obs_time):
-#     return
-
-
-# def make_still_image(
-#     image_settings, filled_image, wcs, obs_info, printable_time, filename, figsize, dpi
-# ):
-#     return
-
-
-# def make_gif(
-#     image_settings,
-#     filled_image,
-#     wcs_by_time,
-#     obs_info,
-#     printable_time_by_time,
-#     fps,
-#     filename,
-#     figsize,
-#     dpi,
-# ):
-#     return
+    return config_path
