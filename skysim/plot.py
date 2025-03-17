@@ -1,6 +1,6 @@
 """Plotting module for SkySim."""
 
-import os
+import subprocess
 from collections.abc import Collection
 from pathlib import Path
 
@@ -69,7 +69,7 @@ def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
     if output_pixels % 2 != 0:
         output_pixels += 1
     output_filter = (
-        "-filter_complex"
+        "-filter_complex "
         '"'
         f"scale={output_pixels}:{output_pixels}:force_original_aspect_ratio=decrease,"
         f"pad={output_pixels}:{output_pixels}:(ow-iw)/2:(oh-ih)/2"
@@ -83,6 +83,36 @@ def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
         f"-y -r {plot_settings.fps} -codec:v libx264 {output_filter} -pix_fmt yuv420p"
     )
     return f"ffmpeg {global_options} {input_options} -i {input_files} {output_options} {plot_settings.filename}"
+
+
+def run_ffmpeg(plot_settings: PlotSettings) -> None:
+    """Run FFmpeg to convert the set of images into a video.
+
+    Parameters
+    ----------
+    plot_settings : PlotSettings
+        Configuration.
+
+    Raises
+    ------
+    ValueError
+        Raised if FFmpeg returns a non-zero exit code.
+    """
+    ffmpeg_call = construct_ffmpeg_call(plot_settings)
+    print(f"Running ffmpeg with `{ffmpeg_call}`")
+    ffmpeg_out = subprocess.run(
+        ffmpeg_call,
+        shell=True,  # run as shell command
+        capture_output=True,  # adds stderr and stdout attributes
+        text=True,  # interpret stderr and stdout as text
+        check=False,  # don't raise exception on non-zero exit code
+    )
+    if ffmpeg_out.returncode == 0:
+        print(f"{plot_settings.filename} saved.")
+    else:
+        raise ValueError(
+            f"Something went wrong compiling the frames into a video. FFmpeg error: {ffmpeg_out.stderr}"
+        )
 
 
 def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
@@ -110,12 +140,7 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
             )
         )
 
-    ffmpeg_call = construct_ffmpeg_call(plot_settings)
-    # print(ffmpeg_call)
-    os.system(ffmpeg_call)
-
-    print(f"{plot_settings.filename} saved.")
-
+    run_ffmpeg(plot_settings)
     movie_cleanup([i[1] for i in results], plot_settings.tempfile_path)
 
     return
