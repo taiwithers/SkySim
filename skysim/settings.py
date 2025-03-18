@@ -293,6 +293,13 @@ class Settings(BaseModel):  # type: ignore[misc]
             wcs_by_frame.append(wcs)
         return wcs_by_frame
 
+    def __str__(self: "Settings") -> str:
+        result = ""
+        for k, v in self.model_dump().items():
+            v = str(v).replace("\n", "\n\t")
+            result += f"{k}: {v}\n"
+        return result[:-1]
+
     def get_image_settings(self: "Settings", **kwargs: Any) -> "ImageSettings":
         """
         Generate an `ImageSettings` object inheriting this object's information.
