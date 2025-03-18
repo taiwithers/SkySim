@@ -251,7 +251,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        u.Quantity["angle"]
+        u.Quantity[angle]
             Degrees per pixel (pixel considered unitless).
         """
         return (self.field_of_view / self.image_pixels).to(u.deg)

@@ -249,7 +249,7 @@ def filter_objects_fov(
     ----------
     radec : SkyCoord
         Point of observations.
-    fov : u.Quantity["angle"]
+    fov : u.Quantity[angle]
         Field of view (2x visible radius).
     objects_table : QTable
         Table of objects to be filtered.

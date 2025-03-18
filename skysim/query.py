@@ -154,7 +154,7 @@ def get_star_table(
     ----------
     observation_radec : SkyCoord
         RA, Dec coordinates that get observed.
-    field_of_view : u.Quantity["angle"]
+    field_of_view : u.Quantity[angle]
         Diameter of observation.
     maximum_magnitude : float
         Highest magnitude value to search for.
