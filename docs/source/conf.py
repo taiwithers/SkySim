@@ -7,6 +7,7 @@ Configuration for Sphinx.
 
 import os
 import sys
+import tomllib
 from pathlib import Path
 
 # Configuration file for the Sphinx documentation builder.
@@ -14,20 +15,26 @@ from pathlib import Path
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["project"]
 
-project = "SkySim"
-copyright = "2025, Tai Withers"
-author = "Tai Withers"
-release = "0.1"
+project = pyproject["name"]
+author = ", ".join([auth["name"] for auth in pyproject["authors"]])
+copyright = (
+    f" %Y, {author}"  # If you remove the space in front of %Y it defaults to 1980
+)
+release = pyproject["version"]
 language = "en"
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 sys.path.insert(0, str(Path("..", "..", f"{project.lower()}").resolve()))
 
 extensions = []
+suppress_warnings = []
 
 templates_path = ["_templates"]
 exclude_patterns = []
@@ -36,7 +43,6 @@ add_module_names = False  # hide the module name in the signature line for objec
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_theme_options = {
@@ -46,7 +52,7 @@ html_theme_options = {
             "url": "https://github.com/taiwithers/SkySim",  # required
             # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
             "icon": "fa-brands fa-square-github",
-            # The type of image to be used (see below for details)
+            # The type of image to be used
             "type": "fontawesome",
         }
     ]
@@ -88,6 +94,7 @@ intersphinx_mapping = {
 # MyST
 extensions.append("myst_parser")
 myst_links_external_new_tab = True
+suppress_warnings.append("myst.xref_missing")
 
 
 ## napoleon
