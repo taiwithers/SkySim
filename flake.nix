@@ -42,10 +42,6 @@
             # generic
             dos2unix.enable = true;
 
-            # python
-            mypy.enable = true; # static type checker
-            black.enable = true;
-
             # other
             nixfmt.enable = true;
             shellcheck.enable = true;
@@ -110,6 +106,7 @@
             pkg-config # for poetry to locate dependencies
             just # command runner (per-project aliases)
             ffmpeg
+            trash-cli
           ];
         };
 

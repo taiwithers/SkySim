@@ -38,7 +38,7 @@ qitest:
 
 [group('docs')]
 build-docs:
-  trash docs/source/generated docs/build
+  trash-put docs/source/generated docs/build
   sphinx-build -M html docs/source docs/build/ --write-all
 
 [group('docs')]
