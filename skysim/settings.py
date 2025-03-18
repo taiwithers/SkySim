@@ -694,6 +694,38 @@ def load_from_toml(
     tuple[ImageSettings, PlotSettings]
         `Settings` objects generated from the configuration.
     """
+
+    settings_config, image_config, plot_config = toml_to_dicts(filename)
+
+    settings = Settings(**settings_config)
+    if return_settings:
+        return settings
+
+    image_settings = settings.get_image_settings(**image_config)
+    plot_settings = settings.get_plot_settings(**plot_config)
+
+    return image_settings, plot_settings
+
+
+## Helper Methods
+
+
+def toml_to_dicts(
+    filename: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Read the configuration file and combine it with the default configuration
+    to get dictionaries of values which can be used for the various `Settings` classes.
+
+    Parameters
+    ----------
+    filename : Path
+        Path the the toml config file.
+
+    Returns
+    -------
+    tuple[ConfigMapping]
+        Dictionary for `Settings`, `ImageSettings`, and `PlotSettings`.
+    """
     with filename.open(mode="rb") as opened:
         toml_config = tomllib.load(opened)
 
@@ -741,17 +773,7 @@ def load_from_toml(
         "figure_size": (load_entry("image.width"), load_entry("image.height")),
     }
 
-    settings = Settings(**settings_config)
-    if return_settings:
-        return settings
-
-    image_settings = settings.get_image_settings(**image_config)
-    plot_settings = settings.get_plot_settings(**plot_config)
-
-    return image_settings, plot_settings
-
-
-## Helper Methods
+    return settings_config, image_config, plot_config
 
 
 def split_nested_key(full_key: str) -> list[str]:
