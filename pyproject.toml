@@ -38,7 +38,7 @@ autodoc-pydantic = "^2.2.0"
 sphinx-autoapi = "^3.6.0"
 
 [tool.poetry.scripts]
-main = "skysim.__main__:main"
+skysim = "skysim.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
