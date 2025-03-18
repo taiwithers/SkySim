@@ -7,11 +7,6 @@
 default:
   @just --list --explain --unsorted
 
-# generate and activate completions
-[group('meta')]
-complete shell="bash":
-  just --completions {{shell}} > /tmp/just.completions
-  source /tmp/just.completions
 
 # -----------------------------------
 #  pytest
@@ -36,11 +31,13 @@ qitest:
 #  Docs
 # -----------------------------------
 
+# trash generated docs and rebuild
 [group('docs')]
 build-docs:
   trash-put docs/source/generated docs/build
   sphinx-build -M html docs/source docs/build/ --write-all
 
+# xdg-open on index.html
 [group('docs')]
 open-docs:
   xdg-open docs/build/html/index.html
