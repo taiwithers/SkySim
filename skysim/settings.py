@@ -73,7 +73,7 @@ class Settings(BaseModel):  # type: ignore[misc]
     model_config = DATACLASS_CONFIG
 
     # Stored on initialization
-    input_location: str
+    input_location: str | list[float]
     """User-input version of the observing location."""
 
     field_of_view: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
@@ -258,7 +258,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
     @computed_field()
     @cached_property
-    def local_datetimes(self) -> list[time]:
+    def local_datetimes(self) -> list[datetime]:
         """Observation snapshot times as timezone-aware python times.
 
         Returns

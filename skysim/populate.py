@@ -1,6 +1,6 @@
 """Create an RGB image of the observation."""
 
-from datetime import time, timedelta
+from datetime import datetime, time, timedelta
 from multiprocessing import Pool, cpu_count
 
 import numpy as np
@@ -133,7 +133,7 @@ def get_empty_image(
     )
 
 
-def get_seconds_from_midnight(local_time: time) -> NonNegativeFloat:
+def get_seconds_from_midnight(local_time: time | datetime) -> NonNegativeFloat:
     """Calculate the number of seconds since midnight for some time value.
 
     Parameters
@@ -156,7 +156,7 @@ def get_seconds_from_midnight(local_time: time) -> NonNegativeFloat:
 
 def get_timed_background_colour(
     background_colours: LinearSegmentedColormap,
-    local_time: time,
+    local_datetime: datetime,
 ) -> RGBTuple:
     """Get the background colour for the image based on the colour-time mapping.
 
@@ -164,35 +164,37 @@ def get_timed_background_colour(
     ----------
     background_colours : LinearSegmentedColormap
         Colourmap linking floats [0,1] to RGB values.
-    local_time : time
+    local_datetime : datetime
         Local time of the observation.
 
     Returns
     -------
     RGBTuple
-        Colour corresponding to `local_time`.
+        Colour corresponding to `local_datetime`.
     """
-    day_percentage = get_seconds_from_midnight(local_time) / (24 * 60 * 60)
+    day_percentage = get_seconds_from_midnight(local_datetime) / (24 * 60 * 60)
 
     return background_colours(day_percentage)[:-1]
 
 
-def get_timed_magnitude(magnitude_mapping: FloatArray, local_time: time) -> float:
+def get_timed_magnitude(
+    magnitude_mapping: FloatArray, local_datetime: datetime
+) -> float:
     """Get the maximum magnitude value visible for a current time.
 
     Parameters
     ----------
     magnitude_mapping : FloatArray
         Array with size [seconds per day] and values [viewable magnitudes].
-    local_time : time
+    local_datetime : datetime
         Local time of the observation.
 
     Returns
     -------
     float
-        Magnitude value corresponding to `local_time`.
+        Magnitude value corresponding to `local_datetime`.
     """
-    index = int(get_seconds_from_midnight(local_time))
+    index = int(get_seconds_from_midnight(local_datetime))
     return magnitude_mapping[index]
 
 
