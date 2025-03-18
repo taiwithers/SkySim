@@ -734,7 +734,7 @@ def toml_to_dicts(
     with DEFAULT_CONFIG_PATH.open(mode="rb") as default:
         default_config = tomllib.load(default)
 
-    load_entry = lambda toml_key, default_key=None: get_config_option(
+    load_or_default = lambda toml_key, default_key=None: get_config_option(
         toml_config, toml_key, default_config, default_key
     )
 
@@ -747,13 +747,13 @@ def toml_to_dicts(
         "start_date": toml_config["observation"]["date"],
         "start_time": toml_config["observation"]["time"],
         # Optional
-        "image_pixels": load_entry("image.pixels"),
-        "duration": time_to_timedelta(load_entry("observation.duration")),  # type: ignore[arg-type]
-        "snapshot_frequency": time_to_timedelta(load_entry("observation.interval")),  # type: ignore[arg-type]
+        "image_pixels": load_or_default("image.pixels"),
+        "duration": time_to_timedelta(load_or_default("observation.duration")),  # type: ignore[arg-type]
+        "snapshot_frequency": time_to_timedelta(load_or_default("observation.interval")),  # type: ignore[arg-type]
     }
 
     image_config = {
-        k: load_entry(f"image.{v}", default_key=f"image.{v}")
+        k: load_or_default(f"image.{v}", default_key=f"image.{v}")
         for k, v in {
             # Optional
             "object_colours": "object-colours",
@@ -768,9 +768,12 @@ def toml_to_dicts(
         # Mandatory
         "filename": Path(toml_config["image"]["filename"]).resolve(),
         # Optional
-        "fps": load_entry("image.fps"),
-        "dpi": load_entry("image.dpi"),
-        "figure_size": (load_entry("image.width"), load_entry("image.height")),
+        "fps": load_or_default("image.fps"),
+        "dpi": load_or_default("image.dpi"),
+        "figure_size": (
+            load_or_default("image.width"),
+            load_or_default("image.height"),
+        ),
     }
 
     return settings_config, image_config, plot_config
