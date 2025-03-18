@@ -823,9 +823,10 @@ def check_key_exists(dictionary: TOMLConfig, full_key: str) -> bool:
         Whether or not the key exists.
     """
     try:
-        access_nested_dictionary(dictionary, split_nested_key(full_key))
+        value = access_nested_dictionary(dictionary, split_nested_key(full_key))
+        assert len(str(value)) > 0
         return True
-    except KeyError:
+    except (KeyError, AssertionError):
         return False
 
 
