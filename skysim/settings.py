@@ -13,6 +13,7 @@ from zoneinfo import ZoneInfo
 import numpy as np
 from astropy import units as u
 from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
+from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time
 from astropy.wcs import WCS
 from matplotlib.colors import LinearSegmentedColormap
@@ -84,7 +85,6 @@ class Settings(BaseModel):  # type: ignore[misc]
 
     azimuth_angle: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
     """Angle of observation (Eastwards from North)."""
-
     image_pixels: PositiveInt
     """Number of pixels (diameter) for the resulting image."""
 
@@ -167,9 +167,8 @@ class Settings(BaseModel):  # type: ignore[misc]
         """
         try:
             return EarthLocation.of_address(self.input_location)
-        except:
-            # TODO: location validation
-            raise NotImplementedError  # pylint: disable=raise-missing-from
+        except NameResolveError as e:
+            raise ValueError(e.args[0].replace("address", "location")) from e
 
     @computed_field()
     @cached_property
