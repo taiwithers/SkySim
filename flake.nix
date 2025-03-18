@@ -1,5 +1,5 @@
 {
-  description = "Template for Python Development";
+  description = "SkySim Development Flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
