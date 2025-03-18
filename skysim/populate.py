@@ -306,6 +306,8 @@ def linear_rescale(
     """
     data_min, data_max = np.min(data), np.max(data)
     data_range = data_max - data_min
+    if data_range == 0:
+        data_range = 1
     new_range = new_max - new_min
 
     return (data - data_min) * (new_range / data_range) + new_min
