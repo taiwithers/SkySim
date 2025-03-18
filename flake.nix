@@ -86,7 +86,6 @@
             [
               stdenv.cc.cc.lib
               zlib
-              libmysqlclient
             ]
           );
 
@@ -103,7 +102,6 @@
 
           packages = with pkgs; [
             poetry
-            pkg-config # for poetry to locate dependencies
             just # command runner (per-project aliases)
             ffmpeg
             trash-cli
