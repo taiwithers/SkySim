@@ -30,25 +30,25 @@ ROOT_PATH = TEST_ROOT_PATH.parent
 """
 
 
-@pytest.fixture(params=["minimal", "minimal_multiframe"])
+@pytest.fixture(scope="session", params=["minimal", "minimal_multiframe"])
 def config_path(request: pytest.FixtureRequest) -> Path:
     # pylint: disable=missing-function-docstring
     return Path(f"{TEST_ROOT_PATH}/{request.param}.toml")
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def settings(config_path: str) -> Settings:
     # pylint: disable=missing-function-docstring
     return load_from_toml(config_path, return_settings=True)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def image_settings(config_path: str) -> ImageSettings:
     # pylint: disable=missing-function-docstring
     return load_from_toml(config_path)[0]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def plot_settings(config_path: str) -> PlotSettings:
     # pylint: disable=missing-function-docstring
     return load_from_toml(config_path)[1]
