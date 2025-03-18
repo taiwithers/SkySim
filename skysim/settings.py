@@ -173,7 +173,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
     @computed_field()
     @cached_property
-    def timezone(self) -> ZoneInfo:  # pylint: disable=inconsistent-return-statements
+    def timezone(self) -> ZoneInfo:
         """
         Look up timezone based on Lat/Long.
 
@@ -193,11 +193,12 @@ class Settings(BaseModel):  # type: ignore[misc]
         ]
         tf = TimezoneFinder()
         tzname = tf.timezone_at(lat=lat, lng=lon)
-        if isinstance(tzname, str):
-            return ZoneInfo(tzname)
         if tzname is None:
-            # TODO: timezone validation [remove pylint pragma]
-            raise NotImplementedError
+            raise ValueError(
+                f"Cannot determine timezone for {lat}, {lon} ({self.input_location})"
+            )
+
+        return ZoneInfo(tzname)
 
     @computed_field()
     @cached_property
