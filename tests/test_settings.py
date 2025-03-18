@@ -3,6 +3,7 @@ Tests for SkySim Settings objects.
 """
 
 from pathlib import Path
+from typing import Any
 from zoneinfo import ZoneInfo
 
 import matplotlib.colors as mpl_colors
@@ -14,6 +15,7 @@ from skysim.settings import (
     PlotSettings,
     Settings,
     load_from_toml,
+    toml_to_dicts,
 )
 
 # from ipdb import set_trace as breakpoint  # overriding builtin breakpoint()
@@ -106,4 +108,84 @@ def test_plot_settings(plot_settings: PlotSettings) -> None:
     assert isinstance(plot_settings.observation_info, str)
 
 
-# TODO: add tests for location and timezone validation
+@pytest.mark.parametrize(
+    "input_location",
+    [
+        pytest.param(
+            [43.6534817, 43.6534817]
+        ),  # input as lat/long (toml array -> python list)
+        pytest.param("43.6534817", marks=pytest.mark.xfail),
+        pytest.param(" ", marks=pytest.mark.xfail),
+    ],
+)
+def test_earth_location(config_path: Path, input_location: str) -> None:
+    """Confirm that a failed earthlocation search reports an error.
+
+    Parameters
+    ----------
+    config_path : Path
+        Path to config file for non-`input_location` elements.
+    input_location : str
+        A failing input location.
+    """
+
+    _test_settings_attribute(
+        config_path,
+        Settings,
+        attribute="earth_location",
+        key="input_location",
+        value=input_location,
+    )
+
+
+def _test_settings_attribute(
+    config_path: Path,
+    settings_type: type[Settings | ImageSettings | PlotSettings],
+    attribute: str,
+    key: str,
+    value: Any,
+) -> Any:
+    """Create a settings object with a custom attribute (overriding the TOML).
+    Then access that attribute.
+
+    Parameters
+    ----------
+    config_path : Path
+        Path to the config file to use.
+    settings_type : type[Settings  |  ImageSettings  |  PlotSettings]
+        Which type of settings object to create.
+    attribute : str
+        Which attribute to override.
+    key : str
+        The `toml_to_dicts` key to override.
+    value : Any
+        The value to assign to that key.
+
+    Returns
+    -------
+    Any
+        Value of `attribute`.
+    """
+    settings_config, image_config, plot_config = toml_to_dicts(config_path)
+
+    if (
+        type(settings_type)  # pylint: disable=unidiomatic-typecheck
+        == type[ImageSettings]
+    ):
+        settings = Settings(**settings_config)
+        image_config[key] = value
+        settings_to_test = settings.get_image_settings(**image_config)
+
+    elif (
+        type(settings_type)  # pylint: disable=unidiomatic-typecheck
+        == type[PlotSettings]
+    ):
+        settings = Settings(**settings_config)
+        plot_config[key] = value
+        settings_to_test = settings.get_plot_settings(**plot_config)
+
+    else:
+        settings_config[key] = value
+        settings_to_test = Settings(**settings_config)
+
+    return getattr(settings_to_test, attribute)

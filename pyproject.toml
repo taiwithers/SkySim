@@ -89,6 +89,7 @@ reportReturnType = false           # pylint does this already
 reportArgumentType = false
 reportOperatorIssue = false
 reportCallIssue = false
+reportIndexIssue = false
 exclude = ['mvp/']
 
 [tool.pylint]
@@ -109,6 +110,7 @@ reports.output-format = "colorized"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"] # avoid searching mvp/
+xfail_strict = true
 addopts = [
     "--cov=skysim",
     "--capture=no",
