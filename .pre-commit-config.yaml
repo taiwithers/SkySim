@@ -56,6 +56,12 @@ repos:
         stages: *all_stages
         exclude: "conf.py"
 
+      - id: nix-fmt
+        name: nix-fmt
+        entry: "nix fmt"
+        language: system
+        pass_filenames: false
+        stages: *all_stages
 
       # manual (just validate) only
       - id: pytest-testmon
