@@ -18,7 +18,7 @@ from pathlib import Path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["tool.poetry"]
+pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["tool"]["poetry"]
 
 project = pyproject["name"]
 get_name = lambda authstr: authstr[authstr.index("<")].strip()
