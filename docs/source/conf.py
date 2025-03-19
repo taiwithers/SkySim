@@ -21,7 +21,7 @@ from pathlib import Path
 pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["tool"]["poetry"]
 
 project = pyproject["name"]
-get_name = lambda authstr: authstr[authstr.index("<")].strip()
+get_name = lambda authstr: authstr[: authstr.index("<")].strip()
 author = ", ".join([get_name(auth) for auth in pyproject["authors"]])
 copyright = (
     f" %Y, {author}"  # If you remove the space in front of %Y it defaults to 1980
