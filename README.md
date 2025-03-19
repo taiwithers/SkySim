@@ -11,7 +11,7 @@
 2. Clone and enter the git repo: `git clone
    https://github.com/taiwithers/SkySim.git && cd SkySim` (disregard the
    warning from direnv if it appears).
-3. Install the script and it's dependencies with `poetry install --only main`.
+3. Install the script and its dependencies with `poetry install --only main`.
 4. Create a configuration TOML file (see
    [tests/minimal.toml](tests/minimal.toml) and
    [tests/minimal_multiframe.toml](tests/minimal_multiframe.toml) for examples,
