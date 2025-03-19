@@ -1,12 +1,10 @@
-[project]
+[tool.poetry]
 name = "skysim"
 version = "0.1.0"
 description = ""
-license = { text = "" }
+license = ""
 readme = "README.md"
-authors = [
-    { name = "Tai Withers", email = "59430904+taiwithers@users.noreply.github.com" },
-]
+authors = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
 urls.repository = "https://github.com/taiwithers/SkySim"
 
 [tool.poetry.dependencies]
