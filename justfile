@@ -34,7 +34,8 @@ qitest:
 # trash generated docs and rebuild
 [group('docs')]
 build-docs:
-  trash-put docs/source/generated docs/build
+  # leading hyphen means recipe continues even if this line fails
+  -trash-put docs/source/generated docs/build
   sphinx-build -M html docs/source docs/build/ --write-all
 
 # xdg-open on index.html
