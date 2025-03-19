@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.colours
-
 Colours
 ========
 
 .. gets the module docstring
-.. automodule:: colours
+.. automodule:: skysim.colours
 
 .. rubric:: Classes
 .. autosummary::

@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.utils
-
 Utilities
 =========
 
 .. gets the module docstring
-.. automodule:: utils
+.. automodule:: skysim.utils
 
 .. rubric:: Functions
 .. autosummary::

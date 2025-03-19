@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.query
-
 Query
 ========
 
 .. gets the module docstring
-.. automodule:: query
+.. automodule:: skysim.query
 
 .. rubric:: Constants
 .. autosummary::

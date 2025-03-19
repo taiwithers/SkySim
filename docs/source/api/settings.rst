@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.settings
-
 Settings
 ========
 
 .. gets the module docstring
-.. automodule:: settings
+.. automodule:: skysim.settings
 
 .. rubric:: Classes
 .. autosummary::

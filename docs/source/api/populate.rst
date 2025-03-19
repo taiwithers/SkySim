@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.populate
-
 Populate
 ========
 
 .. gets the module docstring
-.. automodule:: populate
+.. automodule:: skysim.populate
 
 
 .. rubric:: Constants

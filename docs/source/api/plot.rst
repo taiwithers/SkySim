@@ -1,10 +1,8 @@
-.. currentmodule:: skysim.plot
-
 Plot
 ========
 
 .. gets the module docstring
-.. automodule:: plot
+.. automodule:: skysim.plot
 
 .. rubric:: Functions
 .. autosummary::
