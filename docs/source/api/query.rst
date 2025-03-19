@@ -5,6 +5,7 @@ Query
 .. automodule:: skysim.query
 
 .. rubric:: Constants
+   :heading-level: 2
 .. autosummary::
    :toctree: ../generated
 
@@ -12,13 +13,24 @@ Query
    BASIC_TABLE
    FALLBACK_SPECTRAL_TYPE
 
+
 .. rubric:: Functions
+   :heading-level: 2
+
+.. rubric:: High-Level Functions
+   :heading-level: 3
 .. autosummary::
    :toctree: ../generated
 
    get_body_locations
    get_planet_table
    get_star_table
+
+.. rubric:: Low-Level Functions
+   :heading-level: 3
+.. autosummary::
+   :toctree: ../generated
+
    get_spectral_types
    run_simbad_query
    get_planet_magnitude

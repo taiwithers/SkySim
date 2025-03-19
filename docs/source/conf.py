@@ -100,7 +100,7 @@ intersphinx_mapping = {
 # MyST
 extensions.append("myst_parser")
 myst_links_external_new_tab = True
-suppress_warnings.append("myst.xref_missing")
+suppress_warnings.append("myst.header")
 
 
 ## napoleon
