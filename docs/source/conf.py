@@ -27,6 +27,7 @@ copyright = (
     f" %Y, {author}"  # If you remove the space in front of %Y it defaults to 1980
 )
 release = pyproject["version"]
+version = release  # major version only
 language = "en"
 
 
@@ -39,6 +40,8 @@ suppress_warnings = []
 
 templates_path = ["_templates"]
 exclude_patterns = []
+
+# -- Python Domain Options ---------------------------------------------------
 add_module_names = False  # hide the module name in the signature line for objects
 
 
@@ -58,6 +61,8 @@ html_theme_options = {
         }
     ]
 }
+html_short_title = project
+
 
 # -- Extension settings ------------------------------------------------------
 
