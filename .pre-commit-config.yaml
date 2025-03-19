@@ -43,13 +43,23 @@ repos:
       - id: isort
 
   # poetry
-  -   repo: https://github.com/python-poetry/poetry
-      rev: '2.1.1'
-      hooks:
-      -   id: poetry-check
-          stages: ["pre-push"]
-      -   id: poetry-lock
-          stages: ["pre-push"]
+  - repo: https://github.com/python-poetry/poetry
+    rev: '1.8.4'
+    hooks:
+      - id: poetry-check
+        stages: ["pre-push"]
+      - id: poetry-lock
+        stages: ["pre-push"]
+
+  - repo: https://github.com/python-poetry/poetry-plugin-export
+    rev: '1.8.0' # higher than this requires poetry 2.0
+    hooks:
+      - id: poetry-export
+        stages: ["pre-push"]
+        args: [
+          "--format=requirements.txt",
+          "--output=docs/source/requirements.txt",
+          "--with=docs"]
 
   - repo: local
     hooks:
