@@ -3,16 +3,16 @@
 ## General Installation & Usage
 
 1. Confirm you have the required dependencies:
-    - git
-    - poetry
-    - ffmpeg
+    - [git](https://git-scm.com/)
+    - [poetry](https://python-poetry.org/) (built with 1.8)
+    - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)
 2. Clone and enter the git repo: `git clone
    https://github.com/taiwithers/SkySim.git && cd SkySim` (disregard the
    warning from direnv if it appears).
 3. Install the script and its dependencies with `poetry install --only main`.
-4. Create a configuration TOML file (see the [examples](./examples) directory).
+4. Create a configuration TOML file (see the [examples](https://github.com/taiwithers/SkySim/tree/main/examples) directory).
 5. Run `poetry run skysim <path to your config.toml>`
 
 ## Development Installation (Using Nix + Direnv)
