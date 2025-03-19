@@ -1,0 +1,27 @@
+[observation]
+location = "Toronto" # string for address lookup, or [latitude, longitude]
+
+# these entries give the start of the observation
+date = 2025-02-18 # YYYY-MM-DD
+time = 19:00:00   # HH:MM:SS.ssss
+
+duration = 00:30:00 # the total length of the observation (max 23:59:59.9999)
+interval = 00:01:00 # how often to take a new snapshot
+
+# use any combination of XXX.degrees, XXX.arcminutes, XXX.arcseconds here
+viewing-radius.degrees = 15
+
+altitude.degrees = 42
+
+azimuth.degrees = 155
+azimuth.arcseconds = 140
+
+
+[image]
+# file save location, relative to the working directory of the calling shell
+filename = "SkySim.mp4"
+
+
+# see the `default.toml` file in the `skysim` directory for more configuration
+# options anything placed in the configuration file passed on the command line
+# will override the values from `default.toml`.

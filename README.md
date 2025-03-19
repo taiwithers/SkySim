@@ -12,11 +12,7 @@
    https://github.com/taiwithers/SkySim.git && cd SkySim` (disregard the
    warning from direnv if it appears).
 3. Install the script and its dependencies with `poetry install --only main`.
-4. Create a configuration TOML file (see
-   [tests/minimal.toml](tests/minimal.toml) and
-   [tests/minimal_multiframe.toml](tests/minimal_multiframe.toml) for examples,
-   as well as [skysim/default.toml](skysim/default.toml) for the default
-   values).
+4. Create a configuration TOML file (see the [examples](./examples) directory).
 5. Run `poetry run skysim <path to your config.toml>`
 
 ## Development Installation (Using Nix + Direnv)
