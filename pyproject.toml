@@ -67,7 +67,9 @@ plugins = ["numpy.typing.mypy_plugin"]
 
 [[tool.mypy.overrides]]
 module = "skysim/*"
-disable_error_code = ["prop-decorator"]
+disable_error_code = [
+    "prop-decorator", # ignore multiple decorators on class attributes
+]
 
 [tool.numpydoc_validation]
 checks = [
@@ -88,7 +90,6 @@ reportArgumentType = false
 reportOperatorIssue = false
 reportCallIssue = false
 reportIndexIssue = false
-exclude = ['mvp/']
 
 [tool.pylint]
 format.max-line-length = 120
@@ -111,7 +112,6 @@ testpaths = ["tests"]
 xfail_strict = true
 addopts = [
     "--cov=skysim",
-    "--capture=no",
     "--pdbcls=IPython.terminal.debugger:TerminalPdb",
     "--color=yes",
     "--no-cov-on-fail",
