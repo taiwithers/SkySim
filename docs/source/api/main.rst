@@ -1,4 +1,4 @@
-Main
+__main__
 ========
 
 .. gets the module docstring
