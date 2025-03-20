@@ -50,17 +50,13 @@ add_module_names = False  # hide the module name in the signature line for objec
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_theme_options = {
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": pyproject["urls"]["repository"],  # required
-            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
-            "icon": "fa-brands fa-square-github",
-            # The type of image to be used
-            "type": "fontawesome",
-        }
-    ]
+    "footer_start": ["pydatasourcelink", "copyright"],
+    "footer_end": ["sphinx-version", "theme-version"],
+    "secondary_sidebar_items": ["page-toc"],
+    "github_url": pyproject["urls"]["repository"],
 }
+html_sidebars = {"usage": [], "api/index": []}
+html_sourcelink_suffix = ""
 html_short_title = project
 
 

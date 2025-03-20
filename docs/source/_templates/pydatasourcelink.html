@@ -1,0 +1,12 @@
+{#
+https://github.com/pydata/pydata-sphinx-theme/blob/83e7e51b0b52f71880d329aefcc2ed377e3780a1/src/pydata_sphinx_theme/theme/pydata_sphinx_theme/components/sourcelink.html
+#}
+{# just using "sourcelink" showed the default sphinx version #}
+{# Displays a link to the .rst source of the current page. #}
+{% if show_source and has_source and sourcename %}
+<div class="tocsection sourcelink">
+  <a href="{{ pathto('_sources/' + sourcename, true)|e }}">
+    <i class="fa-solid fa-file-lines"></i> {{ _("Show Source") }}
+  </a>
+</div>
+{% endif %}
