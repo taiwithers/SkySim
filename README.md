@@ -1,5 +1,7 @@
 # SkySim
 
+See this page and the developer documentation at [taiwithers.github.io/SkySim](https://taiwithers.github.io/SkySim/)
+
 ## General Installation & Usage
 
 1. Confirm you have the required dependencies:

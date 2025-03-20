@@ -7,5 +7,5 @@ Stellarium.
 .. toctree::
    :maxdepth: 2
 
-   readme_link
+   usage
    api/index
