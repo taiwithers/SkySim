@@ -1,5 +1,5 @@
 """
-Initial outline for SkySim.
+Setup functionality for SkySim.
 """
 
 import tomllib
