@@ -71,6 +71,7 @@ html_short_title = project
 extensions.append("sphinx.ext.autodoc")
 autodoc_typehints = "none"  # napoleon deals with these
 autodoc_member_order = "groupwise"
+autodoc_default_options = {"members": True}
 # autodoc_undoc_members = False
 
 

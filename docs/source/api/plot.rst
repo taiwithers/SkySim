@@ -3,24 +3,22 @@ Plot
 
 .. gets the module docstring
 .. automodule:: skysim.plot
+   :no-index:
+   :exclude-members: TEMPFILE_SUFFIX, create_plot, create_single_plot, create_multi_plot, display_frame, save_frame, construct_ffmpeg_call, run_ffmpeg, movie_cleanup
 
 
-.. rubric:: Constants
-   :heading-level: 2
+Constants
+---------
 .. autosummary::
    :toctree: ../generated
 
     TEMPFILE_SUFFIX
 
-..
 
-
-.. rubric:: Functions
-   :heading-level: 2
-
-
-.. rubric:: High-Level Functions
-   :heading-level: 3
+Functions
+---------
+High-Level Functions
+^^^^^^^^^^^^^^^^^^^^
 .. autosummary::
    :toctree: ../generated
 
@@ -29,16 +27,16 @@ Plot
    create_multi_plot
 
 
-.. rubric:: Low-Level Functions
-   :heading-level: 3
+Low-Level Functions
+^^^^^^^^^^^^^^^^^^^
 .. autosummary::
    :toctree: ../generated
 
    display_frame
    save_frame
 
-.. rubric:: Movie-Specific Functions
-   :heading-level: 4
+Movie-Specific Functions
+""""""""""""""""""""""""
 .. autosummary::
    :toctree: ../generated
 

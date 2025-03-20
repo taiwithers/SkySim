@@ -3,28 +3,30 @@ Colours
 
 .. gets the module docstring
 .. automodule:: skysim.colours
+   :no-index:
+   :exclude-members: RGB, InputColour, RGBTuple, convert_colour
 
 
-.. rubric:: Classes
-   :heading-level: 2
+Classes
+-------
 .. autosummary::
    :toctree: ../generated
 
    RGB
 
 
-.. rubric:: Functions
-   :heading-level: 2
-.. autosummary::
-   :toctree: ../generated
-
-   convert_colour
-
-
-.. rubric:: Type Aliases
-   :heading-level: 2
+Type Aliases
+------------
 .. autosummary::
     :toctree: ../generated
 
     InputColour
     RGBTuple
+
+
+Functions
+---------
+.. autosummary::
+   :toctree: ../generated
+
+   convert_colour

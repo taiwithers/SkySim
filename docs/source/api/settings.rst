@@ -1,12 +1,35 @@
 Settings
 ========
 
-.. gets the module docstring
+.. generate the module docstring, and manually prevent duplicated docs of items defined in the module
+.. doing it this way means that anything new added in the source files will show up here, indicating that it has not yet been sorted into one of the below categories
 .. automodule:: skysim.settings
+   :no-index:
+   :exclude-members: Settings, ImageSettings, PlotSettings, AIRY_DISK_RADIUS, MAXIMUM_LIGHT_SPREAD, confirm_config_file, load_from_toml, toml_to_dicts, split_nested_key, access_nested_dictionary, check_key_exists, check_mandatory_toml_keys, parse_angle_dict, time_to_timedelta, get_config_option, ConfigValue, ConfigMapping, TOMLConfig, SettingsPair
 
 
-.. rubric:: Classes
-   :heading-level: 2
+Constants
+---------
+.. autosummary::
+   :toctree: ../generated
+
+   AIRY_DISK_RADIUS
+   MAXIMUM_LIGHT_SPREAD
+
+
+Type Aliases
+------------
+.. autosummary::
+    :toctree: ../generated
+
+    ConfigValue
+    ConfigMapping
+    TOMLConfig
+    SettingsPair
+
+
+Classes
+-------
 .. autosummary::
    :toctree: ../generated
 
@@ -15,28 +38,18 @@ Settings
    PlotSettings
 
 
-.. rubric:: Constants
-   :heading-level: 2
-.. autosummary::
-   :toctree: ../generated
-
-   AIRY_DISK_RADIUS
-   MAXIMUM_LIGHT_SPREAD
-
-
-.. rubric:: Functions
-   :heading-level: 2
-
-.. rubric:: High-Level Functions
-   :heading-level: 3
+Functions
+---------
+High-Level Functions
+^^^^^^^^^^^^^^^^^^^^
 .. autosummary::
    :toctree: ../generated
 
    confirm_config_file
    load_from_toml
 
-.. rubric:: Low-Level Functions
-   :heading-level: 3
+Low-Level Functions
+^^^^^^^^^^^^^^^^^^^
 .. autosummary::
    :toctree: ../generated
 
@@ -48,14 +61,3 @@ Settings
    parse_angle_dict
    time_to_timedelta
    get_config_option
-
-
-.. rubric:: Type Aliases
-   :heading-level: 2
-.. autosummary::
-    :toctree: ../generated
-
-    ConfigValue
-    ConfigMapping
-    TOMLConfig
-    SettingsPair
