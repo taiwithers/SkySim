@@ -5,7 +5,6 @@ Test the skysim query module.
 import pytest
 from astropy.table import QTable
 
-from skysim.query import remove_child_stars  # pylint: disable=unused-import
 from skysim.query import (
     FALLBACK_SPECTRAL_TYPE,
     SOLARSYSTEM_BODIES,
@@ -21,13 +20,6 @@ from skysim.query import (
 from skysim.settings import (  # pylint: disable=unused-import
     ImageSettings,
     Settings,
-)
-
-# need to import minimal_config_path for settings/image_settings to work?
-from .test_settings import (  # pylint: disable=unused-import
-    config_path,
-    image_settings,
-    settings,
 )
 
 

@@ -14,44 +14,9 @@ from skysim.settings import (
     ImageSettings,
     PlotSettings,
     Settings,
-    load_from_toml,
-    toml_to_dicts,
 )
 
-# from ipdb import set_trace as breakpoint  # overriding builtin breakpoint()
-
-TEST_ROOT_PATH = Path(__file__).resolve().parent
-"""Path to root test suite directory.
-"""
-
-
-ROOT_PATH = TEST_ROOT_PATH.parent
-"""Path to root directory containing repository.
-"""
-
-
-@pytest.fixture(scope="session", params=["minimal", "minimal_multiframe"])
-def config_path(request: pytest.FixtureRequest) -> Path:
-    # pylint: disable=missing-function-docstring
-    return Path(f"{TEST_ROOT_PATH}/{request.param}.toml")
-
-
-@pytest.fixture(scope="session")
-def settings(config_path: str) -> Settings:
-    # pylint: disable=missing-function-docstring
-    return load_from_toml(config_path, return_settings=True)
-
-
-@pytest.fixture(scope="session")
-def image_settings(config_path: str) -> ImageSettings:
-    # pylint: disable=missing-function-docstring
-    return load_from_toml(config_path)[0]
-
-
-@pytest.fixture(scope="session")
-def plot_settings(config_path: str) -> PlotSettings:
-    # pylint: disable=missing-function-docstring
-    return load_from_toml(config_path)[1]
+from .utils import modified_settings_object
 
 
 def _test_any_settings(settings: Settings) -> None:
@@ -166,26 +131,7 @@ def _test_settings_attribute(
     Any
         Value of `attribute`.
     """
-    settings_config, image_config, plot_config = toml_to_dicts(config_path)
 
-    if (
-        type(settings_type)  # pylint: disable=unidiomatic-typecheck
-        == type[ImageSettings]
-    ):
-        settings = Settings(**settings_config)
-        image_config[key] = value
-        settings_to_test = settings.get_image_settings(**image_config)
-
-    elif (
-        type(settings_type)  # pylint: disable=unidiomatic-typecheck
-        == type[PlotSettings]
-    ):
-        settings = Settings(**settings_config)
-        plot_config[key] = value
-        settings_to_test = settings.get_plot_settings(**plot_config)
-
-    else:
-        settings_config[key] = value
-        settings_to_test = Settings(**settings_config)
+    settings_to_test = modified_settings_object(config_path, settings_type, key, value)
 
     return getattr(settings_to_test, attribute)

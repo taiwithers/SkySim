@@ -18,9 +18,6 @@ from skysim.settings import (
 )
 from skysim.utils import FloatArray
 
-# need to import minimal_config_path for settings/image_settings to work?
-from .test_settings import config_path, image_settings  # pylint: disable=unused-import
-
 
 @pytest.fixture
 def empty_image(image_settings: ImageSettings) -> FloatArray:
