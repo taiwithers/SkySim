@@ -92,7 +92,7 @@ exclude = ['mvp/']
 
 [tool.pylint]
 format.max-line-length = 120
-main.ignore-paths = ["mvp/", "docs/source/conf.py"]
+main.ignore-paths = ["docs/source/conf.py"]
 main.jobs = 0
 "messages control".disable = [
     "no-member",
@@ -107,7 +107,7 @@ main.jobs = 0
 reports.output-format = "colorized"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"] # avoid searching mvp/
+testpaths = ["tests"]
 xfail_strict = true
 addopts = [
     "--cov=skysim",

@@ -61,6 +61,13 @@ repos:
           "--output=docs/source/requirements.txt",
           "--with=docs"]
 
+  # numpy documentation style
+  - repo: https://github.com/numpy/numpydoc
+    rev: 'v1.8.0'
+    hooks:
+      - id: numpydoc-validation
+        exclude: "__init__"
+
   - repo: local
     hooks:
       # all actions
@@ -119,8 +126,10 @@ repos:
         types: ["python"]
         exclude: "conf.py"
 
-  - repo: https://github.com/numpy/numpydoc
-    rev: 'v1.8.0'
-    hooks:
-      - id: numpydoc-validation
-        exclude: "mvp/|__init__"
+      # push only
+      - id: build-docs
+        name: build docs
+        entry: sphinx-build -M html docs/source docs/build --write-all --fail-on-warning
+        language: system
+        pass_filenames: false
+        stages: ["pre-push"]
