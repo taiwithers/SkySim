@@ -4,9 +4,24 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 
 ## General Installation & Usage
 
+### Using pip
+
 1. Confirm you have the required dependencies:
     - [git](https://git-scm.com/)
-    - [poetry](https://python-poetry.org/) (built with 1.8)
+    - [pip](https://pip.pypa.io/en/stable/)
+    - [ffmpeg](https://ffmpeg.org/)
+    - libstdc++.so.6 (libstdc++6)
+    - libz.so.1 (zlib)
+2. Install the package with pip: `pip install git+
+   https://github.com/taiwithers/SkySim.git`
+3. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
+4. Run `skysim <path to your config.toml>`
+
+### Using poetry
+
+1. Confirm you have the required dependencies:
+    - [git](https://git-scm.com/)
+    - [poetry](https://python-poetry.org/) (SkySim is built with version 1.8)
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)
