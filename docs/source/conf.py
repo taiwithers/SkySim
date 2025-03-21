@@ -53,7 +53,7 @@ html_theme_options = {
     "secondary_sidebar_items": ["page-toc"],
     "github_url": pyproject["urls"]["repository"],
 }
-html_sidebars = {"usage": [], "api/index": []}
+html_sidebars = {"usage": [], "api/index": [], "examples/index": []}
 html_sourcelink_suffix = ""
 html_short_title = project
 
