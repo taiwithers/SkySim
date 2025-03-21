@@ -42,8 +42,6 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 # -- Python Domain Options ---------------------------------------------------
-add_module_names = False  # hide the module name in the signature line for objects
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
