@@ -1,0 +1,9 @@
+/* reduce the maximum width of the primary sidebar */
+.bd-sidebar-primary {
+    max-width: 20em;
+}
+
+/* reduce the maximum width of the secondary sidebar */
+.bd-sidebar-secondary {
+    max-width: 15em;
+}
