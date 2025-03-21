@@ -23,9 +23,9 @@ jobs:
     permissions:
       contents: write
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+
+      # Checkout your repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v4
 
       # set up python
@@ -33,12 +33,26 @@ jobs:
         with:
           python-version: '3.12'
 
+      # install just
+      - uses: extractions/setup-just@v2 # from just readme
+
+      # install ffmpeg
+      - name: Install ffmpeg
+        run: |
+          sudo apt update # per gh recommendation
+          sudo apt install ffmpeg
+
+      # install python-based dependencies
       - name: Install python dependencies
-        run: pip install -r docs/source/requirements.txt
+        run: |
+          pip install -r docs/source/requirements.txt
+          pip install git+https://github.com/taiwithers/SkySim.git
 
+      # run sphinx
       - name: Build docs with sphinx
-        run: sphinx-build -M html docs/source docs/build/ --write-all
+        run: just build-docs
 
+      # deploy
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

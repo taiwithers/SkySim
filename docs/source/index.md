@@ -7,5 +7,6 @@ Stellarium.
 :maxdepth: 2
 
 usage
+examples/index
 api/index
 ```

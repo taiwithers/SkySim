@@ -36,7 +36,11 @@ qitest:
 build-docs:
   # leading hyphen means recipe continues even if this line fails
   -trash-put docs/source/generated docs/build
+  -mkdir --parents docs/source/_static/examples
+  skysim examples/still_image.toml && mv SkySim.png docs/source/_static/examples/still_image.png
+  skysim examples/movie.toml && mv SkySim.mp4 docs/source/_static/examples/movie.mp4
   sphinx-build -M html docs/source docs/build/ --write-all
+
 
 # xdg-open on index.html
 [group('docs')]
