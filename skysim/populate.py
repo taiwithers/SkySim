@@ -93,10 +93,6 @@ def create_image_matrix(
 
     image_matrix = np.moveaxis(image_matrix, 1, -1)  # put the RGB axis at the end
 
-    image_matrix = np.swapaxes(
-        image_matrix, 1, 2
-    )  # put the x and y in the correct spots
-
     image_matrix = np.flip(image_matrix, axis=2)  # put the x-axis the right way round
 
     return image_matrix
@@ -430,8 +426,8 @@ def fill_frame_objects(
     objects_table["skycoord"] = SkyCoord(
         ra=objects_table["ra"], dec=objects_table["dec"], unit="deg"
     )
-    xy = np.round(
-        objects_table["skycoord"].to_pixel(image_settings.wcs_objects[index])
+    xy = np.flipud(
+        np.round(objects_table["skycoord"].to_pixel(image_settings.wcs_objects[index]))
     ).astype(int)
     objects_table["x"] = xy[0]
     objects_table["y"] = xy[1]
@@ -444,6 +440,7 @@ def fill_frame_objects(
             image_settings.area_mesh,
             image_settings.brightness_scale_mesh,
         )
+
     return index, frame
 
 

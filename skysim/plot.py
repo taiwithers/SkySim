@@ -166,7 +166,7 @@ def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Ax
     """
     ax.reset_wcs(wcs)
 
-    ax.imshow(frame)
+    ax.imshow(frame, origin="lower")
 
     # axis labels
     for axis in ax.coords:
