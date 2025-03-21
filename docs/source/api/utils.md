@@ -1,4 +1,4 @@
-# Utilities
+# `utilities`
 
 ```{eval-rst}
 .. gets the module docstring

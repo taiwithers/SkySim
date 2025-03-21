@@ -1,4 +1,4 @@
-# Colours
+# `colours`
 
 ```{eval-rst}
 .. automodule:: skysim.colours

@@ -1,5 +1,5 @@
-Module Title
-============
+``Module Title``
+================
 
 .. gets the module docstring, list anything specified in the below region under :exclude-members:
 .. doing it this way means that anything new added in the source files will show up here, indicating that it has not yet been sorted into one of the below categories

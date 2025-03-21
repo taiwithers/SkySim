@@ -1,4 +1,4 @@
-# Query
+# `query`
 
 ```{eval-rst}
 .. gets the module docstring

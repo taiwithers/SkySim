@@ -1,4 +1,4 @@
-# Plot
+# `plot`
 
 ```{eval-rst}
 .. gets the module docstring

@@ -1,4 +1,4 @@
-# Module Title
+# `Module Title`
 
 ```{eval-rst}
 .. gets the module docstring, list anything specified in the below region under :exclude-members:

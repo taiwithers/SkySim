@@ -1,4 +1,4 @@
-# Settings
+# `settings`
 
 ```{eval-rst}
 .. generate the module docstring, and manually prevent duplicated docs of items defined in the module

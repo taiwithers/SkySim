@@ -1,4 +1,4 @@
-# Populate
+# `populate`
 
 ```{eval-rst}
 .. gets the module docstring

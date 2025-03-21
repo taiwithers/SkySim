@@ -53,9 +53,13 @@ html_theme_options = {
     "secondary_sidebar_items": ["page-toc"],
     "github_url": pyproject["urls"]["repository"],
 }
-html_sidebars = {"usage": [], "api/index": [], "examples/index": []}
+html_sidebars = {"**": ["sidebar-nav-bs"]}
+html_sidebars.update(
+    {pagename: [] for pagename in ["usage", "api/index", "examples/index"]}
+)  # pages on which to hide the primary sidebar
 html_sourcelink_suffix = ""
 html_short_title = project
+html_css_files = ["css/custom.css"]
 
 
 # -- Extension settings ------------------------------------------------------

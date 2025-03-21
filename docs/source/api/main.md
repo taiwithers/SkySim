@@ -1,4 +1,4 @@
-# \_\_main\_\_
+# `__main__`
 
 ```{eval-rst}
 .. automodule:: skysim.__main__
