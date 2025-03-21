@@ -37,7 +37,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 SkySim is developed using [Nix](https://nixos.org/download/) as a general package manager to control the
 development environment, and [direnv](https://direnv.net/) to activate that environment automatically.
 If you'd prefer to manage your development environment manually, consult the
-[flake.nix](flake.nix) for a list of dependencies, and [.envrc](/.envrc) for the
+[flake.nix](https://github.com/taiwithers/SkySim/tree/main/flake.nix) for a list of dependencies, and [.envrc](https://github.com/taiwithers/SkySim/tree/main/.envrc) for the
 environment activation scripts.
 
 ```bash
