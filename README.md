@@ -1,5 +1,7 @@
 # SkySim
 
+[![Auto-build docs](https://github.com/taiwithers/SkySim/actions/workflows/docs.yaml/badge.svg)](https://github.com/taiwithers/SkySim/actions/workflows/docs.yaml)
+
 See this page and the developer documentation at [taiwithers.github.io/SkySim](https://taiwithers.github.io/SkySim/)
 
 ## General Installation & Usage
