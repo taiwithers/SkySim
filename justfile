@@ -33,16 +33,21 @@ qitest:
 
 # trash generated docs and rebuild
 [group('docs')]
-build-docs:
+build-docs sphinx-build-args="":
+  # TODO: add fast parameter which skips skysim calls
   # leading hyphen means recipe continues even if this line fails
   -trash-put docs/source/generated docs/build
+  sphinx-build -M html docs/source docs/build/ --write-all {{sphinx-build-args}}
+
+# re-create embedded SkySim outputs and build docs
+[group('docs')]
+full-build-docs:
   -mkdir --parents docs/source/_static/examples
   skysim examples/still_image.toml && mv SkySim.png docs/source/_static/examples/still_image.png
   skysim examples/movie.toml && mv SkySim.mp4 docs/source/_static/examples/movie.mp4
-  sphinx-build -M html docs/source docs/build/ --write-all
+  just build-docs --fail-on-warning
   rm docs/source/_static/examples/still_image.png
   rm docs/source/_static/examples/movie.mp4
-
 
 # xdg-open on index.html
 [group('docs')]

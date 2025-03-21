@@ -50,7 +50,7 @@ jobs:
 
       # run sphinx
       - name: Build docs with sphinx
-        run: just build-docs
+        run: just full-build-docs
 
       # deploy
       - name: Deploy to GitHub Pages
