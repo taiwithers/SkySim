@@ -2,20 +2,19 @@
 location = "Toronto" # string for address lookup, or [latitude, longitude]
 
 # these entries give the start of the observation
-date = 2025-02-18 # YYYY-MM-DD
-time = 19:00:00   # HH:MM:SS.ssss
+date = 2025-03-21 # YYYY-MM-DD
+time = 20:30:00   # HH:MM:SS.ssss
 
 duration = 00:30:00 # the total length of the observation (max 23:59:59.9999)
 interval = 00:01:00 # how often to take a new snapshot
 
 # use any combination of XXX.degrees, XXX.arcminutes, XXX.arcseconds here
-viewing-radius.degrees = 15
+viewing-radius.degrees = 40
 
-altitude.degrees = 42
-
-azimuth.degrees = 155
-azimuth.arcseconds = 140
-
+altitude.degrees = 40
+altitude.arcminutes = 27
+azimuth.degrees = 211
+azimuth.arcminutes = 46.3
 
 [image]
 # file save location, relative to the working directory of the calling shell
