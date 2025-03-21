@@ -1,32 +1,35 @@
-Colours
-========
+# Colours
 
-.. gets the module docstring
+```{eval-rst}
 .. automodule:: skysim.colours
    :no-index:
    :exclude-members: RGB, InputColour, RGBTuple, convert_colour
+```
 
+## Classes
 
-Classes
--------
+```{eval-rst}
 .. autosummary::
    :toctree: ../generated
 
    RGB
+```
 
+## Type Aliases
 
-Type Aliases
-------------
+```{eval-rst}
 .. autosummary::
     :toctree: ../generated
 
     InputColour
     RGBTuple
+```
 
+## Functions
 
-Functions
----------
+```{eval-rst}
 .. autosummary::
    :toctree: ../generated
 
    convert_colour
+```

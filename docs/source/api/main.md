@@ -1,12 +1,13 @@
-__main__
-========
+# \_\_main\_\_
 
-.. gets the module docstring
+```{eval-rst}
 .. automodule:: skysim.__main__
    :no-index:
    :exclude-members: main
+```
 
+## Functions
 
-Functions
----------
+```{eval-rst}
 .. autofunction:: skysim.__main__.main
+```

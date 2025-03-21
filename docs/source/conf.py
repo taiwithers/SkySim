@@ -98,7 +98,8 @@ intersphinx_mapping = {
 extensions.append("myst_parser")
 myst_links_external_new_tab = True
 suppress_warnings.append("myst.header")
-
+myst_heading_anchors = 2  # create linkable headings up to this depth
+myst_enable_extensions = ["attrs_inline"]
 
 ## napoleon
 extensions.append("sphinx.ext.napoleon")
