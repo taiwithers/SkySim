@@ -7,7 +7,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 ### Using pip
 
 1. Confirm you have the required dependencies:
-    - [git](https://git-scm.com/)
+    - [Git](https://git-scm.com/)
     - [pip](https://pip.pypa.io/en/stable/)
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
@@ -17,11 +17,11 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 3. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
 4. Run `skysim <path to your config.toml>`
 
-### Using poetry
+### Using Poetry
 
 1. Confirm you have the required dependencies:
-    - [git](https://git-scm.com/)
-    - [poetry](https://python-poetry.org/) (SkySim is built with version 1.8)
+    - [Git](https://git-scm.com/)
+    - [Poetry](https://python-poetry.org/) (SkySim is built with version 1.8)
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)
@@ -33,6 +33,12 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 5. Run `poetry run skysim <path to your config.toml>`
 
 ## Development Installation (Using Nix + Direnv)
+
+SkySim is developed using [Nix](https://nixos.org/download/) as a general package manager to control the
+development environment, and [direnv](https://direnv.net/) to activate that environment automatically.
+If you'd prefer to manage your development environment manually, consult the
+[flake.nix](flake.nix) for a list of dependencies, and [.envrc](/.envrc) for the
+environment activation scripts.
 
 ```bash
 git clone https://github.com/taiwithers/SkySim.git
