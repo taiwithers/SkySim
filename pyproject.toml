@@ -8,6 +8,7 @@ authors = [
     { name = "Tai Withers", email = "59430904+taiwithers@users.noreply.github.com" },
 ]
 urls.repository = "https://github.com/taiwithers/SkySim"
+scripts = { "skysim" = "skysim.__main__:main" }
 
 [tool.poetry]
 requires-poetry = ">=2.0"
@@ -39,9 +40,6 @@ myst-parser = "^4.0.1"
 pydata-sphinx-theme = "^0.16.1"
 numpydoc = "^1.8.0"
 autodoc-pydantic = "^2.2.0"
-
-[tool.poetry.scripts]
-skysim = "skysim.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
