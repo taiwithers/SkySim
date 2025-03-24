@@ -1,7 +1,7 @@
 """Tests for the main callable of SkySim."""
 
-import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pytest
@@ -28,9 +28,7 @@ def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
     Path
         The file output by main().
     """
-    sys.argv.append(str(config_path))
-    main()
-    sys.argv = sys.argv[:-1]
+    main([str(config_path)])
 
     yield plot_settings.filename
 
@@ -64,3 +62,34 @@ def test_image_contents(created_imagepath: Path) -> None:
     rgb = np.unique(rgb, axis=1)
     n_colours = rgb.shape[1]
     assert n_colours > 2
+
+
+@pytest.mark.parametrize(
+    "args,exception_string",
+    [
+        ([], "error: the following arguments are required"),
+        (["-h"], None),
+        (["--help"], None),
+        (["a", "b"], "error: unrecognized arguments"),
+    ],
+)
+def test_main_args(
+    capsys: pytest.CaptureFixture[str], args: list[str], exception_string: Optional[str]
+) -> None:
+    """Test that the correct exceptions are raised when skysim.__main__.main is
+    called with incorrect arguments.
+
+    Parameters
+    ----------
+    capsys : pytest.CaptureFixture[str]
+        Pytest fixture to grab stderr and stdout.
+    args : list[str]
+        Arguments to pass to `main` for argparse.
+    exception_string : Optional[str]
+        String that should appear in the exception message, if any.
+    """
+    with pytest.raises(SystemExit):
+        main(args)
+    if exception_string is not None:
+        exception_message = capsys.readouterr().err
+        assert exception_string in exception_message
