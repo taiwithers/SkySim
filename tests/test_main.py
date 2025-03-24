@@ -73,7 +73,7 @@ def test_image_contents(created_imagepath: Path) -> None:
         (["-h"], None),
         (["--help"], None),
         (["a", "b"], "error: unrecognized arguments"),
-        ([f"{TEST_ROOT_PATH}/missing_required.toml"], "Required element"),
+        ([f"{TEST_ROOT_PATH}/configs/missing_required.toml"], "Required element"),
         ([f"{TEST_ROOT_PATH}/__init__.py"], ".toml"),
     ],
 )

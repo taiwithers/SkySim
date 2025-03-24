@@ -17,7 +17,7 @@ from .utils import TEST_ROOT_PATH
 @pytest.fixture(scope="session", params=["minimal", "minimal_multiframe"])
 def config_path(request: pytest.FixtureRequest) -> Path:
     # pylint: disable=missing-function-docstring
-    return Path(f"{TEST_ROOT_PATH}/{request.param}.toml")
+    return Path(f"{TEST_ROOT_PATH}/configs/{request.param}.toml")
 
 
 @pytest.fixture(scope="session")
