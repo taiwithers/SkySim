@@ -10,6 +10,15 @@ from skysim.settings import (
     toml_to_dicts,
 )
 
+TEST_ROOT_PATH = Path(__file__).resolve().parent
+"""Path to root test suite directory.
+"""
+
+
+ROOT_PATH = TEST_ROOT_PATH.parent
+"""Path to root directory containing repository.
+"""
+
 
 def modified_settings_object(
     config_path: Path,
