@@ -98,7 +98,7 @@ reportIndexIssue = false
 
 [tool.pylint]
 format.max-line-length = 120
-main.ignore-paths = ["docs/source/conf.py"]
+main.ignore-paths = ["docs/source/conf.py", ".poetry/*"]
 main.jobs = 0
 "messages control".disable = [
     "no-member",

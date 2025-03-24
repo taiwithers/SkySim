@@ -638,13 +638,13 @@ class PlotSettings(Settings):  # type: ignore[misc]
 ## Top-Level Settings Methods
 
 
-def confirm_config_file(py_argv: list[str]) -> Path:
+def confirm_config_file(input_config_path: str) -> Optional[Path]:
     """Pre-validate the existence of a config file.
 
     Parameters
     ----------
-    py_argv : list[str]
-        Python `sys.argv`.
+    input_config_path : str
+        Argument passed on command line.
 
     Returns
     -------
@@ -655,15 +655,11 @@ def confirm_config_file(py_argv: list[str]) -> Path:
     ------
     ValueError
         Raised if
-        - No path is given on the command line.
         - Path given does not exist.
         - Path leads to a non-file object.
         - Path does not have a ".toml" extension.
     """
 
-    if len(py_argv) == 1:
-        raise ValueError("No config file given.")
-    input_config_path = py_argv[-1]
     config_path = Path(input_config_path).resolve()
 
     if not config_path.exists():
