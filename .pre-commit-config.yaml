@@ -88,7 +88,6 @@ repos:
         pass_filenames: false
         stages: *all_stages
 
-      # manual (just validate) only
       - id: pytest-testmon
         name: pytest [testmon]
         entry: pytest
@@ -96,10 +95,11 @@ repos:
         pass_filenames: false
         require_serial: true
         types: ["python"]
-        stages: ["manual"]
+        stages: ["manual", "pre-commit"]
         exclude: "conf.py"
         args: ["--testmon"]
 
+      # manual (just validate) only
       - id: pylint-manual
         name: pylint [manual]
         entry: pylint
@@ -107,7 +107,6 @@ repos:
         stages: ["manual"]
         types: ["python"]
         args: [ "--score=false",]
-
 
       # git action only
       - id: pylint-full
@@ -117,6 +116,14 @@ repos:
         types: ["python"]
         args: [ "--score=false","--enable=redefined-builtin", "--enable=unused-import"]
 
+      # push only
+      - id: build-docs
+        name: build docs
+        entry: sphinx-build -M html docs/source docs/build --write-all --fail-on-warning
+        language: system
+        pass_filenames: false
+        stages: ["pre-push"]
+
       - id: pytest-full
         name: pytest [full]
         entry: pytest
@@ -125,11 +132,4 @@ repos:
         require_serial: true
         types: ["python"]
         exclude: "conf.py"
-
-      # push only
-      - id: build-docs
-        name: build docs
-        entry: sphinx-build -M html docs/source docs/build --write-all --fail-on-warning
-        language: system
-        pass_filenames: false
         stages: ["pre-push"]
