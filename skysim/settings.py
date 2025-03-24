@@ -1,6 +1,6 @@
-"""
-Setup functionality for SkySim.
-"""
+"""Setup functionality for SkySim."""
+
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
 import tomllib
 from collections.abc import Mapping

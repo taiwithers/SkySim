@@ -1,5 +1,7 @@
 """Create an RGB image of the observation."""
 
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
+
 from datetime import datetime, time, timedelta
 from multiprocessing import Pool, cpu_count
 

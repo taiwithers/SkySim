@@ -2,7 +2,7 @@
 name = "skysim"
 version = "0.1.0"
 description = ""
-license = ""
+license = "GPL-3.0-or-later"
 readme = "README.md"
 authors = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
 urls.repository = "https://github.com/taiwithers/SkySim"

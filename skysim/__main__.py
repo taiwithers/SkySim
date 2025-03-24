@@ -1,5 +1,7 @@
 """Calling module for the SkySim package."""
 
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
+
 import sys
 
 # skysim. is required to run file as python <file>, but not for poetry install

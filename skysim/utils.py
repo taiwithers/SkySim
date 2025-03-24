@@ -1,5 +1,7 @@
 """Utility functions for SkySim."""
 
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
+
 from collections.abc import Collection
 
 import numpy as np

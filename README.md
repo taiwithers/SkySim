@@ -58,3 +58,15 @@ just # list the `just` commands and their usage
 git clone https://github.com/taiwithers/SkySim.git && cd SkySim && direnv allow
 poetry install && direnv reload && pre-commit install && source $JCOMP_PATH
 ```
+
+## Copyright & License
+
+License GPLv3+ (see [COPYING](https://github.com/taiwithers/SkySim/blob/main/COPYING))
+
+Copyright (C) 2025 Tai Withers
+
+> SkySim is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+>
+> SkySim is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+>
+> You should have received a copy of the GNU General Public License along with SkySim. If not, see <https://www.gnu.org/licenses/>.

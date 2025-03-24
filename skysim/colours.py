@@ -1,6 +1,6 @@
-"""
-Class and functions for colour management.
-"""
+"""Class and functions for colour management."""
+
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
 from collections.abc import Collection
 from typing import Any

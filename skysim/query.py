@@ -1,6 +1,6 @@
-"""
-Query Simbad & Astropy to get information about celestial objects.
-"""
+"""Query Simbad & Astropy to get information about celestial objects."""
+
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
 import warnings
 from collections.abc import Collection

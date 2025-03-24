@@ -1,5 +1,7 @@
 """Plotting module for SkySim."""
 
+# License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
+
 import subprocess
 from collections.abc import Collection
 from pathlib import Path
