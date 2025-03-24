@@ -11,14 +11,7 @@ from skysim.settings import (
     load_from_toml,
 )
 
-TEST_ROOT_PATH = Path(__file__).resolve().parent
-"""Path to root test suite directory.
-"""
-
-
-ROOT_PATH = TEST_ROOT_PATH.parent
-"""Path to root directory containing repository.
-"""
+from .utils import TEST_ROOT_PATH
 
 
 @pytest.fixture(scope="session", params=["minimal", "minimal_multiframe"])
