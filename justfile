@@ -34,7 +34,6 @@ qitest:
 # trash generated docs and rebuild
 [group('docs')]
 build-docs sphinx-build-args="":
-  # TODO: add fast parameter which skips skysim calls
   # leading hyphen means recipe continues even if this line fails
   -trash-put docs/source/generated docs/build
   sphinx-build -M html docs/source docs/build/ --write-all {{sphinx-build-args}}
