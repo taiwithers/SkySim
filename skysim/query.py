@@ -252,12 +252,12 @@ def run_simbad_query(
             result = QTable(Simbad.query_region(**kwargs))
         elif query_type == "tap":
             if len(extra_columns) > 0:
-                raise ValueError(
+                raise ValueError(  # TODO: add test for this error
                     f"{extra_columns=} was passed to run_simbad_query, but {query_type=} which doesn't support that."
                 )
             result = QTable(Simbad.query_tap(**kwargs))  # type: ignore[arg-type]
         else:
-            raise ValueError(
+            raise ValueError(  # TODO: add test for this error
                 f'{query_type=} is invalid, should be one of ["region","tap"].'
             )
     Simbad.reset_votable_fields()

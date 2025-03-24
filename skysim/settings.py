@@ -127,7 +127,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         ValueError
             Raised if the snapshot frequency is greater than the duration.
         """
-        if self.snapshot_frequency > self.duration:
+        if self.snapshot_frequency > self.duration:  # TODO: add test for this error
             raise ValueError(
                 "Frequency of snapshots cannot be longer than the observation duration."
             )
@@ -168,7 +168,9 @@ class Settings(BaseModel):  # type: ignore[misc]
         try:
             return EarthLocation.of_address(self.input_location)
         except NameResolveError as e:
-            raise ValueError(e.args[0].replace("address", "location")) from e
+            raise ValueError(
+                e.args[0].replace("address", "location")
+            ) from e  # TODO: add test for this error
 
     @computed_field()
     @cached_property
@@ -193,7 +195,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         tf = TimezoneFinder()
         tzname = tf.timezone_at(lat=lat, lng=lon)
         if tzname is None:
-            raise ValueError(
+            raise ValueError(  # TODO: add test for this error
                 f"Cannot determine timezone for {lat}, {lon} ({self.input_location})"
             )
 
@@ -626,7 +628,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
         if info.data["duration"].total_seconds() == 0:
             return 0
         if input_fps == 0:
-            raise ValueError(
+            raise ValueError(  # TODO: add test for this error
                 f"Non-zero duration ({info.duration}) implies the creation of a GIF, but the given fps was zero."
             )
         return input_fps
@@ -663,9 +665,13 @@ def confirm_config_file(input_config_path: str) -> Optional[Path]:
     config_path = Path(input_config_path).resolve()
 
     if not config_path.exists():
-        raise ValueError(f"{config_path} does not exist.")
+        raise ValueError(
+            f"{config_path} does not exist."
+        )  # TODO: add test for this error
     if not config_path.is_file():
-        raise ValueError(f"{config_path} is not a file.")
+        raise ValueError(
+            f"{config_path} is not a file."
+        )  # TODO: add test for this error
     if config_path.suffix != ".toml":
         raise ValueError(f"{config_path} does not have a '.toml' extension.")
 
@@ -867,7 +873,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     for keyset in one_or_more_keys:
         keys_exist = [check_key_exists(dictionary, key) for key in keyset]
         if not any(keys_exist):
-            raise ValueError(
+            raise ValueError(  # TODO: add test for this error
                 f"One or more of {keyset} must be given, but none were found."
             )
 
@@ -875,7 +881,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     for keyset in all_or_none_keys:
         keys_exist = [check_key_exists(dictionary, key) for key in keyset]
         if (not all(keys_exist)) and any(keys_exist):
-            raise ValueError(
+            raise ValueError(  # TODO: add test for this error
                 f"Some but not all of the keys {keyset} were given. "
                 "These keys must be given all together or not at all."
             )

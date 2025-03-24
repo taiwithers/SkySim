@@ -44,7 +44,7 @@ def round_columns(
         decimals = [decimals] * len(column_names)
     else:
         if len(decimals) != len(column_names):
-            raise ValueError
+            raise ValueError  # TODO: add test for this error
     for name, roundto in zip(column_names, decimals):
         table[name] = table[name].round(roundto)
 
