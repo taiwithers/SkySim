@@ -21,14 +21,31 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 
 ### Using Poetry
 
+#### Poetry Version 1.8
+
 1. Confirm you have the required dependencies:
     - [Git](https://git-scm.com/)
-    - [Poetry](https://python-poetry.org/) (SkySim is built with version 2.1.1)
+    - [Poetry](https://python-poetry.org/)
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)
 2. Clone and enter the git repo: `git clone
    https://github.com/taiwithers/SkySim.git && cd SkySim` (disregard the
+   warning from direnv if it appears).
+3. Install the script and its dependencies with `poetry install --only main`.
+4. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
+5. Run `poetry run skysim <path to your config.toml>`
+
+#### Poetry Version 2.x
+
+1. Confirm you have the required dependencies:
+    - [Git](https://git-scm.com/)
+    - [Poetry](https://python-poetry.org/)
+    - [ffmpeg](https://ffmpeg.org/)
+    - libstdc++.so.6 (libstdc++6)
+    - libz.so.1 (zlib)
+2. Clone and enter the git repo: `git clone
+   https://github.com/taiwithers/SkySim.git && cd SkySim && git switch poetry-2.x` (disregard the
    warning from direnv if it appears).
 3. Install the script and its dependencies with `poetry install --only main`.
 4. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
