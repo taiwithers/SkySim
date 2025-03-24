@@ -3,6 +3,7 @@
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
 import argparse
+import sys
 from typing import Optional
 
 # skysim. is required to run file as python <file>, but not for poetry install
@@ -26,22 +27,29 @@ def main(args: Optional[list[str]] = None) -> None:
     parser = argparse.ArgumentParser(prog="skysim")
     parser.add_argument("config_file", help="TOML configuration file")
     config_file = parser.parse_args(args).config_file
-    config_path = confirm_config_file(config_file)
 
-    image_settings, plot_settings = load_from_toml(config_path)
+    try:
+        config_path = confirm_config_file(config_file)
 
-    star_table = get_star_table(
-        image_settings.observation_radec,
-        image_settings.field_of_view,
-        image_settings.maximum_magnitude,
-        image_settings.object_colours,
-    )
+        image_settings, plot_settings = load_from_toml(config_path)
 
-    body_locations = get_body_locations(
-        image_settings.observation_times, image_settings.earth_location
-    )
-    planet_tables = get_planet_table(body_locations)
+        star_table = get_star_table(
+            image_settings.observation_radec,
+            image_settings.field_of_view,
+            image_settings.maximum_magnitude,
+            image_settings.object_colours,
+        )
 
-    image = create_image_matrix(image_settings, planet_tables, star_table)  # type: ignore[arg-type]
+        body_locations = get_body_locations(
+            image_settings.observation_times, image_settings.earth_location
+        )
+        planet_tables = get_planet_table(body_locations)
 
-    create_plot(plot_settings, image)  # type: ignore[arg-type]
+        image = create_image_matrix(image_settings, planet_tables, star_table)  # type: ignore[arg-type]
+
+        create_plot(plot_settings, image)  # type: ignore[arg-type]
+
+    # Print simple error message instead of full traceback
+    except ValueError as e:
+        sys.stderr.write(f"skysim: error: {' '.join(e.args)}")
+        sys.exit(1)
