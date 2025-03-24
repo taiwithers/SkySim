@@ -10,6 +10,8 @@ from PIL import Image
 from skysim.__main__ import main
 from skysim.settings import PlotSettings
 
+from .utils import TEST_ROOT_PATH
+
 
 @pytest.fixture(scope="session")
 def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
@@ -71,6 +73,8 @@ def test_image_contents(created_imagepath: Path) -> None:
         (["-h"], None),
         (["--help"], None),
         (["a", "b"], "error: unrecognized arguments"),
+        ([f"{TEST_ROOT_PATH}/missing_required.toml"], "Required element"),
+        ([f"{TEST_ROOT_PATH}/__init__.py"], ".toml"),
     ],
 )
 def test_main_args(
