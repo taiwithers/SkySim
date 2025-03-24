@@ -70,35 +70,6 @@ repos:
 
   - repo: local
     hooks:
-      # all actions
-      - id: mypy
-        name: mypy
-        entry: "dmypy run -- --package skysim"
-        language: system
-        pass_filenames: false
-        require_serial: true
-        types: ["python"]
-        stages: *all_stages
-        exclude: "conf.py"
-
-      - id: nix-fmt
-        name: nix-fmt
-        entry: "nix fmt"
-        language: system
-        pass_filenames: false
-        stages: *all_stages
-
-      - id: pytest-testmon
-        name: pytest [testmon]
-        entry: pytest
-        language: system
-        pass_filenames: false
-        require_serial: true
-        types: ["python"]
-        stages: ["manual", "pre-commit"]
-        exclude: "conf.py"
-        args: ["--testmon"]
-
       # manual (just validate) only
       - id: pylint-manual
         name: pylint [manual]
@@ -133,3 +104,32 @@ repos:
         types: ["python"]
         exclude: "conf.py"
         stages: ["pre-push"]
+
+      # all actions
+      - id: mypy
+        name: mypy
+        entry: "dmypy run -- --package skysim"
+        language: system
+        pass_filenames: false
+        require_serial: true
+        types: ["python"]
+        stages: *all_stages
+        exclude: "conf.py"
+
+      - id: nix-fmt
+        name: nix-fmt
+        entry: "nix fmt"
+        language: system
+        pass_filenames: false
+        stages: *all_stages
+
+      - id: pytest-testmon
+        name: pytest [testmon]
+        entry: pytest
+        language: system
+        pass_filenames: false
+        require_serial: true
+        types: ["python"]
+        stages: ["manual", "pre-commit"]
+        exclude: "conf.py"
+        args: ["--testmon"]
