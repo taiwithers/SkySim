@@ -23,7 +23,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 
 1. Confirm you have the required dependencies:
     - [Git](https://git-scm.com/)
-    - [Poetry](https://python-poetry.org/) (SkySim is built with version 1.8)
+    - [Poetry](https://python-poetry.org/) (SkySim is built with version 2.1.1)
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    unstable-nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-utils = {
       url = "github:numtide/flake-utils";
@@ -50,6 +51,7 @@
 
       system = flake-inputs.flake-utils.lib.system.x86_64-linux;
       nixpkgs-for-system = sys: nixpkgs.legacyPackages.${sys};
+      unstable-nixpkgs-for-system = sys: flake-inputs.unstable-nixpkgs.legacyPackages.${sys};
 
     in
     {
@@ -64,6 +66,7 @@
       devShells.${system}.default =
         let
           pkgs = nixpkgs-for-system system;
+          unstable-pkgs = unstable-nixpkgs-for-system system;
 
           gitignore = flake-inputs.ignoreboy.lib.${system}.gitignore {
             github.languages = [
@@ -100,12 +103,16 @@
             ${gitignore}
           '';
 
-          packages = with pkgs; [
-            poetry
-            just # command runner (per-project aliases)
-            ffmpeg
-            trash-cli
-          ];
+          packages =
+            with pkgs;
+            [
+              just # command runner (per-project aliases)
+              ffmpeg
+              trash-cli
+            ]
+            ++ [
+              unstable-pkgs.poetry
+            ];
         };
 
     };

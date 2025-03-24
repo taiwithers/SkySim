@@ -18,10 +18,10 @@ from pathlib import Path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["tool"]["poetry"]
+pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["project"]
 
 project = pyproject["name"]
-get_name = lambda authstr: authstr[: authstr.index("<")].strip()
+get_name = lambda authdict: authdict["name"]
 author = ", ".join([get_name(auth) for auth in pyproject["authors"]])
 copyright = (
     f" %Y, {author}"  # If you remove the space in front of %Y it defaults to 1980

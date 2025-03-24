@@ -1,11 +1,16 @@
-[tool.poetry]
+[project]
 name = "skysim"
 version = "0.1.0"
 description = ""
 license = "GPL-3.0-or-later"
 readme = "README.md"
-authors = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
+authors = [
+    { name = "Tai Withers", email = "59430904+taiwithers@users.noreply.github.com" },
+]
 urls.repository = "https://github.com/taiwithers/SkySim"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
 
 [tool.poetry.dependencies]
 python = "^3.12"
