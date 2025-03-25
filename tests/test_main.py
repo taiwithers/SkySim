@@ -97,3 +97,21 @@ def test_main_args(
     if exception_string is not None:
         exception_message = capsys.readouterr().err
         assert exception_string in exception_message
+
+
+def test_main_debug() -> None:
+    """Check that the debug flag raises ValueErrors instead of SystemExits, and
+    that the ValueError has an argument.
+    """
+    with pytest.raises(SystemExit) as regular_exception:
+        main(["bad_config_path"])
+    regular_exception_args = regular_exception.value.args[0]
+    assert regular_exception_args == 1  # the system exit code
+
+    with pytest.raises(ValueError) as debug_exception:
+        main(["--debug", "bad_config_path"])
+    debug_exception_args = debug_exception.value.args[
+        0
+    ]  # should be the string passed to ValueError
+
+    assert len(debug_exception_args) > 1  # string should not be empty
