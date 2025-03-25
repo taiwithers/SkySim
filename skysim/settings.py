@@ -169,6 +169,8 @@ class Settings(BaseModel):  # type: ignore[misc]
         try:
             return EarthLocation.of_address(self.input_location)
         except NameResolveError as e:
+            if "connection" in e.args[0]:
+                raise RuntimeError(e.args[0].replace("address", "location")) from e
             raise ValueError(e.args[0].replace("address", "location")) from e
 
     @computed_field()
