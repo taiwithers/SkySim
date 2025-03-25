@@ -24,6 +24,7 @@ from pydantic import (
     NonNegativeFloat,
     PositiveFloat,
     PositiveInt,
+    ValidationError,
     ValidationInfo,
     computed_field,
     field_validator,
@@ -127,9 +128,9 @@ class Settings(BaseModel):  # type: ignore[misc]
         ValueError
             Raised if the snapshot frequency is greater than the duration.
         """
-        if self.snapshot_frequency > self.duration:  # TODO: add test for this error
+        if self.snapshot_frequency > self.duration:
             raise ValueError(
-                "Frequency of snapshots cannot be longer than the observation duration."
+                "Frequency of snapshots (observation.interval) cannot be longer than observation.duration."
             )
         return self
 
@@ -138,7 +139,7 @@ class Settings(BaseModel):  # type: ignore[misc]
     @cached_property
     def frames(self) -> PositiveInt:
         """
-        Calculates number of frames for GIF/observations to take.
+        Calculates number of frames for movie/observations to take.
 
         Returns
         -------
@@ -168,9 +169,7 @@ class Settings(BaseModel):  # type: ignore[misc]
         try:
             return EarthLocation.of_address(self.input_location)
         except NameResolveError as e:
-            raise ValueError(
-                e.args[0].replace("address", "location")
-            ) from e  # TODO: add test for this error
+            raise ValueError(e.args[0].replace("address", "location")) from e
 
     @computed_field()
     @cached_property
@@ -628,8 +627,9 @@ class PlotSettings(Settings):  # type: ignore[misc]
         if info.data["duration"].total_seconds() == 0:
             return 0
         if input_fps == 0:
-            raise ValueError(  # TODO: add test for this error
-                f"Non-zero duration ({info.duration}) implies the creation of a GIF, but the given fps was zero."
+            raise ValueError(
+                f"Non-zero duration ({info.data['duration']}) implies the "
+                "creation of a movie, but the given fps was zero."
             )
         return input_fps
 
@@ -640,7 +640,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
 ## Top-Level Settings Methods
 
 
-def confirm_config_file(input_config_path: str) -> Optional[Path]:
+def confirm_config_file(input_config_path: str) -> Path:
     """Pre-validate the existence of a config file.
 
     Parameters
@@ -665,13 +665,9 @@ def confirm_config_file(input_config_path: str) -> Optional[Path]:
     config_path = Path(input_config_path).resolve()
 
     if not config_path.exists():
-        raise ValueError(
-            f"{config_path} does not exist."
-        )  # TODO: add test for this error
+        raise ValueError(f"{config_path} does not exist.")
     if not config_path.is_file():
-        raise ValueError(
-            f"{config_path} is not a file."
-        )  # TODO: add test for this error
+        raise ValueError(f"{config_path} is not a file.")
     if config_path.suffix != ".toml":
         raise ValueError(f"{config_path} does not have a '.toml' extension.")
 
@@ -699,14 +695,24 @@ def load_from_toml(
 
     settings_config, image_config, plot_config = toml_to_dicts(filename)
 
-    settings = Settings(**settings_config)
-    if return_settings:
-        return settings
+    try:
+        settings = Settings(**settings_config)
 
-    image_settings = settings.get_image_settings(**image_config)
-    plot_settings = settings.get_plot_settings(**plot_config)
+        if return_settings:
+            return settings
 
-    return image_settings, plot_settings
+        image_settings = settings.get_image_settings(**image_config)
+        plot_settings = settings.get_plot_settings(**plot_config)
+
+        return image_settings, plot_settings
+
+    except ValidationError as e:
+        # pydantic does a lot of wrapping around their errors...
+        original_error = e.errors()[0]
+        error_message = original_error["msg"]  # "Value error, [original message]"
+        skip_point = "error, "
+        index = error_message.index(skip_point) + len(skip_point)
+        raise ValueError(error_message[index:]) from e
 
 
 ## Helper Methods
@@ -873,7 +879,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     for keyset in one_or_more_keys:
         keys_exist = [check_key_exists(dictionary, key) for key in keyset]
         if not any(keys_exist):
-            raise ValueError(  # TODO: add test for this error
+            raise ValueError(
                 f"One or more of {keyset} must be given, but none were found."
             )
 
@@ -881,7 +887,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     for keyset in all_or_none_keys:
         keys_exist = [check_key_exists(dictionary, key) for key in keyset]
         if (not all(keys_exist)) and any(keys_exist):
-            raise ValueError(  # TODO: add test for this error
+            raise ValueError(
                 f"Some but not all of the keys {keyset} were given. "
                 "These keys must be given all together or not at all."
             )
