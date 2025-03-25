@@ -54,8 +54,8 @@ def main(args: Optional[list[str]] = None) -> None:
 
         create_plot(plot_settings, image)  # type: ignore[arg-type]
 
-    # Print simple error message instead of full traceback
-    except ValueError as e:
+    # Optionally print simple error message instead of full traceback
+    except (ValueError, RuntimeError) as e:
         if debug_mode:
             raise e
 
