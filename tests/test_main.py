@@ -117,17 +117,32 @@ def test_main_debug() -> None:
     assert len(debug_exception_args) > 1  # string should not be empty
 
 
+@pytest.mark.flaky(reruns=2, reruns_delay=5, only_rerun="RuntimeError")
 @pytest.mark.parametrize(
     "filename,error_message",
     [
+        # fail in confirm_config_file
+        ("nonexistent.toml", "does not exist."),
+        ("not_toml.txt", "does not have"),
+        ("", "not a file."),  # points to the configs directory
         # generic key requirements (fail in load_from_toml > toml_to_dicts >
         # check_mandatory_toml_keys)
         ("missing_required.toml", "Required element"),
         ("missing_one_or_more.toml", "One or more of"),
         ("mismatched_all_or_none.toml", "Some but not all of"),
+        # toml parsing (fail in load_from_toml > toml_to_dicts)
+        ("tomllib_error.toml", "Error reading config file"),
+        ("string_angle.toml", "Could not convert angular value"),  # parse_angle_dicts
         # validation of specific values (fail inside the pydantic model)
         ("zero_fps_movie.toml", "Non-zero duration"),
         ("interval_duration_mismatch.toml", "Frequency of snapshots"),
+        ("bad_type_date.toml", "Input should be a valid"),
+        ("bad_type_date.toml", "Input should be a valid"),
+        ("no_image_folder.toml", "parent directory"),
+        # fail in plot.py - these sometimes throw connection timed out on the
+        # EarthLocation lookup, hence the flaky decorator
+        ("no_permissions_image.toml", "Choose a different path"),
+        ("no_permissions_tempdir.toml", "Choose a different path"),
     ],
 )
 def test_bad_configs(filename: str, error_message: str) -> None:

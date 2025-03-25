@@ -87,7 +87,7 @@ checks = [
 
 [tool.pyright]
 reportAttributeAccessIssue = false
-reportReturnType = false           # pylint does this already
+reportReturnType = false                 # pylint does this already
 reportArgumentType = false
 reportOperatorIssue = false
 reportCallIssue = false
@@ -100,6 +100,7 @@ format.max-line-length = 120
 main.ignore-paths = ["docs/source/conf.py", ".poetry/*"]
 main.jobs = 0
 "messages control".disable = [
+    "too-many-lines",
     "no-member",
     "redefined-outer-name",
     "useless-return",
