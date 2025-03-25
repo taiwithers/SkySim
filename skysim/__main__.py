@@ -26,9 +26,12 @@ def main(args: Optional[list[str]] = None) -> None:
 
     parser = argparse.ArgumentParser(prog="skysim")
     parser.add_argument("config_file", help="TOML configuration file")
-
-    # TODO add flag for "debug" mode - don't unwrap errors
-    config_file = parser.parse_args(args).config_file
+    parser.add_argument(
+        "--debug", help="print full Python traceback", action="store_true"
+    )
+    parsed_args = parser.parse_args(args)
+    config_file = parsed_args.config_file
+    debug_mode = parsed_args.debug
 
     try:
         config_path = confirm_config_file(config_file)
@@ -53,5 +56,8 @@ def main(args: Optional[list[str]] = None) -> None:
 
     # Print simple error message instead of full traceback
     except ValueError as e:
+        if debug_mode:
+            raise e
+
         sys.stderr.write(f"skysim: error: {' '.join(e.args)}")
         sys.exit(1)
