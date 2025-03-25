@@ -1,4 +1,7 @@
-"""Setup functionality for SkySim."""
+"""Setup functionality for SkySim. Includes both methods for parsing a
+configuration TOML, and converting that data in `Settings` (and friends)
+objects.
+"""
 
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
@@ -70,7 +73,11 @@ MAXIMUM_LIGHT_SPREAD = 10
 
 
 class Settings(BaseModel):  # type: ignore[misc]
-    """Base class to interpret often-used configuration values."""
+    """Base class to interpret often-used configuration values. The `Settings`
+    class should never be used or passed directly, but instead should be created
+    only for the purpose of then calling `.get_image_settings()` and
+    `.get_plot_settings()`.
+    """
 
     model_config = DATACLASS_CONFIG
 

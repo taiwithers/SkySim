@@ -22,6 +22,16 @@ def main(args: Optional[list[str]] = None) -> None:
     args : Optional[list[str]]
         Used when testing with pytest - since arguments can't be passed via
         command line they are instead given with the `args` list.
+
+    Raises
+    ------
+    ValueError, ConnectionError
+        Re-raised from their creation inside the SkySim code if and only if
+        the --debug flag is set.
+
+    SystemExit
+        Supercedes internal errors to produce a cleaner error message if the
+        --debug flag is not set.
     """
 
     parser = argparse.ArgumentParser(prog="skysim")

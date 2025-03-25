@@ -13,6 +13,7 @@ from numpy.typing import NDArray
 type FloatArray = NDArray[np.float64]
 type IntArray = NDArray[np.int64]
 
+
 # Methods
 
 
@@ -44,7 +45,10 @@ def round_columns(
         decimals = [decimals] * len(column_names)
     else:
         if len(decimals) != len(column_names):
-            raise ValueError  # TODO: add test for this error
+            raise ValueError(
+                f"{len(column_names)} columns were given to be rounded, but "
+                f"{len(decimals)} values were given as decimal points to round to."
+            )
     for name, roundto in zip(column_names, decimals):
         table[name] = table[name].round(roundto)
 
