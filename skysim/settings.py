@@ -602,6 +602,33 @@ class PlotSettings(Settings):  # type: ignore[misc]
         """
         return np.ceil(np.log10(self.frames)).astype(int)
 
+    @field_validator("filename", mode="after")
+    @classmethod
+    def check_parent_directory_exists(cls, filename: Path) -> Path:
+        """Raise an error if the directory in which to save the image doesn't exist.
+
+        Parameters
+        ----------
+        filename : Path
+            Location to save image.
+
+        Returns
+        -------
+        Path :
+            Same as input.
+
+        Raises
+        ------
+        ValueError
+            Raised if parent directory does not exist.
+        """
+        if not filename.parent.exists():
+            raise ValueError(
+                f"Cannot save result '{filename.resolve()}' because parent directory "
+                f"'{filename.parent.resolve()}' does not exist."
+            )
+        return filename.resolve()
+
     @field_validator("fps", mode="after")
     @classmethod
     def validate_fps(
@@ -712,9 +739,18 @@ def load_from_toml(
         # pydantic does a lot of wrapping around their errors...
         original_error = e.errors()[0]
         error_message = original_error["msg"]  # "Value error, [original message]"
-        skip_point = "error, "
-        index = error_message.index(skip_point) + len(skip_point)
-        raise ValueError(error_message[index:]) from e
+
+        if original_error["type"] == "value_error":  # explicitly raised in a validator
+            skip_point = "error, "
+            index = error_message.index(skip_point) + len(skip_point)
+            new_message = error_message[index:]
+
+        else:  # probaby a type coercion error listed in https://docs.pydantic.dev/2.10/errors/validation_errors/
+            bad_dict_key = original_error["loc"][0]
+            bad_dict_value = original_error["input"]
+            new_message = f"Error processing '{bad_dict_value}' into {bad_dict_key}. {error_message}."
+
+        raise ValueError(new_message) from e
 
 
 ## Helper Methods
@@ -737,7 +773,10 @@ def toml_to_dicts(
         Dictionary for `Settings`, `ImageSettings`, and `PlotSettings`.
     """
     with filename.open(mode="rb") as opened:
-        toml_config = tomllib.load(opened)
+        try:
+            toml_config = tomllib.load(opened)
+        except tomllib.TOMLDecodeError as e:
+            raise ValueError(f"Error reading config file. {e.args[0]}.") from e
 
     check_mandatory_toml_keys(toml_config)
 
@@ -776,7 +815,7 @@ def toml_to_dicts(
 
     plot_config = {
         # Mandatory
-        "filename": Path(toml_config["image"]["filename"]).resolve(),
+        "filename": toml_config["image"]["filename"],
         # Optional
         "fps": load_or_default("image.fps"),
         "dpi": load_or_default("image.dpi"),
@@ -911,12 +950,20 @@ def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:
     u.Quantity (angle)
         Combined angle.
     """
+    total_angle = 0 * u.deg
 
-    degrees, arcminutes, arcseconds = (
-        dictionary.get(key, 0) * u.Unit(key[:-1])
-        for key in ["degrees", "arcminutes", "arcseconds"]
-    )
-    return degrees + arcminutes + arcseconds
+    for key in ["degrees", "arcminutes", "arcseconds"]:
+        value = dictionary.get(key, 0)
+        try:
+            float_value = float(value)
+        except ValueError as e:
+            raise ValueError(
+                f"Could not convert angular value {key}={value} to a float."
+            ) from e
+
+        total_angle += float_value * u.Unit(key[:-1])
+
+    return total_angle
 
 
 def time_to_timedelta(time_object: time) -> timedelta:

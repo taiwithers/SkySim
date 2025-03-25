@@ -1,0 +1,17 @@
+[observation]
+location = "Toronto"
+date = 2025-02-18    # YYYY-MM-DD
+time = 19:00:00      # HH:MM:SS.ssss
+duration = 00:05:00
+interval = 00:01:00
+
+viewing-radius.degrees = 15
+
+altitude.degrees = 42
+
+azimuth.degrees = 155
+azimuth.arcseconds = 140
+
+
+[image]
+filename = "/usr/bin/sh"

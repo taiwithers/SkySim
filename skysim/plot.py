@@ -76,7 +76,14 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
         Multi-frame RGB image.
     """
     if not plot_settings.tempfile_path.is_dir():
-        plot_settings.tempfile_path.mkdir()
+        try:
+            plot_settings.tempfile_path.mkdir()
+        except PermissionError as e:
+            raise ValueError(
+                "Permission denied creating temporary directory for storing "
+                f"intermediate data products ({plot_settings.tempfile_path}). "
+                "Choose a different path for the output file."
+            ) from e
 
     results = []
     for i in range(plot_settings.frames):
@@ -138,11 +145,17 @@ def save_frame(
         plot_settings.datetime_strings[index],
     )
 
-    plt.savefig(
-        filename,
-        dpi=plot_settings.dpi,
-        bbox_inches="tight",
-    )
+    try:
+        plt.savefig(
+            filename,
+            dpi=plot_settings.dpi,
+            bbox_inches="tight",
+        )
+    except PermissionError as e:
+        raise ValueError(
+            f"Permission denied saving image ({filename}). "
+            "Choose a different path for the output file."
+        ) from e
     plt.close()
     return (index, filename)
 

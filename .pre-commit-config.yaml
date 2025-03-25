@@ -17,6 +17,7 @@ repos:
     -   id: check-json
     -   id: check-merge-conflict
     -   id: check-toml
+        exclude: "tomllib_error.toml"
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: mixed-line-ending
