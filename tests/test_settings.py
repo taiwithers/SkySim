@@ -14,9 +14,11 @@ from skysim.settings import (
     ImageSettings,
     PlotSettings,
     Settings,
+    confirm_config_file,
+    load_from_toml,
 )
 
-from .utils import modified_settings_object
+from .utils import TEST_ROOT_PATH, modified_settings_object
 
 
 def _test_any_settings(settings: Settings) -> None:
@@ -32,6 +34,40 @@ def _test_any_settings(settings: Settings) -> None:
     assert len(settings.observation_times) == settings.frames
     assert settings.degrees_per_pixel == 0.06 * u.deg
     assert settings.timezone == ZoneInfo("America/Toronto")
+
+
+def _test_settings_attribute(
+    config_path: Path,
+    settings_type: type[Settings | ImageSettings | PlotSettings],
+    attribute: str,
+    key: str,
+    value: Any,
+) -> Any:
+    """Create a settings object with a custom attribute (overriding the TOML).
+    Then access that attribute.
+
+    Parameters
+    ----------
+    config_path : Path
+        Path to the config file to use.
+    settings_type : type[Settings  |  ImageSettings  |  PlotSettings]
+        Which type of settings object to create.
+    attribute : str
+        Which attribute to override.
+    key : str
+        The `toml_to_dicts` key to override.
+    value : Any
+        The value to assign to that key.
+
+    Returns
+    -------
+    Any
+        Value of `attribute`.
+    """
+
+    settings_to_test = modified_settings_object(config_path, settings_type, key, value)
+
+    return getattr(settings_to_test, attribute)
 
 
 def test_settings(settings: Settings) -> None:
@@ -103,35 +139,51 @@ def test_earth_location(config_path: Path, input_location: str) -> None:
     )
 
 
-def _test_settings_attribute(
-    config_path: Path,
-    settings_type: type[Settings | ImageSettings | PlotSettings],
-    attribute: str,
-    key: str,
-    value: Any,
-) -> Any:
-    """Create a settings object with a custom attribute (overriding the TOML).
-    Then access that attribute.
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        # generic key requirements
+        ("missing_required", "Required element"),
+        ("missing_one_or_more", "One or more of"),
+        ("mismatched_all_or_none", "Some but not all of"),
+        # validation of specific values
+        ("zero_fps_movie", "Non-zero duration"),
+        ("interval_duration_mismatch", "Frequency of snapshots"),
+    ],
+)
+def test_load_toml(filename: str, error_message: str) -> None:
+    """Test that the load_toml function throws appropriate errors when a bad
+    file is passed in.
 
     Parameters
     ----------
-    config_path : Path
-        Path to the config file to use.
-    settings_type : type[Settings  |  ImageSettings  |  PlotSettings]
-        Which type of settings object to create.
-    attribute : str
-        Which attribute to override.
-    key : str
-        The `toml_to_dicts` key to override.
-    value : Any
-        The value to assign to that key.
-
-    Returns
-    -------
-    Any
-        Value of `attribute`.
+    filename : str
+        Name of the toml file to use for testing (without extension).
+    error_message : str
+        The error message to check for.
     """
+    with pytest.raises(ValueError, match=error_message):
+        load_from_toml(Path(f"{TEST_ROOT_PATH}/configs/{filename}.toml"))
 
-    settings_to_test = modified_settings_object(config_path, settings_type, key, value)
 
-    return getattr(settings_to_test, attribute)
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        ("nonexistent.toml", "does not exist."),
+        ("not_toml.txt", "does not have"),
+        ("", "not a file."),  # points to the configs directory
+    ],
+)
+def test_confirm_config_file(filename: str, error_message: str) -> None:
+    """Test that the confirm_config_file function throws appropriate errors when
+    the config file cannot be read.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file to check for (with extension).
+    error_message : str
+        The error message to check for.
+    """
+    with pytest.raises(ValueError, match=error_message):
+        confirm_config_file(Path(f"{TEST_ROOT_PATH}/configs/{filename}"))

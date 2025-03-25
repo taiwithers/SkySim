@@ -1,0 +1,17 @@
+[observation]
+location = "88888888"
+date = 2025-02-18     # YYYY-MM-DD
+time = 19:00:00       # HH:MM:SS.ssss
+duration = 00:05:00   # 5 min duration
+interval = 01:00:00   # 1 hour interval
+
+viewing-radius.degrees = 15
+
+altitude.degrees = 42
+
+azimuth.degrees = 155
+azimuth.arcseconds = 140
+
+
+[image]
+filename = "SkySim.png"

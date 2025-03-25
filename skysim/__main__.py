@@ -26,6 +26,8 @@ def main(args: Optional[list[str]] = None) -> None:
 
     parser = argparse.ArgumentParser(prog="skysim")
     parser.add_argument("config_file", help="TOML configuration file")
+
+    # TODO add flag for "debug" mode - don't unwrap errors
     config_file = parser.parse_args(args).config_file
 
     try:

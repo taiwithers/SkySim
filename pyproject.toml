@@ -92,6 +92,7 @@ reportOperatorIssue = false
 reportCallIssue = false
 reportIndexIssue = false
 reportInvalidTypeForm = false
+reportTypedDictNotRequiredAccess = false
 
 [tool.pylint]
 format.max-line-length = 120
