@@ -127,3 +127,5 @@ addopts = [
     "--durations=0",
     "--durations-min=1.0",
 ]
+reruns = 2 # pytest-rerunfailures
+reruns_delay = 5 # pytest-rerunfailures

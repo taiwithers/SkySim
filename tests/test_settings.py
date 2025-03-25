@@ -81,7 +81,7 @@ def test_settings(settings: Settings) -> None:
     _test_any_settings(settings)
 
 
-@pytest.mark.flaky(reruns=2, reruns_delay=5, only_rerun="ConnectionError")
+@pytest.mark.flaky(only_rerun="ConnectionError")
 def test_image_settings(image_settings: ImageSettings) -> None:
     """
     Tests for specifically `ImageSettings` objects.

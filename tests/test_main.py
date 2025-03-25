@@ -13,7 +13,7 @@ from skysim.settings import PlotSettings
 from .utils import TEST_ROOT_PATH
 
 
-@pytest.mark.flaky(reruns=2, reruns_delay=5, only_rerun="ConnectionError")
+@pytest.mark.flaky(only_rerun="ConnectionError")
 @pytest.fixture(scope="session")
 def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
     """Run the main SkySim command, return the saved filename, and clean up once
@@ -118,7 +118,7 @@ def test_main_debug() -> None:
     assert len(debug_exception_args) > 1  # string should not be empty
 
 
-@pytest.mark.flaky(reruns=2, reruns_delay=5, only_rerun="ConnectionError")
+@pytest.mark.flaky(only_rerun="ConnectionError")
 @pytest.mark.parametrize(
     "filename,error_message",
     [
