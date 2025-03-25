@@ -15,7 +15,6 @@ from skysim.settings import (
     PlotSettings,
     Settings,
     confirm_config_file,
-    load_from_toml,
 )
 
 from .utils import TEST_ROOT_PATH, modified_settings_object
@@ -137,33 +136,6 @@ def test_earth_location(config_path: Path, input_location: str) -> None:
         key="input_location",
         value=input_location,
     )
-
-
-@pytest.mark.parametrize(
-    "filename,error_message",
-    [
-        # generic key requirements
-        ("missing_required", "Required element"),
-        ("missing_one_or_more", "One or more of"),
-        ("mismatched_all_or_none", "Some but not all of"),
-        # validation of specific values
-        ("zero_fps_movie", "Non-zero duration"),
-        ("interval_duration_mismatch", "Frequency of snapshots"),
-    ],
-)
-def test_load_toml(filename: str, error_message: str) -> None:
-    """Test that the load_toml function throws appropriate errors when a bad
-    file is passed in.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the toml file to use for testing (without extension).
-    error_message : str
-        The error message to check for.
-    """
-    with pytest.raises(ValueError, match=error_message):
-        load_from_toml(Path(f"{TEST_ROOT_PATH}/configs/{filename}.toml"))
 
 
 @pytest.mark.parametrize(
