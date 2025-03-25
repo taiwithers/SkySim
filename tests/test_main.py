@@ -115,3 +115,33 @@ def test_main_debug() -> None:
     ]  # should be the string passed to ValueError
 
     assert len(debug_exception_args) > 1  # string should not be empty
+
+
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        # generic key requirements (fail in load_from_toml > toml_to_dicts >
+        # check_mandatory_toml_keys)
+        ("missing_required.toml", "Required element"),
+        ("missing_one_or_more.toml", "One or more of"),
+        ("mismatched_all_or_none.toml", "Some but not all of"),
+        # validation of specific values (fail inside the pydantic model)
+        ("zero_fps_movie.toml", "Non-zero duration"),
+        ("interval_duration_mismatch.toml", "Frequency of snapshots"),
+    ],
+)
+def test_bad_configs(filename: str, error_message: str) -> None:
+    """Test that the confirm_config_file and load_toml functions throw
+    appropriate errors when a bad file is passed in.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the toml file to use for testing (without extension).
+    error_message : str
+        The error message to check for.
+    """
+    with pytest.raises(ValueError, match=error_message):
+        # without --debug, the result is a SystemExit which doesn't have an
+        # error message
+        main(["--debug", f"{TEST_ROOT_PATH}/configs/{filename}"])
