@@ -29,7 +29,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 2. Clone and enter the git repo: `git clone
    https://github.com/taiwithers/SkySim.git && cd SkySim` (disregard the
    warning from direnv if it appears).
-3. Install the script and its dependencies with `poetry install --only main`.
+3. Install the script and its dependencies with `poetry install`.
 4. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
 5. Run `poetry run skysim <path to your config.toml>`
 

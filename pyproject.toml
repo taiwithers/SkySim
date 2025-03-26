@@ -1,11 +1,14 @@
 [tool.poetry]
-name            = "SkySim"
-version         = "0.1.0"
-description     = ""
-license         = "GPL-3.0-or-later"
-readme          = "README.md"
-authors         = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
-urls.repository = "https://github.com/taiwithers/SkySim"
+name                = "SkySim"
+version             = "0.1.0"
+description         = ""
+license             = "GPL-3.0-or-later"
+readme              = "README.md"
+authors             = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
+urls.repository     = "https://github.com/taiwithers/SkySim"
+group.dev.optional  = true
+group.docs.optional = true
+
 
 [tool.poetry.dependencies]
 python         = "^3.12"
