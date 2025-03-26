@@ -14,8 +14,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
     - [ffmpeg](https://ffmpeg.org/)
     - libstdc++.so.6 (libstdc++6)
     - libz.so.1 (zlib)
-2. Install the package with pip: `pip install git+
-   https://github.com/taiwithers/SkySim.git`
+2. Install the package with pip: `pip install git+https://github.com/taiwithers/SkySim.git`
 3. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
 4. Run `skysim <path to your config.toml>`
 
