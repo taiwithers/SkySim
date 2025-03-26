@@ -1,16 +1,16 @@
 [observation]
-location = "Toronto" # string for address lookup, or [latitude, longitude]
-date = 2025-03-21    # YYYY-MM-DD
-time = 20:30:00      # HH:MM:SS.ssss
+location = "Toronto"  # string for address lookup, or [latitude, longitude]
+date     = 2025-03-21 # YYYY-MM-DD
+time     = 20:30:15   # HH:MM:SS.ssss
 
 # use any combination of XXX.degrees, XXX.arcminutes, XXX.arcseconds here
 viewing-radius.degrees = 60
 
-altitude.degrees = 38
+altitude.degrees    = 38
 altitude.arcminutes = 27
 altitude.arcseconds = 120
 
-azimuth.degrees = 50.3
+azimuth.degrees    = 50.3
 azimuth.arcseconds = 40
 
 [image]

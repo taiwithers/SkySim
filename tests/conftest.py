@@ -14,7 +14,7 @@ from skysim.settings import (
 from .utils import TEST_ROOT_PATH
 
 
-@pytest.fixture(scope="session", params=["minimal", "minimal_multiframe"])
+@pytest.fixture(scope="session", params=["still_image", "movie"])
 def config_path(request: pytest.FixtureRequest) -> Path:
     # pylint: disable=missing-function-docstring
     return Path(f"{TEST_ROOT_PATH}/configs/{request.param}.toml")

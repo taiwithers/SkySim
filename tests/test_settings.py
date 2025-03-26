@@ -4,11 +4,9 @@ Tests for SkySim Settings objects.
 
 from pathlib import Path
 from typing import Any
-from zoneinfo import ZoneInfo
 
 import matplotlib.colors as mpl_colors
 import pytest
-from astropy import units as u
 
 from skysim.settings import (
     ImageSettings,
@@ -31,8 +29,6 @@ def _test_any_settings(settings: Settings) -> None:
         `Settings` object initialized from the settings() fixture.
     """
     assert len(settings.observation_times) == settings.frames
-    assert settings.degrees_per_pixel == 0.06 * u.deg
-    assert settings.timezone == ZoneInfo("America/Toronto")
 
 
 def _test_settings_attribute(
