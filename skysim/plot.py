@@ -66,7 +66,7 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
     Parameters
     ----------
     plot_settings : PlotSettings
-        Configuration.
+        Configuration object, passed to `save_frame`.
     image_matrix : FloatArray
         Multi-frame RGB image.
     """
@@ -107,7 +107,8 @@ def save_frame(
     index : int
         Index of the frame.
     plot_settings : PlotSettings
-        Configuration.
+        Configuration object. Attributes accessed are `figure_size`,
+        `wcs_objects`, `observation_info`, `datetime_strings`, and `dpi`.
     frame : FloatArray
         RGB image.
     filename : Path
@@ -192,12 +193,14 @@ def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Ax
 
 
 def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
-    """Construct the command to call ffmpeg with.
+    """Construct the command to call ffmpeg with. Note that the command is not
+    actually run.
 
     Parameters
     ----------
     plot_settings : PlotSettings
-        Configuration.
+        Configuration. Attributes accessed are `figure_size`, `dpi`, `fps`,
+        `tempfile_path`, `tempfile_zfill`, and `filename`.
 
     Returns
     -------
@@ -232,7 +235,7 @@ def run_ffmpeg(plot_settings: PlotSettings) -> None:
     Parameters
     ----------
     plot_settings : PlotSettings
-        Configuration.
+        Configuration. Passed to `construct_ffmpeg_call`.
 
     Raises
     ------
