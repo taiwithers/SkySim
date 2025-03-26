@@ -52,12 +52,14 @@ html_theme_options = {
     "footer_end": ["sphinx-version", "theme-version"],
     "secondary_sidebar_items": ["page-toc"],
     "github_url": pyproject["urls"]["repository"],
+    "header_links_before_dropdown": 2,
 }
 html_sidebars = {"**": ["sidebar-nav-bs"]}
 html_sidebars.update(
     {pagename: [] for pagename in ["usage", "api/index", "examples/index", "devnotes"]}
 )  # pages on which to hide the primary sidebar
 html_sourcelink_suffix = ""
+html_title = f"{project} {release}"
 html_short_title = project
 html_css_files = ["css/custom.css"]
 
