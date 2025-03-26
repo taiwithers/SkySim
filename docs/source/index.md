@@ -9,4 +9,5 @@ Stellarium.
 usage
 examples/index
 api/index
+devnotes
 ```

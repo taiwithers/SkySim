@@ -55,7 +55,7 @@ html_theme_options = {
 }
 html_sidebars = {"**": ["sidebar-nav-bs"]}
 html_sidebars.update(
-    {pagename: [] for pagename in ["usage", "api/index", "examples/index"]}
+    {pagename: [] for pagename in ["usage", "api/index", "examples/index", "devnotes"]}
 )  # pages on which to hide the primary sidebar
 html_sourcelink_suffix = ""
 html_short_title = project
