@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 import numpy as np
 from astropy import units as u
-from astropy.coordinates import ICRS, AltAz, EarthLocation, SkyCoord
+from astropy.coordinates import ICRS, AltAz, Angle, EarthLocation, SkyCoord
 from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time
 from astropy.wcs import WCS
@@ -558,9 +558,9 @@ class PlotSettings(Settings):  # type: ignore[misc]
         str
             Formatted string.
         """
-        altitude = self.altitude_angle.to_string(format="latex")
-        azimuth = self.azimuth_angle.to_string(format="latex")
-        fov = self.field_of_view.to_string(format="latex")
+        altitude = angle_to_dms(self.altitude_angle)
+        azimuth = angle_to_dms(self.azimuth_angle)
+        fov = angle_to_dms(self.field_of_view)
         return (
             f"{self.input_location}\n Altitude: {altitude}, "
             f"Azimuth: {azimuth}, FOV: {fov}"
@@ -1024,3 +1024,32 @@ def get_config_option(
     if default_key is None:
         default_key = toml_key
     return access_nested_dictionary(default_config, split_nested_key(default_key))
+
+
+def angle_to_dms(angle: u.Quantity["angle"]) -> str:
+    """Convert a astropy angle to a pretty-printed string.
+
+    Parameters
+    ----------
+    angle : u.Quantity[angle]
+        The angle quantity to format.
+
+    Returns
+    -------
+    str
+        Latex-formatted string.
+    """
+    arcseconds = angle.to(u.arcsec).value
+
+    has_seconds = divmod(arcseconds, 60)[1] != 0
+    has_minutes = divmod(arcseconds, 3600)[1] != 0
+
+    if has_seconds:
+        fields = 3
+    elif has_minutes:
+        fields = 2
+    else:
+        fields = 1
+
+    ap_angle = Angle(angle)
+    return ap_angle.to_string(fields=fields, format="latex")
