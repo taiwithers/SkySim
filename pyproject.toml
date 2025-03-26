@@ -122,7 +122,9 @@ addopts = [
     "--durations=0",
     "--durations-min=1.0",
     "--no-header",
+    "--showlocals",
     "--tb=short",
+    "-r=fEsX",                                        # summary show [f]ailure, [E]rror, [s]kip, [x]fail, [X]pass, [p]ass
     # pytest-cov
     "--cov=skysim",
     "--no-cov-on-fail",
