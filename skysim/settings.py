@@ -36,7 +36,7 @@ from pydantic import (
 from timezonefinder import TimezoneFinder
 
 from skysim.colours import InputColour, RGBTuple, convert_colour
-from skysim.utils import FloatArray, IntArray
+from skysim.utils import FloatArray, IntArray, get_tempfile_path
 
 # Type Aliases
 
@@ -758,6 +758,31 @@ def load_from_toml(
             new_message = f"Error processing '{bad_dict_value}' into {bad_dict_key}. {error_message}."
 
         raise ValueError(new_message) from e
+
+
+def check_for_overwrite(plot_settings: PlotSettings) -> Path | None:
+    """Check if SkySim will overwrite any existing files.
+
+    Parameters
+    ----------
+    plot_settings : PlotSettings
+        Configuration.
+
+    Returns
+    -------
+    Path|None
+        Returns either the first path that will be overwritten, or None.
+    """
+    if plot_settings.filename.exists():
+        return plot_settings.filename
+
+    if plot_settings.frames > 1:
+        for i in range(plot_settings.frames):
+            tempfile_path = get_tempfile_path(plot_settings, i)
+            if tempfile_path.exists():
+                return tempfile_path
+
+    return None
 
 
 ## Helper Methods

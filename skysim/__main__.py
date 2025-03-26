@@ -10,7 +10,7 @@ from typing import Optional
 from skysim.plot import create_plot
 from skysim.populate import create_image_matrix
 from skysim.query import get_body_locations, get_planet_table, get_star_table
-from skysim.settings import confirm_config_file, load_from_toml
+from skysim.settings import check_for_overwrite, confirm_config_file, load_from_toml
 
 
 def main(args: Optional[list[str]] = None) -> None:
@@ -39,14 +39,25 @@ def main(args: Optional[list[str]] = None) -> None:
     parser.add_argument(
         "--debug", help="print full Python traceback", action="store_true"
     )
+    parser.add_argument(
+        "--overwrite", help="overwrite existing file(s)", action="store_true"
+    )
+
     parsed_args = parser.parse_args(args)
     config_file = parsed_args.config_file
     debug_mode = parsed_args.debug
+    overwrite = parsed_args.overwrite
 
     try:
         config_path = confirm_config_file(config_file)
 
         image_settings, plot_settings = load_from_toml(config_path)
+
+        if (check_for_overwrite(plot_settings) is not None) and (not overwrite):
+            raise ValueError(
+                "Running SkySim would overwrite one or more files, use the "
+                "--overwrite flag or change/remove the output path to continue."
+            )
 
         star_table = get_star_table(
             image_settings.observation_radec,

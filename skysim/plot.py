@@ -15,14 +15,7 @@ from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
 from skysim.settings import PlotSettings
-from skysim.utils import FloatArray
-
-# Constants
-
-
-TEMPFILE_SUFFIX = ".png"
-"""File extension to use for video frames."""
-
+from skysim.utils import TEMPFILE_SUFFIX, FloatArray, get_tempfile_path
 
 # Methods
 
@@ -91,11 +84,7 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
     for i in range(plot_settings.frames):
         results.append(
             save_frame(
-                i,
-                plot_settings,
-                image_matrix[i],
-                plot_settings.tempfile_path
-                / f"{str(i).zfill(plot_settings.tempfile_zfill)}.png",
+                i, plot_settings, image_matrix[i], get_tempfile_path(plot_settings, i)
             )
         )
 
