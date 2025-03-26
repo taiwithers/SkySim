@@ -1,46 +1,47 @@
 [tool.poetry]
-name = "skysim"
-version = "0.1.0"
-description = ""
-license = "GPL-3.0-or-later"
-readme = "README.md"
-authors = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
+name            = "skysim"
+version         = "0.1.0"
+description     = ""
+license         = "GPL-3.0-or-later"
+readme          = "README.md"
+authors         = ["Tai Withers <59430904+taiwithers@users.noreply.github.com>"]
 urls.repository = "https://github.com/taiwithers/SkySim"
 
 [tool.poetry.dependencies]
-python = "^3.12"
-numpy = "^2.2.2"
-matplotlib = "^3.10.0"
-astropy = "^7.0.1"
-astroquery = "^0.4.9.post1"
+python         = "^3.12"
+numpy          = "^2.2.2"
+matplotlib     = "^3.10.0"
+astropy        = "^7.0.1"
+astroquery     = "^0.4.9.post1"
 timezonefinder = "^6.5.8"
-pydantic = "^2.10.6"
+pydantic       = "^2.10.6"
 
 [tool.poetry.group.dev.dependencies]
-ipdb = "^0.13.13"
-pylint = "^3.3.4"
-black = "^25.1.0"
-pyright = "^1.1.394"
-mypy = "^1.15.0"
-pre-commit = "^4.1.0"
-pytest = "^8.3.4"
-pytest-cov = "^6.0.0"
-pytest-testmon = "^2.1.3"
-pillow = "^11.1.0"
+ipdb                 = "^0.13.13"
+pylint               = "^3.3.4"
+black                = "^25.1.0"
+pyright              = "^1.1.394"
+mypy                 = "^1.15.0"
+pre-commit           = "^4.1.0"
+pytest               = "^8.3.4"
+pytest-cov           = "^6.0.0"
+pytest-testmon       = "^2.1.3"
+pillow               = "^11.1.0"
 pytest-rerunfailures = "^15.0"
+pytest-instafail     = "^0.5.0"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^8.2.1"
-myst-parser = "^4.0.1"
+sphinx              = "^8.2.1"
+myst-parser         = "^4.0.1"
 pydata-sphinx-theme = "^0.16.1"
-numpydoc = "^1.8.0"
-autodoc-pydantic = "^2.2.0"
+numpydoc            = "^1.8.0"
+autodoc-pydantic    = "^2.2.0"
 
 [tool.poetry.scripts]
 skysim = "skysim.__main__:main"
 
 [build-system]
-requires = ["poetry-core"]
+requires      = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.coverage]
@@ -50,22 +51,22 @@ report.skip_empty = true
 profile = "black"
 
 [tool.mypy]
-follow_untyped_imports = true
-disallow_any_unimported = true
-disallow_any_expr = false
-disallow_any_decorated = true
-disallow_any_explicit = false
-disallow_any_generics = true
-disallow_subclassing_any = true
-disallow_untyped_calls = false
-disallow_untyped_defs = true
+follow_untyped_imports      = true
+disallow_any_unimported     = true
+disallow_any_expr           = false
+disallow_any_decorated      = true
+disallow_any_explicit       = false
+disallow_any_generics       = true
+disallow_subclassing_any    = true
+disallow_untyped_calls      = false
+disallow_untyped_defs       = true
 disallow_untyped_decorators = true
-warn_redundant_casts = true
-warn_return_any = false
-warn_unreachable = true
-warn_unused_configs = true
-disable_error_code = ["attr-defined", "unreachable", "union-attr"]
-plugins = ["numpy.typing.mypy_plugin"]
+warn_redundant_casts        = true
+warn_return_any             = false
+warn_unreachable            = true
+warn_unused_configs         = true
+disable_error_code          = ["attr-defined", "unreachable", "union-attr"]
+plugins                     = ["numpy.typing.mypy_plugin"]
 
 [[tool.mypy.overrides]]
 module = "skysim/*"
@@ -86,13 +87,13 @@ checks = [
 ]
 
 [tool.pyright]
-reportAttributeAccessIssue = false
-reportReturnType = false                 # pylint does this already
-reportArgumentType = false
-reportOperatorIssue = false
-reportCallIssue = false
-reportIndexIssue = false
-reportInvalidTypeForm = false
+reportAttributeAccessIssue       = false
+reportReturnType                 = false # pylint does this already
+reportArgumentType               = false
+reportOperatorIssue              = false
+reportCallIssue                  = false
+reportIndexIssue                 = false
+reportInvalidTypeForm            = false
 reportTypedDictNotRequiredAccess = false
 
 [tool.pylint]
@@ -116,12 +117,17 @@ reports.output-format = "colorized"
 testpaths = ["tests"]
 xfail_strict = true
 addopts = [
-    "--cov=skysim",
     "--pdbcls=IPython.terminal.debugger:TerminalPdb",
     "--color=yes",
-    "--no-cov-on-fail",
     "--durations=0",
     "--durations-min=1.0",
+    "--no-header",
+    "--tb=short",
+    # pytest-cov
+    "--cov=skysim",
+    "--no-cov-on-fail",
+    # pytest-instafail
+    "--instafail",
 ]
 reruns = 2 # pytest-rerunfailures
 reruns_delay = 5 # pytest-rerunfailures

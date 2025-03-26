@@ -2233,6 +2233,20 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "pytest-instafail"
+version = "0.5.0"
+description = "pytest plugin to show failures instantly"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytest-instafail-0.5.0.tar.gz", hash = "sha256:33a606f7e0c8e646dc3bfee0d5e3a4b7b78ef7c36168cfa1f3d93af7ca706c9e"},
+    {file = "pytest_instafail-0.5.0-py3-none-any.whl", hash = "sha256:6855414487e9e4bb76a118ce952c3c27d3866af15487506c4ded92eb72387819"},
+]
+
+[package.dependencies]
+pytest = ">=5"
+
+[[package]]
 name = "pytest-rerunfailures"
 version = "15.0"
 description = "pytest plugin to re-run tests to eliminate flaky failures"
@@ -2759,4 +2773,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "c85834dc6740393b27e33b5c877a414c18dd8549c2c46010f77df0fc08fc15a9"
+content-hash = "4120fc47b3d86a0b3e184e1f5951643d8431b8aa4f64de7dac670eb2618abf1c"
