@@ -25,6 +25,7 @@
       url = "github:ookiiboy/ignoreboy";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "nix-systems";
+      inputs.pre-commit-hooks.follows = "git-hooks";
     };
   };
 
