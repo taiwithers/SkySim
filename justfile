@@ -75,3 +75,8 @@ todo:
 # run a python file with ipdb enabled
 debug filename:
   ipdb3 -c continue {{filename}}
+
+update:
+  nix flake update
+  poetry update
+  pre-commit autoupdate # DOWNGRADE POETRY AND POETRY-EXPORT
