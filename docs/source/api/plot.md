@@ -4,16 +4,7 @@
 .. gets the module docstring
 .. automodule:: skysim.plot
    :no-index:
-   :exclude-members: TEMPFILE_SUFFIX, create_plot, create_single_plot, create_multi_plot, display_frame, save_frame, construct_ffmpeg_call, run_ffmpeg, movie_cleanup
-```
-
-## Constants
-
-```{eval-rst}
-.. autosummary::
-   :toctree: ../generated
-
-    TEMPFILE_SUFFIX
+   :exclude-members: create_plot, create_single_plot, create_multi_plot, display_frame, save_frame, construct_ffmpeg_call, run_ffmpeg, movie_cleanup
 ```
 
 ## Functions

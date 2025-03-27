@@ -1,10 +1,19 @@
-# `utilities`
+# `utils`
 
 ```{eval-rst}
 .. gets the module docstring
 .. automodule:: skysim.utils
    :no-index:
-   :exclude-members: FloatArray, IntArray, round_columns
+   :exclude-members: FloatArray, IntArray, round_columns, get_tempfile_path, TEMPFILE_SUFFIX
+```
+
+## Constants
+
+```{eval-rst}
+.. autosummary::
+   :toctree: ../generated
+
+    TEMPFILE_SUFFIX
 ```
 
 ## Type Aliases
@@ -24,4 +33,5 @@
    :toctree: ../generated
 
    round_columns
+   get_tempfile_path
 ```
