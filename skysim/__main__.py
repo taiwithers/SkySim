@@ -7,10 +7,59 @@ import sys
 from pathlib import Path
 
 # skysim. is required to run file as python <file>, but not for poetry install
+# TODO: check requirement for pip install
 from skysim.plot import create_plot
 from skysim.populate import create_image_matrix
 from skysim.query import get_body_locations, get_planet_table, get_star_table
 from skysim.settings import check_for_overwrite, confirm_config_file, load_from_toml
+from skysim.utils import read_pyproject
+
+
+def parse_args(args: list[str] | None) -> argparse.Namespace:
+    """Parse command line arguments.
+
+    Parameters
+    ----------
+    args : list[str] | None
+        Arguments.
+
+    Returns
+    -------
+    argparse.Namespace
+        Parsed arguments.
+    """
+    pyproject = read_pyproject()
+    executable = list(pyproject["scripts"].keys())[0]
+    version_string = f"{pyproject['name']} {pyproject['version']}"
+
+    parser = argparse.ArgumentParser(
+        prog=executable,
+        description=pyproject["description"],
+        epilog="\n".join(
+            [
+                version_string,
+                "Repository: " + pyproject["urls"]["repository"],
+                "License: " + pyproject["license"],
+            ]
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument("config_file", help="TOML configuration file")
+    parser.add_argument(
+        "--debug", help="print full Python traceback", action="store_true"
+    )
+    parser.add_argument(
+        "--overwrite", help="overwrite existing file(s)", action="store_true"
+    )
+    parser.add_argument(
+        "--version",
+        version=version_string,
+        action="version",
+    )
+
+    parsed_args = parser.parse_args(args)
+
+    return parsed_args
 
 
 def main(  # pylint: disable=inconsistent-return-statements
@@ -22,8 +71,10 @@ def main(  # pylint: disable=inconsistent-return-statements
     Parameters
     ----------
     args : list[str]|None, optional
-        Used when testing with pytest - since arguments can't be passed via
-        command line they are instead given with the `args` list.
+        When called via command line, this is None, and argparse captures the arguments
+        directly.
+        When running `main()` inside of python (e.g., with pytest), `args` holds a list
+        of arguments.
 
     Returns
     -------
@@ -40,28 +91,15 @@ def main(  # pylint: disable=inconsistent-return-statements
         Supercedes internal errors to produce a cleaner error message if the
         --debug flag is not set.
     """
-
-    parser = argparse.ArgumentParser(prog="skysim")
-    parser.add_argument("config_file", help="TOML configuration file")
-    parser.add_argument(
-        "--debug", help="print full Python traceback", action="store_true"
-    )
-    parser.add_argument(
-        "--overwrite", help="overwrite existing file(s)", action="store_true"
-    )
-
-    parsed_args = parser.parse_args(args)
-    config_file = parsed_args.config_file
-    debug_mode = parsed_args.debug
-    overwrite = parsed_args.overwrite
+    options = parse_args(args)
 
     try:
-        config_path = confirm_config_file(config_file)
+        config_path = confirm_config_file(options.config_file)
 
         image_settings, plot_settings = load_from_toml(config_path)
 
         overwritten_path = check_for_overwrite(plot_settings)  # type: ignore[arg-type]
-        if (overwritten_path is not None) and (not overwrite):
+        if (overwritten_path is not None) and (not options.overwrite):
             raise ValueError(
                 "Running SkySim would overwrite one or more files, use the "
                 "--overwrite flag or change/remove the output path to continue."
@@ -87,12 +125,12 @@ def main(  # pylint: disable=inconsistent-return-statements
 
     # Optionally print simple error message instead of full traceback
     except (ValueError, ConnectionError) as e:
-        if debug_mode:
+        if options.debug:
             raise e
 
         sys.stderr.write(f"skysim: error: {' '.join(e.args)}")
         sys.exit(1)
 
-    if debug_mode:
+    if options.debug:
         return plot_settings.filename
     return  # type: ignore[return-value]
