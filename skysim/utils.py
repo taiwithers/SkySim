@@ -91,6 +91,7 @@ def get_tempfile_path(
 
 def read_pyproject() -> dict[str, Any]:
     """Load the pyproject.toml file and return the most relevant entries.
+    Used in conf.py for Sphinx configuration.
 
     Returns
     -------

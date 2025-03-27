@@ -163,7 +163,7 @@ def get_star_table(
         Highest magnitude value to search for.
     object_colours : dict[str, RGBTuple]
         Colours of the objects - used to check if spectral types are valid.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
 
     Returns

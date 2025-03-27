@@ -55,7 +55,7 @@ def create_image_matrix(
         Result of planet queries.
     star_table : QTable
         Result of SIMBAD queries.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
 
     Returns
@@ -422,7 +422,7 @@ def fill_frame_objects(
         Table of objects to add.
     image_settings : ImageSettings
         Configuration.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
 
     Returns

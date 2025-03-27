@@ -4,7 +4,7 @@
 .. gets the module docstring
 .. automodule:: skysim.utils
    :no-index:
-   :exclude-members: FloatArray, IntArray, round_columns, get_tempfile_path, TEMPFILE_SUFFIX
+   :exclude-members: FloatArray, IntArray, round_columns, get_tempfile_path, TEMPFILE_SUFFIX, read_pyproject
 ```
 
 ## Constants
@@ -34,4 +34,5 @@
 
    round_columns
    get_tempfile_path
+   read_pyproject
 ```

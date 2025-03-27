@@ -34,7 +34,7 @@ def create_plot(
         Configuration.
     image_matrix : FloatArray
         RGB images.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
     """
     if plot_settings.frames == 1:
@@ -60,7 +60,7 @@ def create_single_plot(
         Configuration.
     image_matrix : FloatArray
         Single frame RGB image.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
     """
     save_frame(0, plot_settings, image_matrix[0], plot_settings.filename)
@@ -80,7 +80,7 @@ def create_multi_plot(
         Configuration object, passed to `save_frame`.
     image_matrix : FloatArray
         Multi-frame RGB image.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
     """
     if not plot_settings.tempfile_path.is_dir():
@@ -297,7 +297,7 @@ def movie_cleanup(
         The image files to delete.
     directory : Path
         The directory to delete.
-    verbose_level : int, optional
+    verbose_level : int
         How much detail to print.
 
     Raises
