@@ -16,7 +16,7 @@ type InputColour = list[float | int] | str
 
 
 @dataclass
-class RGB:  # type: ignore[misc]
+class RGB:
     """Tuple of RGB values."""
 
     original: InputColour

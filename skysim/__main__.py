@@ -61,7 +61,8 @@ def main(  # pylint: disable=inconsistent-return-statements
 
         image_settings, plot_settings = load_from_toml(config_path)
 
-        if (check_for_overwrite(plot_settings) is not None) and (not overwrite):
+        overwritten_path = check_for_overwrite(plot_settings)  # type: ignore[arg-type]
+        if (overwritten_path is not None) and (not overwrite):
             raise ValueError(
                 "Running SkySim would overwrite one or more files, use the "
                 "--overwrite flag or change/remove the output path to continue."
@@ -79,7 +80,9 @@ def main(  # pylint: disable=inconsistent-return-statements
         )
         planet_tables = get_planet_table(body_locations)
 
-        image = create_image_matrix(image_settings, planet_tables, star_table)  # type: ignore[arg-type]
+        image = create_image_matrix(
+            image_settings, planet_tables, star_table  # type: ignore[arg-type]
+        )
 
         create_plot(plot_settings, image)  # type: ignore[arg-type]
 
@@ -93,4 +96,4 @@ def main(  # pylint: disable=inconsistent-return-statements
 
     if debug_mode:
         return plot_settings.filename
-    return
+    return  # type: ignore[return-value]

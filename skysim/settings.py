@@ -137,7 +137,8 @@ class Settings(BaseModel):  # type: ignore[misc]
         """
         if self.snapshot_frequency > self.duration:
             raise ValueError(
-                "Frequency of snapshots (observation.interval) cannot be longer than observation.duration."
+                "Frequency of snapshots (observation.interval) cannot be longer than "
+                "observation.duration."
             )
         return self
 
@@ -375,12 +376,16 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
     @field_validator("object_colours", mode="before")
     @classmethod
-    def _convert_colour_dict(cls, colour_dict: dict[str, Any]) -> dict[str, RGBTuple]:  # type: ignore[misc]
+    def _convert_colour_dict(  # type: ignore[misc]
+        cls, colour_dict: dict[str, Any]
+    ) -> dict[str, RGBTuple]:
         return {key: convert_colour(value) for key, value in colour_dict.items()}
 
     @field_validator("colour_values", mode="before")
     @classmethod
-    def _convert_colour_list(cls, colour_list: list[Any]) -> list[RGBTuple]:  # type: ignore[misc]
+    def _convert_colour_list(  # type: ignore[misc]
+        cls, colour_list: list[Any]
+    ) -> list[RGBTuple]:
         return [convert_colour(value) for value in colour_list]
 
     # Derived and stored
@@ -416,8 +421,9 @@ class ImageSettings(Settings):  # type: ignore[misc]
     @computed_field()
     @cached_property
     def magnitude_mapping(self) -> FloatArray:
-        """Interpolate between the magnitude-time mappings indicated by `magnitude_values` and
-        `magnitude_time_indices` to generate an addressable mapping.
+        """Interpolate between the magnitude-time mappings indicated by
+        `magnitude_values` and `magnitude_time_indices` to generate an addressable
+        mapping.
 
         Returns
         -------
@@ -649,7 +655,8 @@ class PlotSettings(Settings):  # type: ignore[misc]
         input_fps : NonNegativeFloat
             Frames per second as input when instantiating the `PlotSettings` object.
         info : ValidationInfo
-            Pydantic `ValidationInfo` object allowing access to the other already-validated fields.
+            Pydantic `ValidationInfo` object allowing access to the other
+            already-validated fields.
 
         Returns
         -------
@@ -659,7 +666,8 @@ class PlotSettings(Settings):  # type: ignore[misc]
         Raises
         ------
         ValueError
-            Raised if `fps` is given as zero but the observation `duration` implies there should be multiple frames.
+            Raised if `fps` is given as zero but the observation `duration` implies
+            there should be multiple frames.
         """
         if info.data["duration"].total_seconds() == 0:
             return 0
@@ -714,7 +722,8 @@ def confirm_config_file(input_config_path: str) -> Path:
 def load_from_toml(
     filename: Path, return_settings: bool = False
 ) -> Settings | SettingsPair:
-    """Load configuration options from a TOML file and parse them into `Settings` objects.
+    """Load configuration options from a TOML file and parse them into `Settings`
+    objects.
 
     Parameters
     ----------
@@ -753,10 +762,14 @@ def load_from_toml(
             index = error_message.index(skip_point) + len(skip_point)
             new_message = error_message[index:]
 
-        else:  # probaby a type coercion error listed in https://docs.pydantic.dev/2.10/errors/validation_errors/
+        else:  # probaby a type coercion error listed in
+            # https://docs.pydantic.dev/2.10/errors/validation_errors/
             bad_dict_key = original_error["loc"][0]
             bad_dict_value = original_error["input"]
-            new_message = f"Error processing '{bad_dict_value}' into {bad_dict_key}. {error_message}."
+            new_message = (
+                f"Error processing '{bad_dict_value}' into {bad_dict_key}. "
+                f"{error_message}."
+            )
 
         raise ValueError(new_message) from e
 
@@ -830,8 +843,12 @@ def toml_to_dicts(
         "start_time": toml_config["observation"]["time"],
         # Optional
         "image_pixels": load_or_default("image.pixels"),
-        "duration": time_to_timedelta(load_or_default("observation.duration")),  # type: ignore[arg-type]
-        "snapshot_frequency": time_to_timedelta(load_or_default("observation.interval")),  # type: ignore[arg-type]
+        "duration": time_to_timedelta(
+            load_or_default("observation.duration")  # type: ignore[arg-type]
+        ),
+        "snapshot_frequency": time_to_timedelta(
+            load_or_default("observation.interval")  # type: ignore[arg-type]
+        ),
     }
 
     image_config = {
@@ -969,7 +986,9 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
     return
 
 
-def parse_angle_dict(dictionary: dict[str, int | float]) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
+def parse_angle_dict(
+    dictionary: dict[str, int | float],
+) -> u.Quantity["angle"]:  # type: ignore[type-arg, name-defined]
     """Convert a dictionary of the form {degrees:X, arcminutes:Y, arcseconds:Z}
     to a single Quantity.
 
@@ -1025,8 +1044,8 @@ def get_config_option(
     default_config: TOMLConfig,
     default_key: Optional[str] = None,
 ) -> ConfigValue:
-    """Access a config value from the TOML config provided, and if not present, search the
-    provded default config.
+    """Access a config value from the TOML config provided, and if not present, search
+    the provded default config.
 
     Parameters
     ----------
@@ -1052,7 +1071,7 @@ def get_config_option(
     return access_nested_dictionary(default_config, split_nested_key(default_key))
 
 
-def angle_to_dms(angle: u.Quantity["angle"]) -> str:
+def angle_to_dms(angle: u.Quantity["angle"]) -> str:  # type: ignore[type-arg,name-defined]
     """Convert a astropy angle to a pretty-printed string.
 
     Parameters

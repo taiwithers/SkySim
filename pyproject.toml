@@ -23,7 +23,6 @@ pydantic       = "^2.10.6"
 ipdb                 = "^0.13.13"
 pylint               = "^3.3.4"
 black                = "^25.1.0"
-pyright              = "^1.1.394"
 mypy                 = "^1.15.0"
 pre-commit           = "^4.1.0"
 pytest               = "^8.3.4"
@@ -89,18 +88,8 @@ checks = [
     "GL01", # don't start docstrings on the same line
 ]
 
-[tool.pyright]
-reportAttributeAccessIssue       = false
-reportReturnType                 = false # pylint does this already
-reportArgumentType               = false
-reportOperatorIssue              = false
-reportCallIssue                  = false
-reportIndexIssue                 = false
-reportInvalidTypeForm            = false
-reportTypedDictNotRequiredAccess = false
-
 [tool.pylint]
-format.max-line-length = 120
+format.max-line-length = 95
 main.ignore-paths = ["docs/source/conf.py", ".poetry/*"]
 main.jobs = 0
 "messages control".disable = [

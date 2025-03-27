@@ -64,7 +64,9 @@ def round_columns(
     return table
 
 
-def get_tempfile_path(plot_settings: "PlotSettings", frame_index: int) -> Path:
+def get_tempfile_path(
+    plot_settings: "PlotSettings", frame_index: int  # type: ignore[name-defined]
+) -> Path:
     """Get the path for a temporary file that ffmpeg will read an image from.
 
     Parameters

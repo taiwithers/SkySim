@@ -226,7 +226,10 @@ def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
     output_options = (
         f"-y -r {plot_settings.fps} -codec:v libx264 {output_filter} -pix_fmt yuv420p"
     )
-    return f"ffmpeg {global_options} {input_options} -i {input_files} {output_options} {plot_settings.filename}"
+    return (
+        f"ffmpeg {global_options} {input_options} -i {input_files} {output_options}"
+        f" {plot_settings.filename}"
+    )
 
 
 def run_ffmpeg(plot_settings: PlotSettings) -> None:
@@ -255,7 +258,8 @@ def run_ffmpeg(plot_settings: PlotSettings) -> None:
         print(f"{plot_settings.filename} saved.")
     else:
         raise ValueError(
-            f"Something went wrong compiling the frames into a video. FFmpeg error: {ffmpeg_out.stderr}"
+            "Something went wrong compiling the frames into a video. "
+            f"FFmpeg error: {ffmpeg_out.stderr}"
         )
 
 

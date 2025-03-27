@@ -168,7 +168,7 @@ def get_star_table(
     QTable
         Table of all valid celestial objects.
     """
-    query_result = run_simbad_query(  # type: ignore[arg-type]
+    query_result = run_simbad_query(
         "region",
         extra_columns=["otype", "V", "ids", "sp_type"],
         coordinates=observation_radec,
@@ -255,9 +255,10 @@ def run_simbad_query(
         elif query_type == "tap":
             if len(extra_columns) > 0:
                 raise ValueError(  # TODO: add test for this error
-                    f"{extra_columns=} was passed to run_simbad_query, but {query_type=} which doesn't support that."
+                    f"{extra_columns=} was passed to run_simbad_query, but "
+                    f"{query_type=} which doesn't support that."
                 )
-            result = QTable(Simbad.query_tap(**kwargs))  # type: ignore[arg-type]
+            result = QTable(Simbad.query_tap(**kwargs))
         else:
             raise ValueError(  # TODO: add test for this error
                 f'{query_type=} is invalid, should be one of ["region","tap"].'
@@ -369,7 +370,7 @@ def get_child_stars(
     """
 
     try:
-        children = run_simbad_query("tap", query=parent_query_adql)  # type: ignore[arg-type]
+        children = run_simbad_query("tap", query=parent_query_adql)
     except DALQueryError as e:
         # Sometimes one of the parent ids is...problematic
         # if that's the case, just boot it out
@@ -388,7 +389,7 @@ def get_child_stars(
             parent_query_adql = "\n".join(query_split)
             children = run_simbad_query("tap", query=parent_query_adql)
         else:
-            children = []  # type: ignore[assignment]
+            children = QTable(**BASIC_TABLE)
             raise e
     return children["child"].data
 
@@ -424,7 +425,7 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
     all_children.append(
         get_child_stars(tuple(parents.data[n_blocks * blocksize :]), maximum_magnitude)
     )
-    child_items = np.concatenate(all_children)  # type: ignore[var-annotated,arg-type]
+    child_items = np.concatenate(all_children)  # type: ignore[arg-type,var-annotated]
 
     star_table.add_index("id")
     for child_id in child_items:
