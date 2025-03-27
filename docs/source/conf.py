@@ -6,7 +6,6 @@ Configuration for Sphinx.
 # pylint: disable=W,C,R
 
 import sys
-import tomllib
 from pathlib import Path
 
 from skysim.utils import read_pyproject
@@ -34,8 +33,6 @@ language = "en"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-sys.path.insert(0, str(Path("..", "..").resolve()))
-
 extensions = []
 suppress_warnings = []
 
@@ -70,6 +67,7 @@ html_css_files = ["css/custom.css"]
 
 ## autodoc
 extensions.append("sphinx.ext.autodoc")
+sys.path.insert(0, str(Path("..", "..").resolve()))
 autodoc_typehints = "none"  # napoleon deals with these
 autodoc_member_order = "groupwise"
 autodoc_default_options = {"members": True}
@@ -96,6 +94,7 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "pydantic": ("https://docs.pydantic.dev/latest", None),
     "timezonefinder": ("https://timezonefinder.readthedocs.io/en/latest/", None),
+    "astroquery": ("https://astroquery.readthedocs.io/en/latest/", None),
 }
 
 
