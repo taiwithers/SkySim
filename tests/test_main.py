@@ -30,7 +30,7 @@ def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
     Path
         The file output by main().
     """
-    main([str(config_path)])
+    main(["--overwrite", str(config_path)])
 
     yield plot_settings.filename
 
