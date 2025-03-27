@@ -1,7 +1,6 @@
 """Tests for the main callable of SkySim."""
 
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pytest
@@ -76,7 +75,7 @@ def test_image_contents(created_imagepath: Path) -> None:
     ],
 )
 def test_main_args(
-    capsys: pytest.CaptureFixture[str], args: list[str], exception_string: Optional[str]
+    capsys: pytest.CaptureFixture[str], args: list[str], exception_string: str | None
 ) -> None:
     """Test that the correct exceptions are raised when skysim.__main__.main is
     called with incorrect arguments.
@@ -87,7 +86,7 @@ def test_main_args(
         Pytest fixture to grab stderr and stdout.
     args : list[str]
         Arguments to pass to `main` for argparse.
-    exception_string : Optional[str]
+    exception_string : str|None
         String that should appear in the exception message, if any.
     """
     with pytest.raises(SystemExit):

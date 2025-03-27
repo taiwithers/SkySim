@@ -10,7 +10,7 @@ from collections.abc import Mapping
 from datetime import date, datetime, time, timedelta
 from functools import cached_property
 from pathlib import Path
-from typing import Any, ForwardRef, Optional, Self  # pylint: disable=unused-import
+from typing import Any, ForwardRef, Self  # pylint: disable=unused-import
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -1042,7 +1042,7 @@ def get_config_option(
     toml_dictionary: TOMLConfig,
     toml_key: str,
     default_config: TOMLConfig,
-    default_key: Optional[str] = None,
+    default_key: str | None = None,
 ) -> ConfigValue:
     """Access a config value from the TOML config provided, and if not present, search
     the provded default config.
@@ -1055,7 +1055,7 @@ def get_config_option(
         Nested key to access the TOML dictionary with.
     default_config : TOMLConfig
         Default configuration dictionary.
-    default_key : Optional[str], optional
+    default_key : str|None, optional
         Alternative key to access the default dictionary with, if different from
         `toml_key`, by default None.
 

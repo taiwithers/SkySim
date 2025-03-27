@@ -5,7 +5,6 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
 
 # skysim. is required to run file as python <file>, but not for poetry install
 from skysim.plot import create_plot
@@ -15,14 +14,14 @@ from skysim.settings import check_for_overwrite, confirm_config_file, load_from_
 
 
 def main(  # pylint: disable=inconsistent-return-statements
-    args: Optional[list[str]] = None,
+    args: list[str] | None = None,
 ) -> Path | None:
     """Entrypoint for the SkySim package. Calls the high-level functions from
     the other modules.
 
     Parameters
     ----------
-    args : Optional[list[str]]
+    args : list[str]|None, optional
         Used when testing with pytest - since arguments can't be passed via
         command line they are instead given with the `args` list.
 
