@@ -629,6 +629,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
         ValueError
             Raised if parent directory does not exist.
         """
+
         if not filename.parent.exists():
             raise ValueError(
                 f"Cannot save result '{filename.resolve()}' because parent directory "
