@@ -14,7 +14,9 @@ from skysim.query import get_body_locations, get_planet_table, get_star_table
 from skysim.settings import check_for_overwrite, confirm_config_file, load_from_toml
 
 
-def main(args: Optional[list[str]] = None) -> Path:
+def main(  # pylint: disable=inconsistent-return-statements
+    args: Optional[list[str]] = None,
+) -> Path | None:
     """Entrypoint for the SkySim package. Calls the high-level functions from
     the other modules.
 
@@ -81,8 +83,6 @@ def main(args: Optional[list[str]] = None) -> Path:
 
         create_plot(plot_settings, image)  # type: ignore[arg-type]
 
-        return plot_settings.filename
-
     # Optionally print simple error message instead of full traceback
     except (ValueError, ConnectionError) as e:
         if debug_mode:
@@ -90,3 +90,7 @@ def main(args: Optional[list[str]] = None) -> Path:
 
         sys.stderr.write(f"skysim: error: {' '.join(e.args)}")
         sys.exit(1)
+
+    if debug_mode:
+        return plot_settings.filename
+    return

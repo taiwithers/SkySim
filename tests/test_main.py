@@ -27,7 +27,7 @@ def created_imagepath(config_path: Path) -> Path:
     Path
         The file output by main().
     """
-    result = main(["--overwrite", str(config_path)])
+    result = main(["--debug", "--overwrite", str(config_path)])
 
     yield result
 
@@ -147,7 +147,7 @@ def test_main_overwrite(filename: str, overwrite_filename: str) -> None:
         )  # use debug to throw VE instead of SystemExit
 
     # test a success
-    new_file = main(["--overwrite", f"{TEST_ROOT_PATH}/configs/{filename}"])
+    new_file = main(["--overwrite", "--debug", f"{TEST_ROOT_PATH}/configs/{filename}"])
 
     # teardown
     new_file.unlink()

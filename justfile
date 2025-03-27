@@ -44,9 +44,7 @@ build-docs sphinx-build-args="":
 [group('docs')]
 full-build-docs:
   -mkdir --parents docs/source/_static/examples
-  skysim examples/still_image.toml
-  ls
-  mv SkySim.png docs/source/_static/examples/still_image.png
+  skysim examples/still_image.toml && mv SkySim.png docs/source/_static/examples/still_image.png
   skysim examples/movie.toml && mv SkySim.mp4 docs/source/_static/examples/movie.mp4
   just build-docs --fail-on-warning
   rm docs/source/_static/examples/still_image.png
