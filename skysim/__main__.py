@@ -4,6 +4,7 @@
 
 import argparse
 import sys
+from pathlib import Path
 from typing import Optional
 
 # skysim. is required to run file as python <file>, but not for poetry install
@@ -13,7 +14,7 @@ from skysim.query import get_body_locations, get_planet_table, get_star_table
 from skysim.settings import check_for_overwrite, confirm_config_file, load_from_toml
 
 
-def main(args: Optional[list[str]] = None) -> None:
+def main(args: Optional[list[str]] = None) -> Path:
     """Entrypoint for the SkySim package. Calls the high-level functions from
     the other modules.
 
@@ -22,6 +23,11 @@ def main(args: Optional[list[str]] = None) -> None:
     args : Optional[list[str]]
         Used when testing with pytest - since arguments can't be passed via
         command line they are instead given with the `args` list.
+
+    Returns
+    -------
+    Path
+        Path object to the created file.
 
     Raises
     ------
@@ -74,6 +80,8 @@ def main(args: Optional[list[str]] = None) -> None:
         image = create_image_matrix(image_settings, planet_tables, star_table)  # type: ignore[arg-type]
 
         create_plot(plot_settings, image)  # type: ignore[arg-type]
+
+        return plot_settings.filename
 
     # Optionally print simple error message instead of full traceback
     except (ValueError, ConnectionError) as e:

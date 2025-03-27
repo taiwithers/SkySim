@@ -8,13 +8,12 @@ import pytest
 from PIL import Image
 
 from skysim.__main__ import main
-from skysim.settings import PlotSettings
 
 from .utils import TEST_ROOT_PATH
 
 
 @pytest.fixture(scope="session")
-def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
+def created_imagepath(config_path: Path) -> Path:
     """Run the main SkySim command, return the saved filename, and clean up once
     the requesting function is finished.
 
@@ -22,19 +21,18 @@ def created_imagepath(config_path: Path, plot_settings: PlotSettings) -> Path:
     ----------
     config_path : Path
         Pytest fixture.
-    plot_settings : PlotSettings
-        Pytest fixture.
 
     Yields
     ------
     Path
         The file output by main().
     """
-    main(["--overwrite", str(config_path)])
+    result = main(["--overwrite", str(config_path)])
 
-    yield plot_settings.filename
+    yield result
 
-    plot_settings.filename.unlink()
+    if result.exists():
+        result.unlink()
 
 
 def test_image_creation(created_imagepath: Path) -> None:
@@ -115,6 +113,47 @@ def test_main_debug() -> None:
     ]  # should be the string passed to ValueError
 
     assert len(debug_exception_args) > 1  # string should not be empty
+
+
+@pytest.mark.parametrize(
+    "filename,overwrite_filename",
+    [
+        ("overwrite_final.toml", "final.png"),
+        ("overwrite_temporary.toml", "SkySimFiles/00.png"),
+    ],
+)
+def test_main_overwrite(filename: str, overwrite_filename: str) -> None:
+    """Test the --overwrite flag.
+
+    Parameters
+    ----------
+    filename : str
+        Config file to use.
+    overwrite_filename : str
+        File that will be overwritten by SkySim.
+    """
+    overwrite_filepath = Path(overwrite_filename).resolve()
+    parent_exists = overwrite_filepath.parent.exists()
+
+    # setup
+    if not parent_exists:
+        overwrite_filepath.parent.mkdir(parents=True)
+    overwrite_filepath.touch()
+
+    # test a failure
+    with pytest.raises(ValueError, match="Running SkySim would overwrite"):
+        main(
+            ["--debug", f"{TEST_ROOT_PATH}/configs/{filename}"]
+        )  # use debug to throw VE instead of SystemExit
+
+    # test a success
+    new_file = main(["--overwrite", f"{TEST_ROOT_PATH}/configs/{filename}"])
+
+    # teardown
+    new_file.unlink()
+    if (not parent_exists) and overwrite_filepath.parent.exists():
+        # if it didn't exist originally, but does now
+        overwrite_filepath.parent.rmdir()
 
 
 @pytest.mark.parametrize(
