@@ -23,7 +23,9 @@ from skysim.utils import TEMPFILE_SUFFIX, FloatArray, get_tempfile_path
 ## Top-Level Plot Method
 
 
-def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
+def create_plot(
+    plot_settings: PlotSettings, image_matrix: FloatArray, verbose_level: int
+) -> None:
     """Main function for this module, creates image files from `image_matrix`.
 
     Parameters
@@ -32,12 +34,14 @@ def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
         Configuration.
     image_matrix : FloatArray
         RGB images.
+    verbose_level : int, optional
+        How much detail to print.
     """
     if plot_settings.frames == 1:
-        create_single_plot(plot_settings, image_matrix)
+        create_single_plot(plot_settings, image_matrix, verbose_level)
 
     else:
-        create_multi_plot(plot_settings, image_matrix)
+        create_multi_plot(plot_settings, image_matrix, verbose_level)
 
     return
 
@@ -45,7 +49,9 @@ def create_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
 ## Secondary Plot Methods
 
 
-def create_single_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
+def create_single_plot(
+    plot_settings: PlotSettings, image_matrix: FloatArray, verbose_level: int
+) -> None:
     """Plotting function for a still image.
 
     Parameters
@@ -54,13 +60,18 @@ def create_single_plot(plot_settings: PlotSettings, image_matrix: FloatArray) ->
         Configuration.
     image_matrix : FloatArray
         Single frame RGB image.
+    verbose_level : int, optional
+        How much detail to print.
     """
     save_frame(0, plot_settings, image_matrix[0], plot_settings.filename)
-    print(f"{plot_settings.filename} saved.")
+    if verbose_level > 0:
+        print(f"{plot_settings.filename} saved.")
     return
 
 
-def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> None:
+def create_multi_plot(
+    plot_settings: PlotSettings, image_matrix: FloatArray, verbose_level: int
+) -> None:
     """Plotting function for creating a video.
 
     Parameters
@@ -69,6 +80,8 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
         Configuration object, passed to `save_frame`.
     image_matrix : FloatArray
         Multi-frame RGB image.
+    verbose_level : int, optional
+        How much detail to print.
     """
     if not plot_settings.tempfile_path.is_dir():
         try:
@@ -82,14 +95,20 @@ def create_multi_plot(plot_settings: PlotSettings, image_matrix: FloatArray) -> 
 
     results = []
     for i in range(plot_settings.frames):
-        results.append(
-            save_frame(
-                i, plot_settings, image_matrix[i], get_tempfile_path(plot_settings, i)
-            )
-        )
+        tempfile_path = get_tempfile_path(plot_settings, i)
+        results.append(save_frame(i, plot_settings, image_matrix[i], tempfile_path))
+        if verbose_level > 1:
+            print(f"{tempfile_path} saved.")
 
-    run_ffmpeg(plot_settings)
-    movie_cleanup([i[1] for i in results], plot_settings.tempfile_path)
+    ffmpeg_call = construct_ffmpeg_call(plot_settings)
+    if verbose_level > 1:
+        print(f"Running ffmpeg with `{ffmpeg_call}`")
+    ffmpeg_return_code = run_ffmpeg(ffmpeg_call)
+    if ffmpeg_return_code == 0:
+        if verbose_level > 0:
+            print(f"{plot_settings.filename} saved.")
+
+    movie_cleanup([i[1] for i in results], plot_settings.tempfile_path, verbose_level)
 
     return
 
@@ -149,6 +168,7 @@ def save_frame(
             "Choose a different path for the output file."
         ) from e
     plt.close()
+
     return (index, filename)
 
 
@@ -232,21 +252,24 @@ def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
     )
 
 
-def run_ffmpeg(plot_settings: PlotSettings) -> None:
+def run_ffmpeg(ffmpeg_call: str) -> int:
     """Run FFmpeg to convert the set of images into a video.
 
     Parameters
     ----------
-    plot_settings : PlotSettings
-        Configuration. Passed to `construct_ffmpeg_call`.
+    ffmpeg_call : str
+        The shell command to run FFmpeg.
+
+    Returns
+    -------
+    int
+        FFmpeg return code.
 
     Raises
     ------
     ValueError
         Raised if FFmpeg returns a non-zero exit code.
     """
-    ffmpeg_call = construct_ffmpeg_call(plot_settings)
-    print(f"Running ffmpeg with `{ffmpeg_call}`")
     ffmpeg_out = subprocess.run(
         ffmpeg_call,
         shell=True,  # run as shell command
@@ -254,16 +277,18 @@ def run_ffmpeg(plot_settings: PlotSettings) -> None:
         text=True,  # interpret stderr and stdout as text
         check=False,  # don't raise exception on non-zero exit code
     )
-    if ffmpeg_out.returncode == 0:
-        print(f"{plot_settings.filename} saved.")
-    else:
+    if ffmpeg_out.returncode != 0:
         raise ValueError(
             "Something went wrong compiling the frames into a video. "
             f"FFmpeg error: {ffmpeg_out.stderr}"
         )
 
+    return ffmpeg_out.returncode
 
-def movie_cleanup(filenames: Collection[Path], directory: Path) -> None:
+
+def movie_cleanup(
+    filenames: Collection[Path], directory: Path, verbose_level: int
+) -> None:
     """Clean up the tempfiles used in creating a video.
 
     Parameters
@@ -272,6 +297,8 @@ def movie_cleanup(filenames: Collection[Path], directory: Path) -> None:
         The image files to delete.
     directory : Path
         The directory to delete.
+    verbose_level : int, optional
+        How much detail to print.
 
     Raises
     ------
@@ -281,7 +308,11 @@ def movie_cleanup(filenames: Collection[Path], directory: Path) -> None:
     for path in filenames:
         if path.suffix == TEMPFILE_SUFFIX:
             path.unlink()
+            if verbose_level > 1:
+                print(f"{path} removed.")
     try:
+        if verbose_level > 1:
+            print(f"{directory} removed.")
         directory.rmdir()
     except OSError as e:
         raise ValueError(

@@ -148,6 +148,7 @@ def get_star_table(
     field_of_view: u.Quantity["angle"],  # type: ignore[type-arg, name-defined]
     maximum_magnitude: float,
     object_colours: dict[str, RGBTuple],
+    verbose_level: int = 1,
 ) -> QTable:
     """
     Query Simbad to get celestial objects.
@@ -162,6 +163,8 @@ def get_star_table(
         Highest magnitude value to search for.
     object_colours : dict[str, RGBTuple]
         Colours of the objects - used to check if spectral types are valid.
+    verbose_level : int, optional
+        How much detail to print.
 
     Returns
     -------
@@ -182,6 +185,8 @@ def get_star_table(
     query_result = get_star_name_column(query_result)
 
     if len(query_result) == 0:
+        if verbose_level > 1:
+            print("Query to SIMBAD resulted in no objects.")
         return query_result
 
     # spectral types
@@ -195,6 +200,8 @@ def get_star_table(
     query_result = round_columns(query_result)
     query_result = unique(query_result)
 
+    if verbose_level > 1:
+        print(f"Query to SIMBAD resulted in {len(query_result)} objects.")
     return query_result
 
 

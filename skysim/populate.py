@@ -42,6 +42,7 @@ def create_image_matrix(
     image_settings: ImageSettings,
     planet_tables: list[QTable],
     star_table: QTable,
+    verbose_level: int,
 ) -> FloatArray:
     """Primary function for the populate module. Creates and fills in the image
     matrix.
@@ -54,6 +55,8 @@ def create_image_matrix(
         Result of planet queries.
     star_table : QTable
         Result of SIMBAD queries.
+    verbose_level : int, optional
+        How much detail to print.
 
     Returns
     -------
@@ -80,12 +83,7 @@ def create_image_matrix(
         filled_frames = pool.starmap(
             fill_frame_objects,
             [
-                (
-                    i,
-                    image_matrix[i],
-                    object_tables[i],
-                    image_settings,
-                )
+                (i, image_matrix[i], object_tables[i], image_settings, verbose_level)
                 for i in range(image_settings.frames)
                 if len(object_tables[i]) > 0
             ],
@@ -406,7 +404,11 @@ def add_object_to_frame(
 
 
 def fill_frame_objects(
-    index: int, frame: FloatArray, objects_table: QTable, image_settings: ImageSettings
+    index: int,
+    frame: FloatArray,
+    objects_table: QTable,
+    image_settings: ImageSettings,
+    verbose_level: int,
 ) -> tuple[int, FloatArray]:
     """Pickle-able function to call `add_object_to_frame` for a whole table of objects.
 
@@ -420,6 +422,8 @@ def fill_frame_objects(
         Table of objects to add.
     image_settings : ImageSettings
         Configuration.
+    verbose_level : int, optional
+        How much detail to print.
 
     Returns
     -------
@@ -444,6 +448,9 @@ def fill_frame_objects(
             image_settings.area_mesh,
             image_settings.brightness_scale_mesh,
         )
+
+    if verbose_level > 1:
+        print(f"Added {len(objects_table)} objects to image {index}.")
 
     return index, frame
 

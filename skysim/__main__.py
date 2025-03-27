@@ -52,6 +52,13 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
         "--overwrite", help="overwrite existing file(s)", action="store_true"
     )
     parser.add_argument(
+        "--verbose",
+        help="select output verbosity (default %(default)s)",
+        choices=[0, 1, 2],
+        type=int,  # casts input to int before applying choices
+        default=1,
+    )
+    parser.add_argument(
         "--version",
         version=version_string,
         action="version",
@@ -118,10 +125,13 @@ def main(  # pylint: disable=inconsistent-return-statements
         planet_tables = get_planet_table(body_locations)
 
         image = create_image_matrix(
-            image_settings, planet_tables, star_table  # type: ignore[arg-type]
+            image_settings,  # type: ignore[arg-type]
+            planet_tables,
+            star_table,
+            options.verbose,
         )
 
-        create_plot(plot_settings, image)  # type: ignore[arg-type]
+        create_plot(plot_settings, image, options.verbose)  # type: ignore[arg-type]
 
     # Optionally print simple error message instead of full traceback
     except (ValueError, ConnectionError) as e:

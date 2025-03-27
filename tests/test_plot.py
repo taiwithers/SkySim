@@ -51,7 +51,8 @@ def test_movie_cleanup() -> None:
     directory = Path("skysim")
 
     try:
-        movie_cleanup(filenames, directory)
+        verbose = 0
+        movie_cleanup(filenames, directory, verbose)
         # this should raise an error since the directory won't be deleted
 
     except ValueError as e:
