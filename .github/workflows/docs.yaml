@@ -46,7 +46,7 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install -r docs/source/requirements.txt
-          pip install git+https://github.com/taiwithers/SkySim.git
+          pip install --editable git+https://github.com/taiwithers/SkySim.git
 
       # run sphinx
       - name: Build docs with sphinx
