@@ -11,21 +11,23 @@ default:
 # -----------------------------------
 #  pytest
 # -----------------------------------
+pytest-flags-fast := "--testmon --exitfirst --failed-first --new-first"
+pytest-flags-interactive := "--pdb --reruns=0"
 
 # run (needed) tests with testmon
 [group('pytest')]
-qtest:
-  pytest --testmon --exitfirst
+qtest :
+  pytest {{pytest-flags-fast}}
 
 # run pytest with debugging enabled
 [group('pytest')]
 itest:
-  pytest --pdb
+  pytest {{pytest-flags-fast}}
 
 # combine qtest and itest
 [group('pytest')]
 qitest:
-  pytest --pdb --testmon --exitfirst
+  pytest {{pytest-flags-fast}} {{pytest-flags-interactive}}
 
 # -----------------------------------
 #  Docs
@@ -58,8 +60,8 @@ open-docs:
 # -----------------------------------
 
 # run pre-commit on all files
-validate:
-  pre-commit run --hook-stage="manual" --all-files && just todo
+validate: todo
+  pre-commit run --hook-stage="manual" --all-files
 
 
 # poetry add <package> to <group (optional)>
