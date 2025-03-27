@@ -2,9 +2,11 @@
 
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
 
+import tomllib
 from collections.abc import Collection
 from pathlib import Path
 from typing import ForwardRef  # pylint: disable=unused-import
+from typing import Any
 
 import numpy as np
 from astropy.table import QTable
@@ -85,3 +87,18 @@ def get_tempfile_path(
         plot_settings.tempfile_path
         / f"{str(frame_index).zfill(plot_settings.tempfile_zfill)}{TEMPFILE_SUFFIX}"
     )
+
+
+def read_pyproject() -> dict[str, Any]:
+    """Load the pyproject.toml file and return the most relevant entries.
+
+    Returns
+    -------
+    dict[str,Any]
+        Project metadata.
+    """
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = pyproject_path.resolve()
+    tomldict = tomllib.load(pyproject_path.open("rb"))
+
+    return tomldict["tool"]["poetry"]

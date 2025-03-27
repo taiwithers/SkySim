@@ -5,10 +5,11 @@ Configuration for Sphinx.
 # disable [W]arning, [C]onvention, and [R]efactoring checks
 # pylint: disable=W,C,R
 
-import os
 import sys
 import tomllib
 from pathlib import Path
+
+from skysim.utils import read_pyproject
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -18,7 +19,7 @@ from pathlib import Path
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-pyproject = tomllib.load(open(Path("../../pyproject.toml"), "rb"))["tool"]["poetry"]
+pyproject = read_pyproject()
 
 project = pyproject["name"]
 get_name = lambda authstr: authstr[: authstr.index("<")].strip()
