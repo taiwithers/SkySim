@@ -482,11 +482,13 @@ def prepare_object_table(
     """
     object_table = vstack([star_table, planet_tables[frame]])
 
+    # filter by magnitude
     current_maximum_magnitude = get_timed_magnitude(
         image_settings.magnitude_mapping, image_settings.local_datetimes[frame]
     )
     object_table = filter_objects_brightness(current_maximum_magnitude, object_table)
 
+    # filter by FOV
     object_table["skycoord"] = SkyCoord(ra=object_table["ra"], dec=object_table["dec"])
     object_table = filter_objects_fov(
         image_settings.observation_radec[frame],
@@ -497,6 +499,7 @@ def prepare_object_table(
     if len(object_table) == 0:
         return object_table
 
+    # make pickleable
     object_table["ra"] = object_table["ra"].to(u.deg).data
     object_table["dec"] = object_table["dec"].to(u.deg).data
 

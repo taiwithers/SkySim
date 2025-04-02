@@ -787,6 +787,8 @@ def check_for_overwrite(plot_settings: PlotSettings) -> Path | None:
     Path|None
         Returns either the first path that will be overwritten, or None.
     """
+    # TODO: return list of filenames instead of just one
+
     if plot_settings.filename.exists():
         return plot_settings.filename
 
@@ -818,6 +820,8 @@ def toml_to_dicts(
     tuple[ConfigMapping]
         Dictionary for `Settings`, `ImageSettings`, and `PlotSettings`.
     """
+
+    # open the config file
     with filename.open(mode="rb") as opened:
         try:
             toml_config = tomllib.load(opened)
@@ -949,6 +953,9 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
         "image.filename"
     ]
 
+    # Keys where at least one should be present (i.e., user can have any combination of
+    # observation.altitude.degrees, observation.altitude.arcminutes, and
+    # observation.altitude.arcseconds, but at least one of them must be included)
     one_or_more_keys = [
         [
             f"observation.{key}.{unit}"
@@ -957,6 +964,7 @@ def check_mandatory_toml_keys(dictionary: TOMLConfig) -> None:
         for key in ("viewing-radius", "altitude", "azimuth")
     ]
 
+    # keys which should either be excluded entirely, or present only in complete sets
     all_or_none_keys = [
         [f"observation.{key}" for key in ("interval", "duration")],
         [f"image.{key}" for key in ("width", "height")],

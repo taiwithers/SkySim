@@ -91,11 +91,12 @@ def get_body_locations(
         Locations for sun, earth, planets as dictionary.
     """
 
-    locations = {
+    all_bodies = list(SOLARSYSTEM_BODIES["name"].data) + ["sun", "earth"]
+
+    return {
         name: get_body(name, observation_times, location=earth_location)
-        for name in (list(SOLARSYSTEM_BODIES["name"].data) + ["sun", "earth"])
+        for name in all_bodies
     }
-    return locations
 
 
 def get_planet_table(
@@ -119,9 +120,11 @@ def get_planet_table(
     earth_locations = body_locations.pop("earth")
     planet_table = []
 
+    # for each time step, use the sun and earth locations
     for i, (sun, earth) in enumerate(zip(sun_locations, earth_locations)):
         this_time = QTable(**BASIC_TABLE)
 
+        # add a row to the table for each planet
         for name, mag_offset in SOLARSYSTEM_BODIES[["name", "magnitude.offset"]]:
             body_location = body_locations[name][i]
             sun_distance = body_location.separation_3d(sun).to(u.au).value
@@ -319,13 +322,17 @@ def get_star_name_column(star_table: QTable) -> QTable:
     star_table["ids_list"] = [i.split("|") for i in star_table["ids"]]
     names_column = []
     for simbad_id, namelist in zip(star_table["id"].data, star_table["ids_list"].data):
+        # strip "NAME " from entry
         item_names = [n[5:] for n in namelist if "NAME" in n]
+
+        # store a human readable name of some form based on what's available
         if len(item_names) == 0:
             names_column.append(simbad_id)
         elif len(item_names) == 1:
             names_column.append(item_names[0])
         else:
             names_column.append("/".join(item_names))
+
     star_table.replace_column("id", names_column)
     star_table.remove_columns(["ids", "ids_list"])
 
@@ -378,7 +385,7 @@ def get_child_stars(
 
     try:
         children = run_simbad_query("tap", query=parent_query_adql)
-    except DALQueryError as e:
+    except DALQueryError as e:  # TODO: find out how to force this error
         # Sometimes one of the parent ids is...problematic
         # if that's the case, just boot it out
         if "1 unresolved identifiers" in e.reason:
@@ -398,6 +405,7 @@ def get_child_stars(
         else:
             children = QTable(**BASIC_TABLE)
             raise e
+
     return children["child"].data
 
 
@@ -419,9 +427,15 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
     """
     parents = star_table["id"]  # check all items, regardless of type
 
-    blocksize = 1000
+    blocksize = 1000  # the maximum number of parents to query at once
     all_children = []
     n_blocks = int(len(parents) / blocksize)
+
+    # query for the end of the parents list, leaving only a multiple of blocksize to query
+    all_children.append(
+        get_child_stars(tuple(parents.data[n_blocks * blocksize :]), maximum_magnitude)
+    )
+    # query for the remainder of the parents in blocksize chunks
     for i in range(n_blocks):
         all_children.append(
             get_child_stars(
@@ -429,16 +443,16 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
                 maximum_magnitude,
             )
         )
-    all_children.append(
-        get_child_stars(tuple(parents.data[n_blocks * blocksize :]), maximum_magnitude)
-    )
+
     child_items = np.concatenate(all_children)  # type: ignore[arg-type,var-annotated]
 
+    # search for and remove children
     star_table.add_index("id")
     for child_id in child_items:
         if child_id in star_table["id"]:
             star_table.remove_rows(star_table.loc_indices[child_id])
     star_table.remove_indices("id")
+
     return star_table
 
 
@@ -500,7 +514,8 @@ def simplify_spectral_types(
 
 def clean_simbad_table_columns(table: QTable) -> QTable:
     """Remove and rename some SIMBAD columns - does not fail if the columns do
-    not exist.
+    not exist (happens if the table was actually generated from `BASIC_TABLE` and not by
+    an actual query).
 
     Parameters
     ----------

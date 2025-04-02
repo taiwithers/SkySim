@@ -83,6 +83,8 @@ def create_multi_plot(
     verbose_level : int
         How much detail to print.
     """
+
+    # create the temporary directory
     if not plot_settings.tempfile_path.is_dir():
         try:
             plot_settings.tempfile_path.mkdir()
@@ -93,6 +95,7 @@ def create_multi_plot(
                 "Choose a different path for the output file."
             ) from e
 
+    # create all the frames
     results = []
     for i in range(plot_settings.frames):
         tempfile_path = get_tempfile_path(plot_settings, i)
@@ -100,6 +103,7 @@ def create_multi_plot(
         if verbose_level > 1:
             print(f"{tempfile_path} saved.")
 
+    # convert frames into a movie
     ffmpeg_call = construct_ffmpeg_call(plot_settings)
     if verbose_level > 1:
         print(f"Running ffmpeg with `{ffmpeg_call}`")
@@ -227,6 +231,8 @@ def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
     str
         Command to run.
     """
+
+    # create a filter to make the output have pixel dimensions divisible by 2
     output_pixels = np.ceil(max(plot_settings.figure_size) * plot_settings.dpi).astype(
         int
     )
@@ -305,11 +311,14 @@ def movie_cleanup(
     ValueError
         Raised if the directory cannot be deleted.
     """
+    # remove all the tempfiles
     for path in filenames:
         if path.suffix == TEMPFILE_SUFFIX:
             path.unlink()
             if verbose_level > 1:
                 print(f"{path} removed.")
+
+    # remove the tempfile directory
     try:
         if verbose_level > 1:
             print(f"{directory} removed.")

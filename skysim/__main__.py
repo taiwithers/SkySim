@@ -31,7 +31,10 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
     pyproject = read_pyproject()
     executable = list(pyproject["scripts"].keys())[0]
     version_string = f"{pyproject['name']} {pyproject['version']}"
+    verbosity_options = {0: "silent", 1: "default", 2: "more output"}
+    default_verbosity = [k for k, v in verbosity_options.items() if v == "default"][0]
 
+    # instantiate the parser with project info
     parser = argparse.ArgumentParser(
         prog=executable,
         description=pyproject["description"],
@@ -44,19 +47,23 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
+
+    # add cli arguments/options
     parser.add_argument("config_file", help="TOML configuration file")
     parser.add_argument(
-        "--debug", help="print full Python traceback", action="store_true"
+        "--debug",
+        help="print full Python traceback, causes an exit code of 1, even on success",
+        action="store_true",
     )
     parser.add_argument(
         "--overwrite", help="overwrite existing file(s)", action="store_true"
     )
     parser.add_argument(
         "--verbose",
-        help="select output verbosity (default %(default)s)",
-        choices=[0, 1, 2],
+        help=str(verbosity_options)[1:-1].replace("'", ""),  # remove {}, ''
+        choices=verbosity_options.keys(),
         type=int,  # casts input to int before applying choices
-        default=1,
+        default=default_verbosity,
     )
     parser.add_argument(
         "--version",
@@ -64,9 +71,7 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
         action="version",
     )
 
-    parsed_args = parser.parse_args(args)
-
-    return parsed_args
+    return parser.parse_args(args)
 
 
 def main(  # pylint: disable=inconsistent-return-statements
@@ -111,6 +116,8 @@ def main(  # pylint: disable=inconsistent-return-statements
                 "Running SkySim would overwrite one or more files, use the "
                 "--overwrite flag or change/remove the output path to continue."
             )
+        # TODO: add integration between verbose and overwrite flags
+        # to print paths to be overwritten
 
         star_table = get_star_table(
             image_settings.observation_radec,
@@ -142,5 +149,8 @@ def main(  # pylint: disable=inconsistent-return-statements
         sys.exit(1)
 
     if options.debug:
+        # note: returning a value means that an exit code of 1 is always returned
+        # therefore --debug should not be used in pipelines
         return plot_settings.filename
+
     return  # type: ignore[return-value]
