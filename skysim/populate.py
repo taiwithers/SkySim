@@ -1,5 +1,5 @@
 """Create an RGB image matrix of the observation using objects found by
-`skysim.query` and image configuration from an `ImageSettings` object.
+`skysim.query` and image configuration from an `~skysim.settings.ImageSettings` object.
 """
 
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers

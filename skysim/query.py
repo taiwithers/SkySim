@@ -1,5 +1,5 @@
 """Query Simbad & Astropy to get information about celestial objects, using an
-`ImageSettings` object to filter the data.
+`~skysim.settings.ImageSettings` object to filter the data.
 """
 
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers
@@ -65,6 +65,7 @@ BASIC_TABLE = {
 
 
 FALLBACK_SPECTRAL_TYPE = "fallback"
+"""The spectral type to assign to an object that doesn't have one. """
 
 
 # Methods

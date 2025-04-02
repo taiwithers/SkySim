@@ -39,6 +39,8 @@ suppress_warnings = []
 templates_path = ["_templates"]
 exclude_patterns = []
 
+default_role = "py:obj"  # interpret `function` as crossref to the function 'function'
+
 # -- Python Domain Options ---------------------------------------------------
 
 # -- Options for HTML output -------------------------------------------------
@@ -105,10 +107,53 @@ suppress_warnings.append("myst.header")
 myst_heading_anchors = 2  # create linkable headings up to this depth
 myst_enable_extensions = ["attrs_inline"]
 
+
 ## napoleon
 extensions.append("sphinx.ext.napoleon")
 napoleon_use_rtype = False  # put return types inline
 napoleon_preprocess_types = True
+napoleon_use_param = True  # default, required for napoleon_type_aliases
+napoleon_type_aliases = {
+    # ~ means only the final element is shown in the link name
+    # types defined in skysim
+    "Settings": "~skysim.settings.Settings",
+    "PlotSettings": "~skysim.settings.PlotSettings",
+    "ImageSettings": "~skysim.settings.ImageSettings",
+    "FloatArray": "~skysim.utils.FloatArray",
+    "IntArray": "~skysim.utils.IntArray",
+    "ConfigMapping": "~skysim.settings.ConfigMapping",
+    "ConfigValue": "~skysim.settings.ConfigValue",
+    "TOMLConfig": "~skysim.settings.TOMLConfig",
+    "RGBTuple": "~skysim.colours.RGBTuple",
+    "InputColour": "~skysim.colours.InputColour",
+    # python
+    "Collection": "~collections.abc.Collection",
+    "datetime": "~datetime.datetime",
+    "Mapping": "~collections.abc.Mapping",
+    "Path": "~pathlib.Path",
+    "time": "~datetime.time",
+    "timedelta": "~datetime.timedelta",
+    "ZoneInfo": "~zoneinfo.ZoneInfo",
+    # other libraries
+    ## astropy
+    "EarthLocation": "astropy.coordinates.EarthLocation",
+    "QTable": "astropy.table.QTable",
+    "Row": "astropy.table.Row",
+    "SkyCoord": "astropy.coordinates.SkyCoord",
+    "Table": "astropy.table.Table",
+    "Time": "astropy.time.Time",
+    "WCS": "astropy.wcs.WCS",
+    ## matplotlib
+    "Axes": "matplotlib.axes.Axes",
+    "LinearSegmentedColormap": "matplotlib.colors.LinearSegmentedColormap",
+    ## numpy
+    "ArrayLike": "numpy.typing.ArrayLike",  # links to np.typing don't work
+    ## pydantic, links don't work?
+    "NonNegativeFloat": "pydantic.NonNegativeFloat",
+    "PositiveFloat": "pydantic.PositiveFloat",
+    "PositiveInt": "pydantic.PositiveInt",
+    "ValidationInfo": "pydantic.ValidationInfo",
+}
 
 
 ## ViewCode
