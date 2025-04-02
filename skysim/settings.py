@@ -116,7 +116,18 @@ class Settings(BaseModel):  # type: ignore[misc]
     def convert_to_deg(
         cls, angular: u.Quantity["angle"]  # type: ignore[type-arg, name-defined]
     ) -> u.Quantity["degree"]:  # type: ignore[type-arg, name-defined]
-        # pylint: disable=missing-function-docstring
+        """Convert angular quantities to degrees.
+
+        Parameters
+        ----------
+        angular : u.Quantity[angle]
+            Astropy angular quantity.
+
+        Returns
+        -------
+        u.Quantity[degree]
+            Input angle in degrees.
+        """
         return angular.to(u.deg)
 
     @model_validator(mode="after")
@@ -883,7 +894,18 @@ def toml_to_dicts(
 
 
 def split_nested_key(full_key: str) -> list[str]:
-    # pylint: disable=missing-function-docstring
+    """Convert a string of the form 'a.b.c' into a list of the form ['a','b','c'].
+
+    Parameters
+    ----------
+    full_key : str
+        String of the form 'a.b.c'.
+
+    Returns
+    -------
+    list[str]
+        List generated from string.
+    """
     return full_key.split(".")
 
 

@@ -219,6 +219,8 @@ def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Ax
 def construct_ffmpeg_call(plot_settings: PlotSettings) -> str:
     """Construct the command to call ffmpeg with. Note that the command is not
     actually run.
+    Note that the ffmpeg flag `-pix_fmt yuv420p` is required in order for most players,
+    and yuv420p also requires that the pixel dimensions of the movie be divisible by 2.
 
     Parameters
     ----------
