@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from skysim.__main__ import main
+from skysim.__main__ import confirm_config_file, main
 
 from .utils import TEST_ROOT_PATH
 
@@ -197,3 +197,26 @@ def test_bad_configs(filename: str, error_message: str) -> None:
         # without --debug, the result is a SystemExit which doesn't have an
         # error message
         main(["--debug", f"{TEST_ROOT_PATH}/configs/{filename}"])
+
+
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        ("nonexistent.toml", "does not exist."),
+        ("not_toml.txt", "does not have"),
+        ("", "not a file."),  # points to the configs directory
+    ],
+)
+def test_confirm_config_file(filename: str, error_message: str) -> None:
+    """Test that the confirm_config_file function throws appropriate errors when
+    the config file cannot be read.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file to check for (with extension).
+    error_message : str
+        The error message to check for.
+    """
+    with pytest.raises(ValueError, match=error_message):
+        confirm_config_file(Path(f"{TEST_ROOT_PATH}/configs/{filename}"))

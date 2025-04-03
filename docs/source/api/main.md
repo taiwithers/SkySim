@@ -3,12 +3,23 @@
 ```{eval-rst}
 .. automodule:: skysim.__main__
    :no-index:
-   :exclude-members: main, parse_args
+   :exclude-members: main, parse_args, confirm_config_file, handle_overwrite, check_for_overwrite
 ```
 
-## Functions
+## Entrypoint
 
 ```{eval-rst}
 .. autofunction:: skysim.__main__.main
-.. autofunction:: skysim.__main__.parse_args
+```
+
+## Additional Functions
+
+```{eval-rst}
+.. autosummary::
+   :toctree: ../generated
+
+   parse_args
+   confirm_config_file
+   handle_overwrite
+   check_for_overwrite
 ```

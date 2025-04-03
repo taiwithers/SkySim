@@ -36,7 +36,7 @@ from pydantic import (
 from timezonefinder import TimezoneFinder
 
 from skysim.colours import InputColour, RGBTuple, convert_colour
-from skysim.utils import FloatArray, IntArray, get_tempfile_path
+from skysim.utils import FloatArray, IntArray
 
 # Type Aliases
 
@@ -696,40 +696,6 @@ class PlotSettings(Settings):  # type: ignore[misc]
 ## Top-Level Settings Methods
 
 
-def confirm_config_file(input_config_path: str) -> Path:
-    """Pre-validate the existence of a config file.
-
-    Parameters
-    ----------
-    input_config_path : str
-        Argument passed on command line.
-
-    Returns
-    -------
-    pathlib.Path
-        Given config file path (if any).
-
-    Raises
-    ------
-    ValueError
-        Raised if
-        - Path given does not exist.
-        - Path leads to a non-file object.
-        - Path does not have a ".toml" extension.
-    """
-
-    config_path = Path(input_config_path).resolve()
-
-    if not config_path.exists():
-        raise ValueError(f"{config_path} does not exist.")
-    if not config_path.is_file():
-        raise ValueError(f"{config_path} is not a file.")
-    if config_path.suffix != ".toml":
-        raise ValueError(f"{config_path} does not have a '.toml' extension.")
-
-    return config_path
-
-
 def load_from_toml(
     filename: Path, return_settings: bool = False
 ) -> Settings | SettingsPair:
@@ -783,33 +749,6 @@ def load_from_toml(
             )
 
         raise ValueError(new_message) from e
-
-
-def check_for_overwrite(plot_settings: PlotSettings) -> Path | None:
-    """Check if SkySim will overwrite any existing files.
-
-    Parameters
-    ----------
-    plot_settings : PlotSettings
-        Configuration.
-
-    Returns
-    -------
-    pathlib.Path | None
-        Returns either the first path that will be overwritten, or None.
-    """
-    # TODO: return list of filenames instead of just one
-
-    if plot_settings.filename.exists():
-        return plot_settings.filename
-
-    if plot_settings.frames > 1:
-        for i in range(plot_settings.frames):
-            tempfile_path = get_tempfile_path(plot_settings, i)
-            if tempfile_path.exists():
-                return tempfile_path
-
-    return None
 
 
 ## Helper Methods

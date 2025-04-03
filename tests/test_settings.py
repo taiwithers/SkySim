@@ -12,10 +12,9 @@ from skysim.settings import (
     ImageSettings,
     PlotSettings,
     Settings,
-    confirm_config_file,
 )
 
-from .utils import TEST_ROOT_PATH, modified_settings_object
+from .utils import modified_settings_object
 
 
 def _test_any_settings(settings: Settings) -> None:
@@ -133,26 +132,3 @@ def test_earth_location(config_path: Path, input_location: str) -> None:
         key="input_location",
         value=input_location,
     )
-
-
-@pytest.mark.parametrize(
-    "filename,error_message",
-    [
-        ("nonexistent.toml", "does not exist."),
-        ("not_toml.txt", "does not have"),
-        ("", "not a file."),  # points to the configs directory
-    ],
-)
-def test_confirm_config_file(filename: str, error_message: str) -> None:
-    """Test that the confirm_config_file function throws appropriate errors when
-    the config file cannot be read.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the file to check for (with extension).
-    error_message : str
-        The error message to check for.
-    """
-    with pytest.raises(ValueError, match=error_message):
-        confirm_config_file(Path(f"{TEST_ROOT_PATH}/configs/{filename}"))
