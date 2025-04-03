@@ -11,6 +11,7 @@
 ```{eval-rst}
 .. autosummary::
    :toctree: ../generated
+   :template: autosummary/dataclass.rst
 
    RGB
 ```
