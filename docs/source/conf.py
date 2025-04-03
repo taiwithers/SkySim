@@ -39,7 +39,7 @@ suppress_warnings = []
 templates_path = ["_templates"]
 exclude_patterns = []
 
-default_role = "py:obj"  # interpret `function` as crossref to the function 'function'
+default_role = "py:obj"  # interpret `function` as crossref to the py object 'function'
 
 # -- Python Domain Options ---------------------------------------------------
 
@@ -70,16 +70,14 @@ html_css_files = ["css/custom.css"]
 ## autodoc
 extensions.append("sphinx.ext.autodoc")
 sys.path.insert(0, str(Path("..", "..").resolve()))
-autodoc_typehints = "none"  # napoleon deals with these
+autodoc_typehints = "none"  # numpydoc deals with these
 autodoc_member_order = "groupwise"
 autodoc_default_options = {"members": True}
-# autodoc_undoc_members = False
 
 
 ## autodoc_pydantic
 extensions.append("sphinxcontrib.autodoc_pydantic")
 autodoc_pydantic_model_show_json = False
-# autodoc_pydantic_model_undoc_members = False
 
 
 ## autosummary
