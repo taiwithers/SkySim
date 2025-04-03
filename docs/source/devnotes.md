@@ -1,5 +1,9 @@
 # Developer Documentation
 
+## Installation
+
+See <project:usage.md#development-installation>.
+
 ## Testing
 
 SkySim testing is perfomed with

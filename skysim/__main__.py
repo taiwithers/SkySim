@@ -28,6 +28,23 @@ def main(  # pylint: disable=inconsistent-return-statements
 ) -> Path | None:
     """Entrypoint for the SkySim package.
 
+    Calls the following functions directly:
+
+    - :doc:`main`
+        - `parse_args`
+        - `confirm_config_file`
+        - `handle_overwrite`
+    - :doc:`settings`
+        - `~skysim.settings.load_from_toml`
+    - :doc:`query`
+        - `~skysim.query.get_star_table`
+        - `~skysim.query.get_body_locations`
+        - `~skysim.query.get_planet_table`
+    - :doc:`populate`
+        - `~skysim.populate.create_image_matrix`
+    - :doc:`plot`
+        - `~skysim.plot.create_plot`
+
     Parameters
     ----------
     args : list[str] | None , default None

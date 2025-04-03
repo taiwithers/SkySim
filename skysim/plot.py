@@ -1,5 +1,6 @@
 """Plotting module for SkySim. Combines a `numpy` array of RGB values from
-`skysim.populate` with the `~skysim.settings.PlotSettings` plotting configuration.
+:doc:`skysim.populate <populate>` with the `~skysim.settings.PlotSettings` plotting
+configuration.
 """
 
 # License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers

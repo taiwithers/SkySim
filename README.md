@@ -33,7 +33,7 @@ See this page and the developer documentation at [taiwithers.github.io/SkySim](h
 4. Create a configuration TOML file (see the [examples directory](https://github.com/taiwithers/SkySim/tree/main/examples)).
 5. Run `poetry run skysim <path to your config.toml>`
 
-## Development Installation (Using Nix + Direnv)
+## Development Installation
 
 SkySim is developed using [Nix](https://nixos.org/download/) as a general package manager to control the
 development environment, and [direnv](https://direnv.net/) to activate that environment automatically.
