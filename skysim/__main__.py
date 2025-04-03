@@ -82,7 +82,7 @@ def main(  # pylint: disable=inconsistent-return-statements
 
     Parameters
     ----------
-    args : list[str]|None, optional
+    args : list[str] | None , default None
         When called via command line, this is None, and argparse captures the arguments
         directly.
         When running `main()` inside of python (e.g., with pytest), `args` holds a list
@@ -90,7 +90,7 @@ def main(  # pylint: disable=inconsistent-return-statements
 
     Returns
     -------
-    Path
+    pathlib.Path
         Path object to the created file.
 
     Raises

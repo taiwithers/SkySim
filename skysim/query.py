@@ -81,14 +81,14 @@ def get_body_locations(
 
     Parameters
     ----------
-    observation_times : Time
+    observation_times : astropy.time.Time
         Times to check for.
-    earth_location : EarthLocation
+    earth_location : astropy.coordinates.EarthLocation
         Viewing location.
 
     Returns
     -------
-    dict[str, SkyCoord]
+    dict[str, astropy.coordinates.SkyCoord]
         Locations for sun, earth, planets as dictionary.
     """
 
@@ -108,13 +108,13 @@ def get_planet_table(
 
     Parameters
     ----------
-    body_locations : dict[str,SkyCoord]
+    body_locations : dict[str, astropy.coordinates.SkyCoord]
         Dictionary of sun and planet locations for each observation time
         (includes earth).
 
     Returns
     -------
-    list[QTable]
+    list[astropy.table.QTable]
         QTable of planetary info for each observing time.
     """
     sun_locations = body_locations.pop("sun")
@@ -159,9 +159,9 @@ def get_star_table(
 
     Parameters
     ----------
-    observation_radec : SkyCoord
+    observation_radec : astropy.coordinates.SkyCoord
         RA, Dec coordinates that get observed.
-    field_of_view : u.Quantity[angle]
+    field_of_view : astropy.units.Quantity[angle]
         Diameter of observation.
     maximum_magnitude : float
         Highest magnitude value to search for.
@@ -172,7 +172,7 @@ def get_star_table(
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Table of all valid celestial objects.
     """
     query_result = run_simbad_query(
@@ -241,15 +241,15 @@ def run_simbad_query(
     ----------
     query_type : str
         "region" or "tap" - the type of request to send.
-    extra_columns : Collection[str], optional
+    extra_columns : collections.abc.Collection[str], default `()`
         Extra columns to add to SIMBAD outputs. Only valid for "region" query
-        type. Default is ().
-    **kwargs : Mapping
+        type.
+    **kwargs : collections.abc.Mapping
         Unpacked and passed to the query function.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Simbad result.
 
     Raises
@@ -289,9 +289,9 @@ def get_planet_magnitude(
     ----------
     base_magnitude : float
         Static base magnitude for the planet.
-    distance_to_sun : PositiveFloat
+    distance_to_sun : pydantic.PositiveFloat
         Distance (in au) from the planet to the sun.
-    distance_to_earth : PositiveFloat
+    distance_to_earth : pydantic.PositiveFloat
         Distance (in au) from the planet to the Earth.
 
     Returns
@@ -309,14 +309,14 @@ def get_star_name_column(star_table: QTable) -> QTable:
 
     Parameters
     ----------
-    star_table : QTable
+    star_table : astropy.table.QTable
         Table of stars from which to generate the name column from the `ids`
         column.
 
     Returns
     -------
-    QTable
-        `star_table` with the `id` column replaced by a human-readable `name`
+    astropy.table.QTable
+        `star_table` with the ``id`` column replaced by a human-readable `name`
         column, and the `ids` column removed.
     """
 
@@ -354,7 +354,7 @@ def get_child_stars(
 
     Returns
     -------
-    Collection[str]
+    collections.abc.Collection[str]
         Child ids.
     """
 
@@ -416,14 +416,14 @@ def remove_child_stars(star_table: QTable, maximum_magnitude: float) -> QTable:
 
     Parameters
     ----------
-    star_table : QTable
+    star_table : astropy.table.QTable
         Table to checked.
     maximum_magnitude : float
         Filtering value for the children.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Table with only parent items.
     """
     parents = star_table["id"]  # check all items, regardless of type
@@ -468,7 +468,7 @@ def get_single_spectral_type(
     ----------
     spectral_type : str
         The spectral type as given by SIMBAD.
-    acceptable_types : Collection[str]
+    acceptable_types : collections.abc.Collection[str]
         Collection of acceptable spectral types.
 
     Returns
@@ -496,14 +496,14 @@ def simplify_spectral_types(
 
     Parameters
     ----------
-    star_table : QTable
+    star_table : astropy.table.QTable
         Table with a `spectral_type` column.
-    acceptable_types : Collection[str]
+    acceptable_types : collections.abc.Collection[str]
         Collection of acceptable spectral types.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         `star_table` with a replaced `spectral_type` column.
     """
     old_spectral_types = star_table["spectral_type"].data
@@ -520,12 +520,12 @@ def clean_simbad_table_columns(table: QTable) -> QTable:
 
     Parameters
     ----------
-    table : QTable
+    table : astropy.table.QTable
         Table to operate on.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         "Cleaned" table.
     """
     columns_to_remove = [

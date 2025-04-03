@@ -38,17 +38,17 @@ def round_columns(
 
     Parameters
     ----------
-    table : Table
+    table : astropy.table.Table
         Table.
     column_names : list[str], optional
         Names of columns to be rounded, by default ["ra","dec","magnitude"].
-    decimals : int|list[int], optional
+    decimals : int | list[int], optional
         Number of decimal places to keep, can be list of ints (same size as
         `column_names`) or a single value, by default 5.
 
     Returns
     -------
-    Table
+    astropy.table.Table
         `table` with `column_names` rounded to `decimals`.
     """
 
@@ -80,7 +80,7 @@ def get_tempfile_path(
 
     Returns
     -------
-    Path
+    pathlib.Path
         Path.
     """
     return (
@@ -95,7 +95,7 @@ def read_pyproject() -> dict[str, Any]:
 
     Returns
     -------
-    dict[str,Any]
+    dict[str, typing.Any]
         Project metadata.
     """
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"

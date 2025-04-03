@@ -51,9 +51,9 @@ def create_image_matrix(
     ----------
     image_settings : ImageSettings
         Configuration needed.
-    planet_tables : list[QTable]
+    planet_tables : list[astropy.table.QTable]
         Result of planet queries.
-    star_table : QTable
+    star_table : astropy.table.QTable
         Result of SIMBAD queries.
     verbose_level : int
         How much detail to print.
@@ -111,9 +111,9 @@ def get_empty_image(
 
     Parameters
     ----------
-    frames : PositiveInt
+    frames : pydantic.PositiveInt
         The number of frames to include.
-    image_pixels : PositiveInt
+    image_pixels : pydantic.PositiveInt
         The width/height of the image in pixels.
 
     Returns
@@ -136,12 +136,12 @@ def get_seconds_from_midnight(local_time: time | datetime) -> NonNegativeFloat:
 
     Parameters
     ----------
-    local_time : time
+    local_time : datetime.time
         Python time value, can be naive.
 
     Returns
     -------
-    NonNegativeFloat
+    pydantic.NonNegativeFloat
         Number of seconds.
     """
     delta_midnight = timedelta(
@@ -160,9 +160,9 @@ def get_timed_background_colour(
 
     Parameters
     ----------
-    background_colours : LinearSegmentedColormap
+    background_colours : matplotlib.colors.LinearSegmentedColormap
         Colourmap linking floats [0,1] to RGB values.
-    local_datetime : datetime
+    local_datetime : datetime.datetime
         Local time of the observation.
 
     Returns
@@ -184,7 +184,7 @@ def get_timed_magnitude(
     ----------
     magnitude_mapping : FloatArray
         Array with size [seconds per day] and values [viewable magnitudes].
-    local_datetime : datetime
+    local_datetime : datetime.datetime
         Local time of the observation.
 
     Returns
@@ -224,12 +224,12 @@ def filter_objects_brightness(
     ----------
     maximum_magnitude : float
         Highest (inclusive) value for magnitude.
-    objects_table : QTable
+    objects_table : astropy.table.QTable
         Table to be filtered. Should have a "magnitude" column.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Filtered table.
     """
     indices = objects_table["magnitude"] <= maximum_magnitude
@@ -245,16 +245,16 @@ def filter_objects_fov(
 
     Parameters
     ----------
-    radec : SkyCoord
+    radec : astropy.coordinates.SkyCoord
         Point of observations.
-    fov : u.Quantity[angle]
+    fov : astropy.units.Quantity[angle]
         Field of view (2x visible radius).
-    objects_table : QTable
+    objects_table : astropy.table.QTable
         Table of objects to be filtered.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Filtered table.
     """
 
@@ -272,12 +272,12 @@ def magnitude_to_flux(magnitude: ArrayLike) -> ArrayLike:
 
     Parameters
     ----------
-    magnitude : ArrayLike
+    magnitude : numpy.typing.ArrayLike
         Apparent magnitude.
 
     Returns
     -------
-    ArrayLike
+    numpy.typing.ArrayLike
         Relative flux.
     """
     return 10 ** (-magnitude / 2.5)  # type: ignore[operator]
@@ -290,7 +290,7 @@ def linear_rescale(
 
     Parameters
     ----------
-    data : ArrayLike
+    data : numpy.typing.ArrayLike
         Data to be scaled.
     new_min : float, optional
         New minimum, by default 0.
@@ -299,7 +299,7 @@ def linear_rescale(
 
     Returns
     -------
-    ArrayLike
+    numpy.typing.ArrayLike
         Scaled data.
     """
     data_min, data_max = np.min(data), np.max(data)
@@ -317,12 +317,12 @@ def get_scaled_brightness(object_table: QTable) -> QTable:
 
     Parameters
     ----------
-    object_table : QTable
+    object_table : astropy.table.QTable
         Table of objects.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Table with added "brightness" column.
     """
     object_table["flux"] = magnitude_to_flux(object_table["magnitude"])
@@ -369,7 +369,7 @@ def add_object_to_frame(
 
     Parameters
     ----------
-    object_row : Row
+    object_row : astropy.table.Row
         Row of object table.
     frame : FloatArray
         RGB image.
@@ -418,7 +418,7 @@ def fill_frame_objects(
         The frame number.
     frame : FloatArray
         RGB image.
-    objects_table : QTable
+    objects_table : astropy.table.QTable
         Table of objects to add.
     image_settings : ImageSettings
         Configuration.
@@ -468,16 +468,16 @@ def prepare_object_table(
     ----------
     image_settings : ImageSettings
         Configuration.
-    star_table : QTable
+    star_table : astropy.table.QTable
         Star table.
-    planet_tables : list[QTable]
+    planet_tables : list[astropy.table.QTable]
         List of planet tables.
     frame : int
         Frame number to generate for.
 
     Returns
     -------
-    QTable
+    astropy.table.QTable
         Combined table.
     """
     object_table = vstack([star_table, planet_tables[frame]])

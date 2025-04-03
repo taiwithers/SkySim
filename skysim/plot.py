@@ -134,7 +134,7 @@ def save_frame(
         `wcs_objects`, `observation_info`, `datetime_strings`, and `dpi`.
     frame : FloatArray
         RGB image.
-    filename : Path
+    filename : pathlib.Path
         Location to save the image.
 
     Returns
@@ -181,9 +181,9 @@ def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Ax
 
     Parameters
     ----------
-    ax : Axes
+    ax : matplotlib.axes.Axes
         Axes to use.
-    wcs : WCS
+    wcs : astropy.wcs.WCS
         Coordinates of the new frame.
     frame : FloatArray
         RGB image.
@@ -192,7 +192,7 @@ def display_frame(ax: Axes, wcs: WCS, frame: FloatArray, frame_title: str) -> Ax
 
     Returns
     -------
-    Axes
+    matplotlib.axes.Axes
         Updated axes.
     """
     ax.reset_wcs(wcs)
@@ -301,9 +301,9 @@ def movie_cleanup(
 
     Parameters
     ----------
-    filenames : Collection[Path]
+    filenames : collections.abc.Collection[pathlib.Path]
         The image files to delete.
-    directory : Path
+    directory : pathlib.Path
         The directory to delete.
     verbose_level : int
         How much detail to print.

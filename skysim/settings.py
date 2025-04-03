@@ -120,12 +120,12 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Parameters
         ----------
-        angular : u.Quantity[angle]
+        angular : astropy.units.Quantity[angle]
             Astropy angular quantity.
 
         Returns
         -------
-        u.Quantity[degree]
+        astropy.units.Quantity[degree]
             Input angle in degrees.
         """
         return angular.to(u.deg)
@@ -162,7 +162,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        PositiveInt
+        pydantic.PositiveInt
             Number of frames.
         """
         if self.snapshot_frequency.total_seconds() > 0:
@@ -177,7 +177,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        EarthLocation
+        astropy.coordinates.EarthLocation
             Astropy representation of location on Earth.
 
         Raises
@@ -200,7 +200,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        ZoneInfo
+        zoneinfo.ZoneInfo
             Timezone information.
 
         Raises
@@ -229,7 +229,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        Time
+        astropy.time.Time
             Astropy representation of one or more times.
         """
         start_datetime = datetime(
@@ -254,7 +254,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        SkyCoord
+        astropy.coordinates.SkyCoord
             Astropy representation of one or more coordinates.
         """
         earth_frame = AltAz(
@@ -273,7 +273,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        u.Quantity[angle]
+        astropy.units.Quantity[angle]
             Degrees per pixel (pixel considered unitless).
         """
         return (self.field_of_view / self.image_pixels).to(u.deg)
@@ -285,7 +285,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        list[time]
+        list[datetime.time]
             List of observation times.
         """
         utc = [
@@ -301,7 +301,7 @@ class Settings(BaseModel):  # type: ignore[misc]
 
         Returns
         -------
-        list[WCS]
+        list[astropy.wcs.WCS]
             WCS objects for each timestep.
         """
         wcs_by_frame = []
@@ -420,7 +420,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
         Returns
         -------
-        LinearSegmentedColormap
+        matplotlib.colors.LinearSegmentedColormap
             Callable object on the interval [0,1] returning a RGBTuple.
         """
         colour_by_time = [
@@ -458,7 +458,7 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
         Returns
         -------
-        PositiveFloat
+        pydantic.PositiveFloat
             Standard deviation.
         """
         airy_disk_pixels = AIRY_DISK_RADIUS.to(u.deg) / self.degrees_per_pixel
@@ -531,12 +531,12 @@ class ImageSettings(Settings):  # type: ignore[misc]
 
         Parameters
         ----------
-        radius : NonNegativeFloat
+        radius : pydantic.NonNegativeFloat
             Distance in pixels.
 
         Returns
         -------
-        NonNegativeFloat
+        pydantic.NonNegativeFloat
             Scaling factor for brightness.
         """
         return np.exp(-(radius**2) / (self.light_spread_stddev**2))
@@ -609,7 +609,7 @@ class PlotSettings(Settings):  # type: ignore[misc]
 
         Returns
         -------
-        Path
+        pathlib.Path
             Directory.
         """
         return self.filename.parent / "SkySimFiles"
@@ -633,12 +633,12 @@ class PlotSettings(Settings):  # type: ignore[misc]
 
         Parameters
         ----------
-        filename : Path
+        filename : pathlib.Path
             Location to save image.
 
         Returns
         -------
-        Path :
+        pathlib.Path :
             Same as input.
 
         Raises
@@ -663,15 +663,15 @@ class PlotSettings(Settings):  # type: ignore[misc]
 
         Parameters
         ----------
-        input_fps : NonNegativeFloat
+        input_fps : pydantic.NonNegativeFloat
             Frames per second as input when instantiating the `PlotSettings` object.
-        info : ValidationInfo
+        info : pydantic.ValidationInfo
             Pydantic `ValidationInfo` object allowing access to the other
             already-validated fields.
 
         Returns
         -------
-        NonNegativeFloat
+        pydantic.NonNegativeFloat
             Validated fps.
 
         Raises
@@ -706,7 +706,7 @@ def confirm_config_file(input_config_path: str) -> Path:
 
     Returns
     -------
-    Path
+    pathlib.Path
         Given config file path (if any).
 
     Raises
@@ -741,8 +741,8 @@ def load_from_toml(
     filename : str
         Location of the configuration file.
     return_settings : bool, optional
-        Whether to return the Settings object (true) or ImageSettings and
-        PlotSettings objects (false). Default false.
+        Whether to return the `Settings` object (`True`) or `ImageSettings` and
+        `PlotSettings` objects (`False`). Default `False`.
 
     Returns
     -------
@@ -795,7 +795,7 @@ def check_for_overwrite(plot_settings: PlotSettings) -> Path | None:
 
     Returns
     -------
-    Path|None
+    pathlib.Path | None
         Returns either the first path that will be overwritten, or None.
     """
     # TODO: return list of filenames instead of just one
@@ -823,7 +823,7 @@ def toml_to_dicts(
 
     Parameters
     ----------
-    filename : Path
+    filename : pathlib.Path
         Path the the toml config file.
 
     Returns
@@ -916,7 +916,7 @@ def access_nested_dictionary(
 
     Parameters
     ----------
-    dictionary : dict[str, Any]
+    dictionary : dict[str, typing.Any]
         The top-level dictionary.
     keys : list[str]
         List of dictionary keys.
@@ -1024,12 +1024,12 @@ def parse_angle_dict(
 
     Parameters
     ----------
-    dictionary : dict[str,int|float]
+    dictionary : dict[str , int | float]
         Dictionary potentially containing angular information.
 
     Returns
     -------
-    u.Quantity (angle)
+    astropy.units.Quantity[angle]
         Combined angle.
     """
     total_angle = 0 * u.deg
@@ -1049,16 +1049,16 @@ def parse_angle_dict(
 
 
 def time_to_timedelta(time_object: time) -> timedelta:
-    """Converts a `time` object to a `timedelta`.
+    """Converts a `datetime.time` object to a `datetime.timedelta`.
 
     Parameters
     ----------
-    time_object : time
+    time_object : datetime.time
         Time as parsed by TOML.
 
     Returns
     -------
-    timedelta
+    datetime.timedelta
         Timedelta corresponding to the time from midnight to the given time.
     """
     components = {
@@ -1085,9 +1085,9 @@ def get_config_option(
         Nested key to access the TOML dictionary with.
     default_config : TOMLConfig
         Default configuration dictionary.
-    default_key : str|None, optional
+    default_key : str | None, default None
         Alternative key to access the default dictionary with, if different from
-        `toml_key`, by default None.
+        `toml_key`.
 
     Returns
     -------
@@ -1106,7 +1106,7 @@ def angle_to_dms(angle: u.Quantity["angle"]) -> str:  # type: ignore[type-arg,na
 
     Parameters
     ----------
-    angle : u.Quantity[angle]
+    angle : astropy.units.Quantity[angle]
         The angle quantity to format.
 
     Returns
