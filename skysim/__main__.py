@@ -119,6 +119,14 @@ def main(  # pylint: disable=inconsistent-return-statements
 ## Helper Methods
 
 
+class CustomArgumentParser(argparse.ArgumentParser):
+    """Override of the default ArgumentParser to change the error message."""
+
+    def error(self, message):
+        self.print_usage()
+        self.exit(2, f"error: {message}")
+
+
 def parse_cli_args(args: list[str] | None) -> argparse.Namespace:
     """Parse command line arguments.
 
@@ -139,7 +147,7 @@ def parse_cli_args(args: list[str] | None) -> argparse.Namespace:
     default_verbosity = [k for k, v in verbosity_options.items() if v == "default"][0]
 
     # instantiate the parser with project info
-    parser = argparse.ArgumentParser(
+    parser = CustomArgumentParser(
         prog=executable,
         description=pyproject["description"],
         epilog="\n".join(
