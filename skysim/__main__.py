@@ -70,8 +70,8 @@ def main(  # pylint: disable=inconsistent-return-statements
         Supercedes internal errors to produce a cleaner error message if the
         --debug flag is not set.
     """
-    options = parse_args(args)
 
+    options = parse_cli_args(args)
     try:
         config_path = confirm_config_file(options.config_file)
 
@@ -119,7 +119,7 @@ def main(  # pylint: disable=inconsistent-return-statements
 ## Helper Methods
 
 
-def parse_args(args: list[str] | None) -> argparse.Namespace:
+def parse_cli_args(args: list[str] | None) -> argparse.Namespace:
     """Parse command line arguments.
 
     Parameters
