@@ -8,13 +8,9 @@ from typing import Any
 import matplotlib.colors as mpl_colors
 import pytest
 
-from skysim.settings import (
-    ImageSettings,
-    PlotSettings,
-    Settings,
-)
+from skysim.settings import ImageSettings, PlotSettings, Settings, load_from_toml
 
-from .utils import modified_settings_object
+from .utils import config_name_to_path, modified_settings_object
 
 
 def _test_any_settings(settings: Settings) -> None:
@@ -132,3 +128,49 @@ def test_earth_location(config_path: Path, input_location: str) -> None:
         key="input_location",
         value=input_location,
     )
+
+
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        # generic key requirements (fail in load_from_toml > toml_to_dicts >
+        # check_mandatory_toml_keys)
+        ("missing_required", "Required element"),
+        ("missing_one_or_more", "One or more of"),
+        ("mismatched_all_or_none", "Some but not all of"),
+        # toml parsing (fail in load_from_toml > toml_to_dicts)
+        ("tomllib_error", "Error reading config file"),
+        ("string_angle", "Could not convert angular value"),  # parse_angle_dicts
+        # validation of specific values (fail inside the pydantic model)
+        ("zero_fps_movie", "Non-zero duration"),
+        ("interval_duration_mismatch", "Frequency of snapshots"),
+        ("bad_type_date", "Input should be a valid"),
+        ("bad_type_date", "Input should be a valid"),
+        ("no_image_folder", "parent directory"),
+        # load from toml doesn't reach the point where these fail
+        # TODO: add function to check write permissions during setup
+        pytest.param(
+            "no_permissions_image", "Choose a different path", marks=pytest.mark.skip
+        ),
+        pytest.param(
+            "no_permissions_tempdir",
+            "Choose a different path",
+            marks=pytest.mark.skip,
+        ),
+    ],
+)
+def test_load_from_toml(filename: str, error_message: str) -> None:
+    """Test that the load_toml functions throw appropriate errors when a bad file is
+    passed in.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the toml file to use for testing (without extension).
+    error_message : str
+        The error message to check for.
+    """
+    with pytest.raises(ValueError, match=error_message):
+        # without --debug, the result is a SystemExit which doesn't have an
+        # error message
+        load_from_toml(config_name_to_path(filename))

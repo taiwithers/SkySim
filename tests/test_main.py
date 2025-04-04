@@ -1,14 +1,240 @@
-"""Tests for the main callable of SkySim."""
+"""Tests for functions in the __main__ module."""
 
+from collections.abc import Callable
 from pathlib import Path
 
 import numpy as np
 import pytest
 from PIL import Image
 
-from skysim.__main__ import confirm_config_file, main
+from skysim.__main__ import (
+    check_for_overwrite,
+    confirm_config_file,
+    handle_overwrite,
+    main,
+    parse_cli_args,
+)
+from skysim.settings import load_from_toml
 
-from .utils import TEST_ROOT_PATH
+from .utils import config_name_to_path
+
+# parse_cli_args
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["-h"],
+        ["--help"],
+        ["--version"],
+    ],
+)
+def test_parse_cli_args_exits(args: list[str]) -> None:
+    """Test cases where the parser throws a successful sysexit (print message and exit).
+
+    Parameters
+    ----------
+    args : list[str]
+        CLI args to pass.
+    """
+    with pytest.raises(SystemExit) as sysexit:
+        parse_cli_args(args)
+
+    # for cases where things should go fine, check that against the exit code
+    assert sysexit.value.code == 0
+
+
+@pytest.mark.parametrize(
+    "args,exception_string",
+    [
+        ([], "error: the following arguments are required"),
+        (["a", "b"], "error: unrecognized arguments"),
+    ],
+)
+def test_parse_cli_args_errors(
+    capsys: pytest.CaptureFixture[str], args: list[str], exception_string: str
+) -> None:
+    """Test cases where the parser throws a sysexit because something went wrong
+    (parsing failures).
+
+    Parameters
+    ----------
+    capsys : pytest.CaptureFixture[str]
+        Pytest fixture for capturing output to stdout and stderr.
+    args : list[str]
+        Arguments to pass to parser.
+    exception_string : str
+        String that should be in the exception message.
+    """
+
+    with pytest.raises(SystemExit) as sysexit:
+        parse_cli_args(args)
+
+    # check that the correct exit code is given
+    assert sysexit.value.code == 2  # usage error
+
+    # check the error message
+    exception_message = capsys.readouterr().err
+    assert exception_string in exception_message
+
+
+@pytest.mark.parametrize("debug", ([False, True]))
+@pytest.mark.parametrize("overwrite", ([False, True]))
+@pytest.mark.parametrize("verbose", ([0, 1, 2]))
+def test_parse_cli_args_passes(debug: bool, overwrite: bool, verbose: int) -> None:
+    """Check that argparse doesn't mangle options, and that all combinations are valid.
+
+    Parameters
+    ----------
+    debug : bool
+        Whether to set the --debug flag.
+    overwrite : bool
+        Whether to set the --overwrite flag.
+    verbose : int
+        What value to set the --verbose flag.
+    """
+    args = [f"--verbose={verbose}", "not-a-config-file"]
+    if debug:
+        args.append("--debug")
+    if overwrite:
+        args.append("--overwrite")
+
+    parsed_args = parse_cli_args(args)
+
+    assert parsed_args.verbose == verbose
+    assert parsed_args.debug == debug
+    assert parsed_args.overwrite == overwrite
+
+
+# confirm_config_file
+
+
+@pytest.mark.parametrize(
+    "filename,error_message",
+    [
+        ("nonexistent.toml", "does not exist."),
+        ("not_toml.txt", "does not have"),
+        ("", "not a file."),  # points to the configs directory
+    ],
+)
+def test_confirm_config_file(filename: str, error_message: str) -> None:
+    """Test that the confirm_config_file function throws appropriate errors when
+    the config file cannot be read.
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file to check for (with extension).
+    error_message : str
+        The error message to check for.
+    """
+    with pytest.raises(ValueError, match=error_message):
+        confirm_config_file(config_name_to_path(filename, ext=""))
+
+
+# check_for_overwrite
+
+
+@pytest.mark.parametrize(
+    "config_name,overwrite_files",
+    [("still_image", ["SkySim.png"]), ("movie", ["SkySim.mp4", "SkySimFiles/00.png"])],
+)
+def test_check_for_overwrite(
+    mk_overwriteable: Callable[[Path], None],
+    config_name: str,
+    overwrite_files: list[str],
+) -> None:
+    """Ensure that `check_for_overwrite` correctly identifies pre-existing files.
+
+    Parameters
+    ----------
+    mk_overwriteable : Callable[[Path], None]
+        Fixture to create and clean up the files that `check_for_overwrite` would flag.
+    config_name : str
+        Name of the config file to use.
+    overwrite_files : list[str]
+        Names of files to create and then test for.
+    """
+    overwrite_filepaths = [Path(f).resolve() for f in overwrite_files]
+    plot_settings = load_from_toml(config_name_to_path(config_name))[1]
+
+    for fp in overwrite_filepaths:
+        mk_overwriteable(fp)
+
+    files_being_overwritten = check_for_overwrite(plot_settings)
+
+    overwrite_filepaths.sort()
+    files_being_overwritten.sort()
+
+    assert overwrite_filepaths == files_being_overwritten
+
+
+# handle_overwrite
+
+
+@pytest.mark.parametrize(
+    "config_name,overwrite_files",
+    [("still_image", ["SkySim.png"]), ("movie", ["SkySim.mp4", "SkySimFiles/00.png"])],
+)
+def test_check_handle_overwrite(
+    capsys: pytest.CaptureFixture[str],
+    mk_overwriteable: Callable[[Path], None],
+    config_name: str,
+    overwrite_files: list[str],
+) -> None:
+    """Check that handle_overwrite returns the appropriate output when it finds existing
+    files, and that the output is affected by the CLI flags.
+
+    Parameters
+    ----------
+    capsys : pytest.CaptureFixture[str]
+        Pytest fixture.
+    mk_overwriteable : Callable[[Path], None]
+        Fixture to create tempfiles.
+    config_name : str
+        Config file for setup.
+    overwrite_files : list[str]
+        Files for handle_overwrite to run into.
+    """
+
+    overwrite_filepaths = [Path(f).resolve() for f in overwrite_files]
+    plot_settings = load_from_toml(config_name_to_path(config_name))[1]
+    for fp in overwrite_filepaths:
+        mk_overwriteable(fp)
+
+    verbosity_checks = [(0, "one or more"), (1, "one or more"), (2, "the following")]
+
+    # check that the right error message is output based on the verbosity
+    for verbose_level, message in verbosity_checks:
+
+        # overwrite enabled, check against stdout
+        cli_args = [f"--verbose={verbose_level}", "--overwrite", config_name]
+        handle_overwrite(plot_settings, parse_cli_args(cli_args))
+        assert message in capsys.readouterr().out
+
+        # overwrite disabled, check against error
+        cli_args = [f"--verbose={verbose_level}", "--debug", config_name]
+        with pytest.raises(ValueError, match=message):
+            handle_overwrite(plot_settings, parse_cli_args(cli_args))
+
+
+# main
+
+
+def test_main_debug() -> None:
+    """Check that the debug flag raises ValueErrors instead of SystemExits, and
+    that the ValueError has an argument.
+    """
+    with pytest.raises(SystemExit) as regular_exception:
+        main(["bad_config_path"])
+    regular_exception_args = regular_exception.value.args[0]
+    assert regular_exception_args == 1  # the system exit code
+
+    with pytest.raises(ValueError) as debug_exception:
+        main(["--debug", "bad_config_path"])
+    debug_exception_args = debug_exception.value.args[0]  # string passed to ValueError
+
+    assert len(debug_exception_args) > 1  # string should not be empty
 
 
 @pytest.fixture(scope="session")
@@ -61,162 +287,3 @@ def test_image_contents(created_imagepath: Path) -> None:
     rgb = np.unique(rgb, axis=1)
     n_colours = rgb.shape[1]
     assert n_colours > 2
-
-
-@pytest.mark.parametrize(
-    "args,exception_string",
-    [
-        ([], "error: the following arguments are required"),
-        (["-h"], None),
-        (["--help"], None),
-        (["a", "b"], "error: unrecognized arguments"),
-        ([f"{TEST_ROOT_PATH}/configs/missing_required.toml"], "Required element"),
-        ([f"{TEST_ROOT_PATH}/__init__.py"], ".toml"),
-    ],
-)
-def test_main_args(
-    capsys: pytest.CaptureFixture[str], args: list[str], exception_string: str | None
-) -> None:
-    """Test that the correct exceptions are raised when skysim.__main__.main is
-    called with incorrect arguments.
-
-    Parameters
-    ----------
-    capsys : pytest.CaptureFixture[str]
-        Pytest fixture to grab stderr and stdout.
-    args : list[str]
-        Arguments to pass to `main` for argparse.
-    exception_string : str|None
-        String that should appear in the exception message, if any.
-    """
-    with pytest.raises(SystemExit):
-        main(args)
-    if exception_string is not None:
-        exception_message = capsys.readouterr().err
-        assert exception_string in exception_message
-
-
-def test_main_debug() -> None:
-    """Check that the debug flag raises ValueErrors instead of SystemExits, and
-    that the ValueError has an argument.
-    """
-    with pytest.raises(SystemExit) as regular_exception:
-        main(["bad_config_path"])
-    regular_exception_args = regular_exception.value.args[0]
-    assert regular_exception_args == 1  # the system exit code
-
-    with pytest.raises(ValueError) as debug_exception:
-        main(["--debug", "bad_config_path"])
-    debug_exception_args = debug_exception.value.args[
-        0
-    ]  # should be the string passed to ValueError
-
-    assert len(debug_exception_args) > 1  # string should not be empty
-
-
-@pytest.mark.parametrize(
-    "filename,overwrite_filename",
-    [
-        ("overwrite_final.toml", "final.png"),
-        ("overwrite_temporary.toml", "SkySimFiles/00.png"),
-    ],
-)
-def test_main_overwrite(filename: str, overwrite_filename: str) -> None:
-    """Test the --overwrite flag.
-
-    Parameters
-    ----------
-    filename : str
-        Config file to use.
-    overwrite_filename : str
-        File that will be overwritten by SkySim.
-    """
-    overwrite_filepath = Path(overwrite_filename).resolve()
-    parent_exists = overwrite_filepath.parent.exists()
-
-    # setup
-    if not parent_exists:
-        overwrite_filepath.parent.mkdir(parents=True)
-    overwrite_filepath.touch()
-
-    # test a failure
-    with pytest.raises(ValueError, match="Running SkySim would overwrite"):
-        main(
-            ["--debug", f"{TEST_ROOT_PATH}/configs/{filename}"]
-        )  # use debug to throw VE instead of SystemExit
-
-    # test a success
-    new_file = main(["--overwrite", "--debug", f"{TEST_ROOT_PATH}/configs/{filename}"])
-
-    # teardown
-    new_file.unlink()
-    if (not parent_exists) and overwrite_filepath.parent.exists():
-        # if it didn't exist originally, but does now
-        overwrite_filepath.parent.rmdir()
-
-
-@pytest.mark.parametrize(
-    "filename,error_message",
-    [
-        # fail in confirm_config_file
-        ("nonexistent.toml", "does not exist."),
-        ("not_toml.txt", "does not have"),
-        ("", "not a file."),  # points to the configs directory
-        # generic key requirements (fail in load_from_toml > toml_to_dicts >
-        # check_mandatory_toml_keys)
-        ("missing_required.toml", "Required element"),
-        ("missing_one_or_more.toml", "One or more of"),
-        ("mismatched_all_or_none.toml", "Some but not all of"),
-        # toml parsing (fail in load_from_toml > toml_to_dicts)
-        ("tomllib_error.toml", "Error reading config file"),
-        ("string_angle.toml", "Could not convert angular value"),  # parse_angle_dicts
-        # validation of specific values (fail inside the pydantic model)
-        ("zero_fps_movie.toml", "Non-zero duration"),
-        ("interval_duration_mismatch.toml", "Frequency of snapshots"),
-        ("bad_type_date.toml", "Input should be a valid"),
-        ("bad_type_date.toml", "Input should be a valid"),
-        ("no_image_folder.toml", "parent directory"),
-        # fail in plot.py - these sometimes throw connection timed out on the
-        # EarthLocation lookup, hence the flaky decorator
-        ("no_permissions_image.toml", "Choose a different path"),
-        ("no_permissions_tempdir.toml", "Choose a different path"),
-    ],
-)
-def test_bad_configs(filename: str, error_message: str) -> None:
-    """Test that the confirm_config_file and load_toml functions throw
-    appropriate errors when a bad file is passed in.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the toml file to use for testing (without extension).
-    error_message : str
-        The error message to check for.
-    """
-    with pytest.raises(ValueError, match=error_message):
-        # without --debug, the result is a SystemExit which doesn't have an
-        # error message
-        main(["--debug", f"{TEST_ROOT_PATH}/configs/{filename}"])
-
-
-@pytest.mark.parametrize(
-    "filename,error_message",
-    [
-        ("nonexistent.toml", "does not exist."),
-        ("not_toml.txt", "does not have"),
-        ("", "not a file."),  # points to the configs directory
-    ],
-)
-def test_confirm_config_file(filename: str, error_message: str) -> None:
-    """Test that the confirm_config_file function throws appropriate errors when
-    the config file cannot be read.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the file to check for (with extension).
-    error_message : str
-        The error message to check for.
-    """
-    with pytest.raises(ValueError, match=error_message):
-        confirm_config_file(Path(f"{TEST_ROOT_PATH}/configs/{filename}"))

@@ -36,3 +36,47 @@ def image_settings(config_path: str) -> ImageSettings:
 def plot_settings(config_path: str) -> PlotSettings:
     # pylint: disable=missing-function-docstring
     return load_from_toml(config_path)[1]
+
+
+@pytest.fixture
+def mk_overwriteable():
+    """Create temporary files with passed-in names and clean them up later.
+
+    Yields
+    ------
+    Iterator[Callable[[Path], None]]
+        Factory function which does the file creation.
+    """
+    created_folders = []
+    created_files = []
+
+    def _mk_overwriteable(filepath: Path) -> None:
+        """Create temporary files to be removed by `mk_overwriteable` later.
+
+        Parameters
+        ----------
+        filepath : Path
+            Path to file to be created/verified.
+        """
+        parent_exists = filepath.parent.exists()
+        file_exists = filepath.exists()
+
+        if not parent_exists:
+            created_folders.append(filepath.parent)
+            filepath.parent.mkdir(parents=True)
+
+        if not file_exists:
+            created_files.append(filepath)
+            filepath.touch()
+
+        return
+
+    yield _mk_overwriteable
+
+    for f in created_files:
+        if f.exists():
+            f.unlink()
+
+    for f in created_folders:
+        if f.exists():
+            f.rmdir()

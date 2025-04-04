@@ -11,13 +11,32 @@ from skysim.settings import (
 )
 
 TEST_ROOT_PATH = Path(__file__).resolve().parent
-"""Path to root test suite directory.
+"""Path to root test suite directory (where this file is located).
 """
 
 
 ROOT_PATH = TEST_ROOT_PATH.parent
 """Path to root directory containing repository.
 """
+
+
+def config_name_to_path(config_name: str, ext=".toml") -> Path:
+    """Convert the name of a config file to a `Path` object. Used only for accessing
+    testing configuration files (located in tests/configs).
+
+    Parameters
+    ----------
+    config_name : str
+        File name, optionally including extension.
+    ext : str, optional
+        Extension to append to filename, by default ".toml".
+
+    Returns
+    -------
+    Path
+        Path relative to testing directory.
+    """
+    return Path(f"{TEST_ROOT_PATH}/configs/{config_name}{ext}")
 
 
 def modified_settings_object(
