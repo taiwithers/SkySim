@@ -1,0 +1,794 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ImageSettings &#8212; SkySim 0.1.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=f1aa5710" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=a1637f0b"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'generated/skysim.settings.ImageSettings';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PlotSettings" href="skysim.settings.PlotSettings.html" />
+    <link rel="prev" title="Settings" href="skysim.settings.Settings.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SkySim 0.1.0</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../usage.html">
+    Installation & Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../devnotes.html">
+    Developer Documentation
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/taiwithers/SkySim" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../usage.html">
+    Installation & Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../devnotes.html">
+    Developer Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/taiwithers/SkySim" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/main.html"><code class="docutils literal notranslate"><span class="pre">__main__</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.__main__.parse_cli_args.html">parse_cli_args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.__main__.confirm_config_file.html">confirm_config_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.__main__.handle_overwrite.html">handle_overwrite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.__main__.check_for_overwrite.html">check_for_overwrite</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api/settings.html"><code class="docutils literal notranslate"><span class="pre">settings</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.AIRY_DISK_RADIUS.html">AIRY_DISK_RADIUS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.MAXIMUM_LIGHT_SPREAD.html">MAXIMUM_LIGHT_SPREAD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.ConfigValue.html">ConfigValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.ConfigMapping.html">ConfigMapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.TOMLConfig.html">TOMLConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.SettingsPair.html">SettingsPair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.Settings.html">Settings</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">ImageSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.PlotSettings.html">PlotSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.load_from_toml.html">load_from_toml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.toml_to_dicts.html">toml_to_dicts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.split_nested_key.html">split_nested_key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.access_nested_dictionary.html">access_nested_dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.check_key_exists.html">check_key_exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.check_mandatory_toml_keys.html">check_mandatory_toml_keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.parse_angle_dict.html">parse_angle_dict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.time_to_timedelta.html">time_to_timedelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.get_config_option.html">get_config_option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.settings.angle_to_dms.html">angle_to_dms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/query.html"><code class="docutils literal notranslate"><span class="pre">query</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.SOLARSYSTEM_BODIES.html">SOLARSYSTEM_BODIES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.BASIC_TABLE.html">BASIC_TABLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.FALLBACK_SPECTRAL_TYPE.html">FALLBACK_SPECTRAL_TYPE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_body_locations.html">get_body_locations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_planet_table.html">get_planet_table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_star_table.html">get_star_table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_spectral_types.html">get_spectral_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.run_simbad_query.html">run_simbad_query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_planet_magnitude.html">get_planet_magnitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_star_name_column.html">get_star_name_column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_child_stars.html">get_child_stars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.remove_child_stars.html">remove_child_stars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.get_single_spectral_type.html">get_single_spectral_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.simplify_spectral_types.html">simplify_spectral_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.query.clean_simbad_table_columns.html">clean_simbad_table_columns</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/populate.html"><code class="docutils literal notranslate"><span class="pre">populate</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.MINIMUM_BRIGHTNESS.html">MINIMUM_BRIGHTNESS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.create_image_matrix.html">create_image_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.get_empty_image.html">get_empty_image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.get_seconds_from_midnight.html">get_seconds_from_midnight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.get_timed_background_colour.html">get_timed_background_colour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.get_timed_magnitude.html">get_timed_magnitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.fill_frame_background.html">fill_frame_background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.filter_objects_brightness.html">filter_objects_brightness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.filter_objects_fov.html">filter_objects_fov</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.magnitude_to_flux.html">magnitude_to_flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.linear_rescale.html">linear_rescale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.get_scaled_brightness.html">get_scaled_brightness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.pixel_in_frame.html">pixel_in_frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.add_object_to_frame.html">add_object_to_frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.fill_frame_objects.html">fill_frame_objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.populate.prepare_object_table.html">prepare_object_table</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/plot.html"><code class="docutils literal notranslate"><span class="pre">plot</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.create_plot.html">create_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.create_single_plot.html">create_single_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.create_multi_plot.html">create_multi_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.display_frame.html">display_frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.save_frame.html">save_frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.construct_ffmpeg_call.html">construct_ffmpeg_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.run_ffmpeg.html">run_ffmpeg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.plot.movie_cleanup.html">movie_cleanup</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/colours.html"><code class="docutils literal notranslate"><span class="pre">colours</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.colours.RGB.html">RGB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.colours.InputColour.html">InputColour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.colours.RGBTuple.html">RGBTuple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.colours.convert_colour.html">convert_colour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/utils.html"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.TEMPFILE_SUFFIX.html">TEMPFILE_SUFFIX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.FloatArray.html">FloatArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.IntArray.html">IntArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.round_columns.html">round_columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.get_tempfile_path.html">get_tempfile_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skysim.utils.read_pyproject.html">read_pyproject</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api/index.html" class="nav-link">API Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api/settings.html" class="nav-link"><code class="docutils literal notranslate"><span class="pre">settings</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ImageSettings</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="imagesettings">
+<h1>ImageSettings<a class="headerlink" href="#imagesettings" title="Link to this heading">#</a></h1>
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skysim.settings.</span></span><span class="sig-name descname"><span class="pre">ImageSettings</span></span><a class="reference internal" href="../_modules/skysim/settings.html#ImageSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skysim.settings.ImageSettings" title="Link to this definition">#</a></dt>
+<dd><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings" title="skysim.settings.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a> subclass to hold values used when populating the image array.
+Additionally contains a copy of all attributes belonging to the <a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings" title="skysim.settings.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a> instance
+it inherits from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Config<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arbitrary_types_allowed</strong>: <em>bool = True</em></p></li>
+<li><p><strong>extra</strong>: <em>str = forbid</em></p></li>
+<li><p><strong>frozen</strong>: <em>bool = True</em></p></li>
+</ul>
+</dd>
+<dt class="field-even">Fields<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#skysim.settings.ImageSettings.colour_time_indices" title="skysim.settings.ImageSettings.colour_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_time_indices</span> <span class="pre">(dict[float</span> <span class="pre">|</span> <span class="pre">int,</span> <span class="pre">int])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#skysim.settings.ImageSettings.colour_values" title="skysim.settings.ImageSettings.colour_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_values</span> <span class="pre">(list[RGBTuple])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#skysim.settings.ImageSettings.magnitude_time_indices" title="skysim.settings.ImageSettings.magnitude_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnitude_time_indices</span> <span class="pre">(dict[float</span> <span class="pre">|</span> <span class="pre">int,</span> <span class="pre">int])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#skysim.settings.ImageSettings.magnitude_values" title="skysim.settings.ImageSettings.magnitude_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnitude_values</span> <span class="pre">(list[float</span> <span class="pre">|</span> <span class="pre">int])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#skysim.settings.ImageSettings.object_colours" title="skysim.settings.ImageSettings.object_colours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_colours</span> <span class="pre">(dict[str,</span> <span class="pre">RGBTuple])</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-odd">Validators<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_convert_colour_dict</span></code> » <a class="reference internal" href="#skysim.settings.ImageSettings.object_colours" title="skysim.settings.ImageSettings.object_colours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_colours</span></code></a></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_convert_colour_list</span></code> » <a class="reference internal" href="#skysim.settings.ImageSettings.colour_values" title="skysim.settings.ImageSettings.colour_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_values</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.colour_time_indices">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colour_time_indices</span></span><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#skysim.settings.ImageSettings.colour_time_indices" title="Link to this definition">#</a></dt>
+<dd><p>Mapping between hour of the day (0-24, float) and the index corresponding
+to the colour in <a class="reference internal" href="#skysim.settings.ImageSettings.colour_values" title="skysim.settings.ImageSettings.colour_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_values</span></code></a> to use at that time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings.compare_timespans" title="skysim.settings.Settings.compare_timespans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_timespans</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.colour_values">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colour_values</span></span><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#skysim.settings.ImageSettings.colour_values" title="Link to this definition">#</a></dt>
+<dd><p>List of colours to use to fill out the background.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_convert_colour_list</span></code></p></li>
+<li><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings.compare_timespans" title="skysim.settings.Settings.compare_timespans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_timespans</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.magnitude_time_indices">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">magnitude_time_indices</span></span><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#skysim.settings.ImageSettings.magnitude_time_indices" title="Link to this definition">#</a></dt>
+<dd><p>Same as <a class="reference internal" href="#skysim.settings.ImageSettings.colour_time_indices" title="skysim.settings.ImageSettings.colour_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_time_indices</span></code></a>, except applying to magnitude_values. Need not be
+the same as <a class="reference internal" href="#skysim.settings.ImageSettings.colour_time_indices" title="skysim.settings.ImageSettings.colour_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_time_indices</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings.compare_timespans" title="skysim.settings.Settings.compare_timespans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_timespans</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.magnitude_values">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">magnitude_values</span></span><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#skysim.settings.ImageSettings.magnitude_values" title="Link to this definition">#</a></dt>
+<dd><p>List of maximum magnitude values, to be used in the same manner as
+<a class="reference internal" href="#skysim.settings.ImageSettings.colour_values" title="skysim.settings.ImageSettings.colour_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_values</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings.compare_timespans" title="skysim.settings.Settings.compare_timespans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_timespans</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.object_colours">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">object_colours</span></span><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#skysim.settings.ImageSettings.object_colours" title="Link to this definition">#</a></dt>
+<dd><p>Mapping between object types, and the colours to use on the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Validated by<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_convert_colour_dict</span></code></p></li>
+<li><p><a class="reference internal" href="skysim.settings.Settings.html#skysim.settings.Settings.compare_timespans" title="skysim.settings.Settings.compare_timespans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_timespans</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.brightness_gaussian">
+<span class="sig-name descname"><span class="pre">brightness_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skysim/settings.html#ImageSettings.brightness_gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skysim.settings.ImageSettings.brightness_gaussian" title="Link to this definition">#</a></dt>
+<dd><p>Calculate how much light is observed from a star at some radius away
+from it.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.pydantic.dev/latest/api/types/#pydantic.types.NonNegativeFloat" title="(in Pydantic v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.NonNegativeFloat</span></code></a></span></dt><dd><p>Distance in pixels.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.pydantic.dev/latest/api/types/#pydantic.types.NonNegativeFloat" title="(in Pydantic v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.NonNegativeFloat</span></code></a></dt><dd><p>Scaling factor for brightness.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.area_mesh">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">area_mesh</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.area_mesh" title="Link to this definition">#</a></dt>
+<dd><p>Create a mesh of indices that spread out from a central point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="skysim.utils.IntArray.html#skysim.utils.IntArray" title="skysim.utils.IntArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntArray</span></code></a></dt><dd><p>(2, X, X) array.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.brightness_scale_mesh">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">brightness_scale_mesh</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.brightness_scale_mesh" title="Link to this definition">#</a></dt>
+<dd><p>Create a mesh of scaling factors that will dictate how a star’s light
+falls off with distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="skysim.utils.FloatArray.html#skysim.utils.FloatArray" title="skysim.utils.FloatArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FloatArray</span></code></a></dt><dd><p>2D mesh of [0,1] values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.colour_mapping">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colour_mapping</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.colour_mapping" title="Link to this definition">#</a></dt>
+<dd><p>Interpolate between the colour-time mappings indicated by <a class="reference internal" href="#skysim.settings.ImageSettings.colour_values" title="skysim.settings.ImageSettings.colour_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_values</span></code></a> and
+<a class="reference internal" href="#skysim.settings.ImageSettings.colour_time_indices" title="skysim.settings.ImageSettings.colour_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colour_time_indices</span></code></a> to generate an addressable mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap" title="(in Matplotlib v3.10.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.colors.LinearSegmentedColormap</span></code></a></dt><dd><p>Callable object on the interval [0,1] returning a RGBTuple.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.light_spread_stddev">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">light_spread_stddev</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.light_spread_stddev" title="Link to this definition">#</a></dt>
+<dd><p>Standard deviation for the Gaussian which defines the spread of starlight.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference external" href="https://docs.pydantic.dev/latest/api/types/#pydantic.types.PositiveFloat" title="(in Pydantic v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.PositiveFloat</span></code></a></dt><dd><p>Standard deviation.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.magnitude_mapping">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">magnitude_mapping</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.magnitude_mapping" title="Link to this definition">#</a></dt>
+<dd><p>Interpolate between the magnitude-time mappings indicated by
+<a class="reference internal" href="#skysim.settings.ImageSettings.magnitude_values" title="skysim.settings.ImageSettings.magnitude_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnitude_values</span></code></a> and <a class="reference internal" href="#skysim.settings.ImageSettings.magnitude_time_indices" title="skysim.settings.ImageSettings.magnitude_time_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnitude_time_indices</span></code></a> to generate an addressable
+mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="skysim.utils.FloatArray.html#skysim.utils.FloatArray" title="skysim.utils.FloatArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FloatArray</span></code></a></dt><dd><p>Array containing the calculated magnitude value for each second of the day.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="skysim.settings.ImageSettings.maximum_magnitude">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maximum_magnitude</span></span><a class="headerlink" href="#skysim.settings.ImageSettings.maximum_magnitude" title="Link to this definition">#</a></dt>
+<dd><p>The highest magnitude that will ever be visible in the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></dt><dd><p>Magnitude.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="skysim.settings.Settings.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Settings</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="skysim.settings.PlotSettings.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">PlotSettings</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+
+
+<div class="tocsection sourcelink">
+  <a href="../_sources/generated/skysim.settings.ImageSettings.rst">
+    <i class="fa-solid fa-file-lines"></i> Show rST page source
+  </a>
+</div>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright  2025, Tai Withers.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

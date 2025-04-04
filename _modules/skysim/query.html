@@ -1,0 +1,1033 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skysim.query &#8212; SkySim 0.1.0</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f1aa5710" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=a1637f0b"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/skysim/query';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SkySim 0.1.0</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../usage.html">
+    Installation & Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../devnotes.html">
+    Developer Documentation
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/taiwithers/SkySim" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../usage.html">
+    Installation & Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devnotes.html">
+    Developer Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/taiwithers/SkySim" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">skysim.query</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for skysim.query</h1><div class="highlight"><pre>
+<span></span><span class="linenos">  1</span><span class="sd">&quot;&quot;&quot;Query Simbad &amp; Astropy to get information about celestial objects, using an</span>
+<span class="linenos">  2</span><span class="sd">`~skysim.settings.ImageSettings` object to filter the data.</span>
+<span class="linenos">  3</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="c1"># License: GPLv3+ (see COPYING); Copyright (C) 2025 Tai Withers</span>
+<span class="linenos">  6</span>
+<span class="linenos">  7</span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="linenos">  8</span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span>
+<span class="linenos">  9</span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="linenos"> 10</span>
+<span class="linenos"> 11</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 12</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="linenos"> 13</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">get_body</span>
+<span class="linenos"> 14</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTable</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">unique</span>
+<span class="linenos"> 15</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+<span class="linenos"> 16</span><span class="kn">from</span><span class="w"> </span><span class="nn">astroquery.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoResultsWarning</span>
+<span class="linenos"> 17</span><span class="kn">from</span><span class="w"> </span><span class="nn">astroquery.simbad</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simbad</span>
+<span class="linenos"> 18</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositiveFloat</span>
+<span class="linenos"> 19</span><span class="kn">from</span><span class="w"> </span><span class="nn">pyvo.dal.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DALQueryError</span>
+<span class="linenos"> 20</span>
+<span class="linenos"> 21</span><span class="kn">from</span><span class="w"> </span><span class="nn">skysim.colours</span><span class="w"> </span><span class="kn">import</span> <span class="n">RGBTuple</span>
+<span class="linenos"> 22</span><span class="kn">from</span><span class="w"> </span><span class="nn">skysim.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">round_columns</span>
+<span class="linenos"> 23</span>
+<span class="linenos"> 24</span><span class="c1"># Constants</span>
+<span class="linenos"> 25</span>
+<span class="linenos"> 26</span>
+<span class="linenos"> 27</span><span class="n">SOLARSYSTEM_BODIES</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+<span class="linenos"> 28</span>    <span class="p">{</span>
+<span class="linenos"> 29</span>        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 30</span>            <span class="s2">&quot;mercury&quot;</span><span class="p">,</span>
+<span class="linenos"> 31</span>            <span class="s2">&quot;venus&quot;</span><span class="p">,</span>
+<span class="linenos"> 32</span>            <span class="s2">&quot;mars&quot;</span><span class="p">,</span>
+<span class="linenos"> 33</span>            <span class="s2">&quot;jupiter&quot;</span><span class="p">,</span>
+<span class="linenos"> 34</span>            <span class="s2">&quot;saturn&quot;</span><span class="p">,</span>
+<span class="linenos"> 35</span>            <span class="s2">&quot;uranus&quot;</span><span class="p">,</span>
+<span class="linenos"> 36</span>            <span class="s2">&quot;neptune&quot;</span><span class="p">,</span>
+<span class="linenos"> 37</span>        <span class="p">],</span>
+<span class="linenos"> 38</span>        <span class="s2">&quot;magnitude.offset&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 39</span>            <span class="o">-</span><span class="mf">0.613</span><span class="p">,</span>
+<span class="linenos"> 40</span>            <span class="o">-</span><span class="mf">4.384</span><span class="p">,</span>
+<span class="linenos"> 41</span>            <span class="o">-</span><span class="mf">1.601</span><span class="p">,</span>
+<span class="linenos"> 42</span>            <span class="o">-</span><span class="mf">9.395</span><span class="p">,</span>
+<span class="linenos"> 43</span>            <span class="o">-</span><span class="mf">8.914</span><span class="p">,</span>
+<span class="linenos"> 44</span>            <span class="o">-</span><span class="mf">7.11</span><span class="p">,</span>
+<span class="linenos"> 45</span>            <span class="o">-</span><span class="mi">7</span><span class="p">,</span>
+<span class="linenos"> 46</span>        <span class="p">],</span>
+<span class="linenos"> 47</span>    <span class="p">}</span>
+<span class="linenos"> 48</span><span class="p">)</span>
+<span class="linenos"> 49</span><span class="sd">&quot;&quot;&quot;Dictionary of bodies (planets) and base magnitudes (used in</span>
+<span class="linenos"> 50</span><span class="sd">`get_planet_magnitude`)</span>
+<span class="linenos"> 51</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 52</span>
+<span class="linenos"> 53</span><span class="n">BASIC_TABLE</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 54</span>    <span class="s2">&quot;names&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 55</span>        <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="linenos"> 56</span>        <span class="s2">&quot;ra&quot;</span><span class="p">,</span>
+<span class="linenos"> 57</span>        <span class="s2">&quot;dec&quot;</span><span class="p">,</span>
+<span class="linenos"> 58</span>        <span class="s2">&quot;magnitude&quot;</span><span class="p">,</span>
+<span class="linenos"> 59</span>        <span class="s2">&quot;spectral_type&quot;</span><span class="p">,</span>
+<span class="linenos"> 60</span>    <span class="p">],</span>
+<span class="linenos"> 61</span>    <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+<span class="linenos"> 62</span>    <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+<span class="linenos"> 63</span><span class="p">}</span>
+<span class="linenos"> 64</span><span class="sd">&quot;&quot;&quot;Basic table structure used for celestial objects.&quot;&quot;&quot;</span>
+<span class="linenos"> 65</span>
+<span class="linenos"> 66</span>
+<span class="linenos"> 67</span><span class="n">FALLBACK_SPECTRAL_TYPE</span> <span class="o">=</span> <span class="s2">&quot;fallback&quot;</span>
+<span class="linenos"> 68</span><span class="sd">&quot;&quot;&quot;The spectral type to assign to an object that doesn&#39;t have one. &quot;&quot;&quot;</span>
+<span class="linenos"> 69</span>
+<span class="linenos"> 70</span>
+<span class="linenos"> 71</span><span class="c1"># Methods</span>
+<span class="linenos"> 72</span>
+<span class="linenos"> 73</span>
+<span class="linenos"> 74</span><span class="c1">## Top-Level Query Methods</span>
+<span class="linenos"> 75</span>
+<span class="linenos"> 76</span>
+<div class="viewcode-block" id="get_body_locations">
+<a class="viewcode-back" href="../../generated/skysim.query.get_body_locations.html#skysim.query.get_body_locations">[docs]</a>
+<span class="linenos"> 77</span><span class="k">def</span><span class="w"> </span><span class="nf">get_body_locations</span><span class="p">(</span>
+<span class="linenos"> 78</span>    <span class="n">observation_times</span><span class="p">:</span> <span class="n">Time</span><span class="p">,</span> <span class="n">earth_location</span><span class="p">:</span> <span class="n">EarthLocation</span>
+<span class="linenos"> 79</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SkyCoord</span><span class="p">]:</span>
+<span class="linenos"> 80</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ephemeris for the sun/earth/planets.</span>
+<span class="linenos"> 81</span>
+<span class="linenos"> 82</span><span class="sd">    Parameters</span>
+<span class="linenos"> 83</span><span class="sd">    ----------</span>
+<span class="linenos"> 84</span><span class="sd">    observation_times : astropy.time.Time</span>
+<span class="linenos"> 85</span><span class="sd">        Times to check for.</span>
+<span class="linenos"> 86</span><span class="sd">    earth_location : astropy.coordinates.EarthLocation</span>
+<span class="linenos"> 87</span><span class="sd">        Viewing location.</span>
+<span class="linenos"> 88</span>
+<span class="linenos"> 89</span><span class="sd">    Returns</span>
+<span class="linenos"> 90</span><span class="sd">    -------</span>
+<span class="linenos"> 91</span><span class="sd">    dict[str, astropy.coordinates.SkyCoord]</span>
+<span class="linenos"> 92</span><span class="sd">        Locations for sun, earth, planets as dictionary.</span>
+<span class="linenos"> 93</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 94</span>
+<span class="linenos"> 95</span>    <span class="n">all_bodies</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">SOLARSYSTEM_BODIES</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;sun&quot;</span><span class="p">,</span> <span class="s2">&quot;earth&quot;</span><span class="p">]</span>
+<span class="linenos"> 96</span>
+<span class="linenos"> 97</span>    <span class="k">return</span> <span class="p">{</span>
+<span class="linenos"> 98</span>        <span class="n">name</span><span class="p">:</span> <span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">observation_times</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">earth_location</span><span class="p">)</span>
+<span class="linenos"> 99</span>        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">all_bodies</span>
+<span class="linenos">100</span>    <span class="p">}</span></div>
+
+<span class="linenos">101</span>
+<span class="linenos">102</span>
+<div class="viewcode-block" id="get_planet_table">
+<a class="viewcode-back" href="../../generated/skysim.query.get_planet_table.html#skysim.query.get_planet_table">[docs]</a>
+<span class="linenos">103</span><span class="k">def</span><span class="w"> </span><span class="nf">get_planet_table</span><span class="p">(</span>
+<span class="linenos">104</span>    <span class="n">body_locations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SkyCoord</span><span class="p">],</span>
+<span class="linenos">105</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">QTable</span><span class="p">]:</span>
+<span class="linenos">106</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">107</span><span class="sd">    Get the planetary information at each observing time.</span>
+<span class="linenos">108</span>
+<span class="linenos">109</span><span class="sd">    Parameters</span>
+<span class="linenos">110</span><span class="sd">    ----------</span>
+<span class="linenos">111</span><span class="sd">    body_locations : dict[str, astropy.coordinates.SkyCoord]</span>
+<span class="linenos">112</span><span class="sd">        Dictionary of sun and planet locations for each observation time</span>
+<span class="linenos">113</span><span class="sd">        (includes earth).</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span><span class="sd">    Returns</span>
+<span class="linenos">116</span><span class="sd">    -------</span>
+<span class="linenos">117</span><span class="sd">    list[astropy.table.QTable]</span>
+<span class="linenos">118</span><span class="sd">        QTable of planetary info for each observing time.</span>
+<span class="linenos">119</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">120</span>    <span class="n">sun_locations</span> <span class="o">=</span> <span class="n">body_locations</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sun&quot;</span><span class="p">)</span>
+<span class="linenos">121</span>    <span class="n">earth_locations</span> <span class="o">=</span> <span class="n">body_locations</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;earth&quot;</span><span class="p">)</span>
+<span class="linenos">122</span>    <span class="n">planet_table</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">123</span>
+<span class="linenos">124</span>    <span class="c1"># for each time step, use the sun and earth locations</span>
+<span class="linenos">125</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">sun</span><span class="p">,</span> <span class="n">earth</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sun_locations</span><span class="p">,</span> <span class="n">earth_locations</span><span class="p">)):</span>
+<span class="linenos">126</span>        <span class="n">this_time</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="o">**</span><span class="n">BASIC_TABLE</span><span class="p">)</span>
+<span class="linenos">127</span>
+<span class="linenos">128</span>        <span class="c1"># add a row to the table for each planet</span>
+<span class="linenos">129</span>        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">mag_offset</span> <span class="ow">in</span> <span class="n">SOLARSYSTEM_BODIES</span><span class="p">[[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude.offset&quot;</span><span class="p">]]:</span>
+<span class="linenos">130</span>            <span class="n">body_location</span> <span class="o">=</span> <span class="n">body_locations</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">131</span>            <span class="n">sun_distance</span> <span class="o">=</span> <span class="n">body_location</span><span class="o">.</span><span class="n">separation_3d</span><span class="p">(</span><span class="n">sun</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+<span class="linenos">132</span>            <span class="n">earth_distance</span> <span class="o">=</span> <span class="n">body_location</span><span class="o">.</span><span class="n">separation_3d</span><span class="p">(</span><span class="n">earth</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">au</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+<span class="linenos">133</span>            <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">134</span>                <span class="s2">&quot;ra&quot;</span><span class="p">:</span> <span class="n">body_location</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span>
+<span class="linenos">135</span>                <span class="s2">&quot;dec&quot;</span><span class="p">:</span> <span class="n">body_location</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span>
+<span class="linenos">136</span>                <span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="n">get_planet_magnitude</span><span class="p">(</span>
+<span class="linenos">137</span>                    <span class="n">mag_offset</span><span class="p">,</span> <span class="n">sun_distance</span><span class="p">,</span> <span class="n">earth_distance</span>
+<span class="linenos">138</span>                <span class="p">),</span>
+<span class="linenos">139</span>                <span class="s2">&quot;spectral_type&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+<span class="linenos">140</span>                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+<span class="linenos">141</span>            <span class="p">}</span>
+<span class="linenos">142</span>            <span class="n">this_time</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="linenos">143</span>
+<span class="linenos">144</span>        <span class="n">this_time</span> <span class="o">=</span> <span class="n">round_columns</span><span class="p">(</span><span class="n">this_time</span><span class="p">)</span>
+<span class="linenos">145</span>        <span class="n">planet_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_time</span><span class="p">)</span>
+<span class="linenos">146</span>
+<span class="linenos">147</span>    <span class="k">return</span> <span class="n">planet_table</span></div>
+
+<span class="linenos">148</span>
+<span class="linenos">149</span>
+<div class="viewcode-block" id="get_star_table">
+<a class="viewcode-back" href="../../generated/skysim.query.get_star_table.html#skysim.query.get_star_table">[docs]</a>
+<span class="linenos">150</span><span class="k">def</span><span class="w"> </span><span class="nf">get_star_table</span><span class="p">(</span>
+<span class="linenos">151</span>    <span class="n">observation_radec</span><span class="p">:</span> <span class="n">SkyCoord</span><span class="p">,</span>
+<span class="linenos">152</span>    <span class="n">field_of_view</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">],</span>  <span class="c1"># type: ignore[type-arg, name-defined]</span>
+<span class="linenos">153</span>    <span class="n">maximum_magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos">154</span>    <span class="n">object_colours</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGBTuple</span><span class="p">],</span>
+<span class="linenos">155</span>    <span class="n">verbose_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos">156</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">157</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">158</span><span class="sd">    Query Simbad to get celestial objects.</span>
+<span class="linenos">159</span>
+<span class="linenos">160</span><span class="sd">    Parameters</span>
+<span class="linenos">161</span><span class="sd">    ----------</span>
+<span class="linenos">162</span><span class="sd">    observation_radec : astropy.coordinates.SkyCoord</span>
+<span class="linenos">163</span><span class="sd">        RA, Dec coordinates that get observed.</span>
+<span class="linenos">164</span><span class="sd">    field_of_view : astropy.units.Quantity[angle]</span>
+<span class="linenos">165</span><span class="sd">        Diameter of observation.</span>
+<span class="linenos">166</span><span class="sd">    maximum_magnitude : float</span>
+<span class="linenos">167</span><span class="sd">        Highest magnitude value to search for.</span>
+<span class="linenos">168</span><span class="sd">    object_colours : dict[str, RGBTuple]</span>
+<span class="linenos">169</span><span class="sd">        Colours of the objects - used to check if spectral types are valid.</span>
+<span class="linenos">170</span><span class="sd">    verbose_level : int</span>
+<span class="linenos">171</span><span class="sd">        How much detail to print.</span>
+<span class="linenos">172</span>
+<span class="linenos">173</span><span class="sd">    Returns</span>
+<span class="linenos">174</span><span class="sd">    -------</span>
+<span class="linenos">175</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">176</span><span class="sd">        Table of all valid celestial objects.</span>
+<span class="linenos">177</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">178</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">run_simbad_query</span><span class="p">(</span>
+<span class="linenos">179</span>        <span class="s2">&quot;region&quot;</span><span class="p">,</span>
+<span class="linenos">180</span>        <span class="n">extra_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;otype&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;ids&quot;</span><span class="p">,</span> <span class="s2">&quot;sp_type&quot;</span><span class="p">],</span>
+<span class="linenos">181</span>        <span class="n">coordinates</span><span class="o">=</span><span class="n">observation_radec</span><span class="p">,</span>
+<span class="linenos">182</span>        <span class="n">radius</span><span class="o">=</span><span class="n">field_of_view</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+<span class="linenos">183</span>        <span class="n">criteria</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;otype != &#39;err&#39; AND V &lt; </span><span class="si">{</span><span class="n">maximum_magnitude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="linenos">184</span>    <span class="p">)</span>
+<span class="linenos">185</span>    <span class="c1"># remove/rename columns</span>
+<span class="linenos">186</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">clean_simbad_table_columns</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span>
+<span class="linenos">187</span>
+<span class="linenos">188</span>    <span class="c1"># remove the &quot;ids&quot; column &amp; repurposes the &quot;id&quot; column</span>
+<span class="linenos">189</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">get_star_name_column</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span>
+<span class="linenos">190</span>
+<span class="linenos">191</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">192</span>        <span class="k">if</span> <span class="n">verbose_level</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">193</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Query to SIMBAD resulted in no objects.&quot;</span><span class="p">)</span>
+<span class="linenos">194</span>        <span class="k">return</span> <span class="n">query_result</span>
+<span class="linenos">195</span>
+<span class="linenos">196</span>    <span class="c1"># spectral types</span>
+<span class="linenos">197</span>    <span class="n">spectral_types</span> <span class="o">=</span> <span class="n">get_spectral_types</span><span class="p">(</span><span class="n">object_colours</span><span class="p">)</span>
+<span class="linenos">198</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">simplify_spectral_types</span><span class="p">(</span><span class="n">query_result</span><span class="p">,</span> <span class="n">spectral_types</span><span class="p">)</span>
+<span class="linenos">199</span>
+<span class="linenos">200</span>    <span class="c1"># remove child elements</span>
+<span class="linenos">201</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">remove_child_stars</span><span class="p">(</span><span class="n">query_result</span><span class="p">,</span> <span class="n">maximum_magnitude</span><span class="p">)</span>
+<span class="linenos">202</span>
+<span class="linenos">203</span>    <span class="c1"># final general cleanup</span>
+<span class="linenos">204</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">round_columns</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span>
+<span class="linenos">205</span>    <span class="n">query_result</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span>
+<span class="linenos">206</span>
+<span class="linenos">207</span>    <span class="k">if</span> <span class="n">verbose_level</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">208</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Query to SIMBAD resulted in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">query_result</span><span class="p">)</span><span class="si">}</span><span class="s2"> objects.&quot;</span><span class="p">)</span>
+<span class="linenos">209</span>    <span class="k">return</span> <span class="n">query_result</span></div>
+
+<span class="linenos">210</span>
+<span class="linenos">211</span>
+<span class="linenos">212</span><span class="c1">## Helper Methods</span>
+<span class="linenos">213</span>
+<span class="linenos">214</span>
+<div class="viewcode-block" id="get_spectral_types">
+<a class="viewcode-back" href="../../generated/skysim.query.get_spectral_types.html#skysim.query.get_spectral_types">[docs]</a>
+<span class="linenos">215</span><span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_types</span><span class="p">(</span><span class="n">object_colours</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGBTuple</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">216</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the user-input object colours dictionary to a list of valid</span>
+<span class="linenos">217</span><span class="sd">    spectral types.</span>
+<span class="linenos">218</span>
+<span class="linenos">219</span><span class="sd">    Parameters</span>
+<span class="linenos">220</span><span class="sd">    ----------</span>
+<span class="linenos">221</span><span class="sd">    object_colours : dict[str, RGBTuple]</span>
+<span class="linenos">222</span><span class="sd">        User input.</span>
+<span class="linenos">223</span>
+<span class="linenos">224</span><span class="sd">    Returns</span>
+<span class="linenos">225</span><span class="sd">    -------</span>
+<span class="linenos">226</span><span class="sd">    list[str]</span>
+<span class="linenos">227</span><span class="sd">        Acceptable spectral types.</span>
+<span class="linenos">228</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">229</span>    <span class="n">spectral_types</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">230</span>        <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">object_colours</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SOLARSYSTEM_BODIES</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+<span class="linenos">231</span>    <span class="p">]</span>
+<span class="linenos">232</span>    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectral_types</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">FALLBACK_SPECTRAL_TYPE</span><span class="p">]</span></div>
+
+<span class="linenos">233</span>
+<span class="linenos">234</span>
+<div class="viewcode-block" id="run_simbad_query">
+<a class="viewcode-back" href="../../generated/skysim.query.run_simbad_query.html#skysim.query.run_simbad_query">[docs]</a>
+<span class="linenos">235</span><span class="k">def</span><span class="w"> </span><span class="nf">run_simbad_query</span><span class="p">(</span>
+<span class="linenos">236</span>    <span class="n">query_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_columns</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="linenos">237</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">238</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Query SIMBAD with either a region or TAP request.</span>
+<span class="linenos">239</span>
+<span class="linenos">240</span><span class="sd">    Parameters</span>
+<span class="linenos">241</span><span class="sd">    ----------</span>
+<span class="linenos">242</span><span class="sd">    query_type : str</span>
+<span class="linenos">243</span><span class="sd">        &quot;region&quot; or &quot;tap&quot; - the type of request to send.</span>
+<span class="linenos">244</span><span class="sd">    extra_columns : collections.abc.Collection[str], default `()`</span>
+<span class="linenos">245</span><span class="sd">        Extra columns to add to SIMBAD outputs. Only valid for &quot;region&quot; query</span>
+<span class="linenos">246</span><span class="sd">        type.</span>
+<span class="linenos">247</span><span class="sd">    **kwargs : collections.abc.Mapping</span>
+<span class="linenos">248</span><span class="sd">        Unpacked and passed to the query function.</span>
+<span class="linenos">249</span>
+<span class="linenos">250</span><span class="sd">    Returns</span>
+<span class="linenos">251</span><span class="sd">    -------</span>
+<span class="linenos">252</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">253</span><span class="sd">        Simbad result.</span>
+<span class="linenos">254</span>
+<span class="linenos">255</span><span class="sd">    Raises</span>
+<span class="linenos">256</span><span class="sd">    ------</span>
+<span class="linenos">257</span><span class="sd">    ValueError</span>
+<span class="linenos">258</span><span class="sd">        Raised if `query_type` is not &quot;region&quot; or &quot;tap&quot;.</span>
+<span class="linenos">259</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">260</span>
+<span class="linenos">261</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="o">**</span><span class="n">BASIC_TABLE</span><span class="p">)</span>
+<span class="linenos">262</span>    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">NoResultsWarning</span><span class="p">):</span>
+<span class="linenos">263</span>        <span class="k">if</span> <span class="n">query_type</span> <span class="o">==</span> <span class="s2">&quot;region&quot;</span><span class="p">:</span>
+<span class="linenos">264</span>            <span class="n">Simbad</span><span class="o">.</span><span class="n">add_votable_fields</span><span class="p">(</span><span class="o">*</span><span class="n">extra_columns</span><span class="p">)</span>
+<span class="linenos">265</span>            <span class="n">result</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="n">Simbad</span><span class="o">.</span><span class="n">query_region</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+<span class="linenos">266</span>        <span class="k">elif</span> <span class="n">query_type</span> <span class="o">==</span> <span class="s2">&quot;tap&quot;</span><span class="p">:</span>
+<span class="linenos">267</span>            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extra_columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">268</span>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>  <span class="c1"># TODO: add test for this error</span>
+<span class="linenos">269</span>                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">extra_columns</span><span class="si">=}</span><span class="s2"> was passed to run_simbad_query, but &quot;</span>
+<span class="linenos">270</span>                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query_type</span><span class="si">=}</span><span class="s2"> which doesn&#39;t support that.&quot;</span>
+<span class="linenos">271</span>                <span class="p">)</span>
+<span class="linenos">272</span>            <span class="n">result</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="n">Simbad</span><span class="o">.</span><span class="n">query_tap</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+<span class="linenos">273</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">274</span>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>  <span class="c1"># TODO: add test for this error</span>
+<span class="linenos">275</span>                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">query_type</span><span class="si">=}</span><span class="s1"> is invalid, should be one of [&quot;region&quot;,&quot;tap&quot;].&#39;</span>
+<span class="linenos">276</span>            <span class="p">)</span>
+<span class="linenos">277</span>    <span class="n">Simbad</span><span class="o">.</span><span class="n">reset_votable_fields</span><span class="p">()</span>
+<span class="linenos">278</span>    <span class="k">return</span> <span class="n">result</span></div>
+
+<span class="linenos">279</span>
+<span class="linenos">280</span>
+<div class="viewcode-block" id="get_planet_magnitude">
+<a class="viewcode-back" href="../../generated/skysim.query.get_planet_magnitude.html#skysim.query.get_planet_magnitude">[docs]</a>
+<span class="linenos">281</span><span class="k">def</span><span class="w"> </span><span class="nf">get_planet_magnitude</span><span class="p">(</span>
+<span class="linenos">282</span>    <span class="n">base_magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos">283</span>    <span class="n">distance_to_sun</span><span class="p">:</span> <span class="n">PositiveFloat</span><span class="p">,</span>
+<span class="linenos">284</span>    <span class="n">distance_to_earth</span><span class="p">:</span> <span class="n">PositiveFloat</span><span class="p">,</span>
+<span class="linenos">285</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos">286</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the magnitude for a planet.</span>
+<span class="linenos">287</span>
+<span class="linenos">288</span><span class="sd">    Parameters</span>
+<span class="linenos">289</span><span class="sd">    ----------</span>
+<span class="linenos">290</span><span class="sd">    base_magnitude : float</span>
+<span class="linenos">291</span><span class="sd">        Static base magnitude for the planet.</span>
+<span class="linenos">292</span><span class="sd">    distance_to_sun : pydantic.PositiveFloat</span>
+<span class="linenos">293</span><span class="sd">        Distance (in au) from the planet to the sun.</span>
+<span class="linenos">294</span><span class="sd">    distance_to_earth : pydantic.PositiveFloat</span>
+<span class="linenos">295</span><span class="sd">        Distance (in au) from the planet to the Earth.</span>
+<span class="linenos">296</span>
+<span class="linenos">297</span><span class="sd">    Returns</span>
+<span class="linenos">298</span><span class="sd">    -------</span>
+<span class="linenos">299</span><span class="sd">    float</span>
+<span class="linenos">300</span><span class="sd">        The magnitude.</span>
+<span class="linenos">301</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">302</span>    <span class="k">return</span> <span class="p">(</span>
+<span class="linenos">303</span>        <span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">distance_to_sun</span> <span class="o">*</span> <span class="n">distance_to_earth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="n">base_magnitude</span>
+<span class="linenos">304</span>    <span class="p">)</span></div>
+
+<span class="linenos">305</span>
+<span class="linenos">306</span>
+<div class="viewcode-block" id="get_star_name_column">
+<a class="viewcode-back" href="../../generated/skysim.query.get_star_name_column.html#skysim.query.get_star_name_column">[docs]</a>
+<span class="linenos">307</span><span class="k">def</span><span class="w"> </span><span class="nf">get_star_name_column</span><span class="p">(</span><span class="n">star_table</span><span class="p">:</span> <span class="n">QTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">308</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create human-readable `name` column.</span>
+<span class="linenos">309</span>
+<span class="linenos">310</span><span class="sd">    Parameters</span>
+<span class="linenos">311</span><span class="sd">    ----------</span>
+<span class="linenos">312</span><span class="sd">    star_table : astropy.table.QTable</span>
+<span class="linenos">313</span><span class="sd">        Table of stars from which to generate the name column from the `ids`</span>
+<span class="linenos">314</span><span class="sd">        column.</span>
+<span class="linenos">315</span>
+<span class="linenos">316</span><span class="sd">    Returns</span>
+<span class="linenos">317</span><span class="sd">    -------</span>
+<span class="linenos">318</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">319</span><span class="sd">        `star_table` with the ``id`` column replaced by a human-readable `name`</span>
+<span class="linenos">320</span><span class="sd">        column, and the `ids` column removed.</span>
+<span class="linenos">321</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">322</span>
+<span class="linenos">323</span>    <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;ids_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]]</span>
+<span class="linenos">324</span>    <span class="n">names_column</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">325</span>    <span class="k">for</span> <span class="n">simbad_id</span><span class="p">,</span> <span class="n">namelist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;ids_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+<span class="linenos">326</span>        <span class="c1"># strip &quot;NAME &quot; from entry</span>
+<span class="linenos">327</span>        <span class="n">item_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">namelist</span> <span class="k">if</span> <span class="s2">&quot;NAME&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">]</span>
+<span class="linenos">328</span>
+<span class="linenos">329</span>        <span class="c1"># store a human readable name of some form based on what&#39;s available</span>
+<span class="linenos">330</span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">331</span>            <span class="n">names_column</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simbad_id</span><span class="p">)</span>
+<span class="linenos">332</span>        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">333</span>            <span class="n">names_column</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos">334</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">335</span>            <span class="n">names_column</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">item_names</span><span class="p">))</span>
+<span class="linenos">336</span>
+<span class="linenos">337</span>    <span class="n">star_table</span><span class="o">.</span><span class="n">replace_column</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">names_column</span><span class="p">)</span>
+<span class="linenos">338</span>    <span class="n">star_table</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">([</span><span class="s2">&quot;ids&quot;</span><span class="p">,</span> <span class="s2">&quot;ids_list&quot;</span><span class="p">])</span>
+<span class="linenos">339</span>
+<span class="linenos">340</span>    <span class="k">return</span> <span class="n">star_table</span></div>
+
+<span class="linenos">341</span>
+<span class="linenos">342</span>
+<div class="viewcode-block" id="get_child_stars">
+<a class="viewcode-back" href="../../generated/skysim.query.get_child_stars.html#skysim.query.get_child_stars">[docs]</a>
+<span class="linenos">343</span><span class="k">def</span><span class="w"> </span><span class="nf">get_child_stars</span><span class="p">(</span>
+<span class="linenos">344</span>    <span class="n">parent_stars</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">maximum_magnitude</span><span class="p">:</span> <span class="nb">float</span>
+<span class="linenos">345</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">346</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Query SIMBAD for any child objects of `parent_stars`.</span>
+<span class="linenos">347</span>
+<span class="linenos">348</span><span class="sd">    Parameters</span>
+<span class="linenos">349</span><span class="sd">    ----------</span>
+<span class="linenos">350</span><span class="sd">    parent_stars : tuple[str]</span>
+<span class="linenos">351</span><span class="sd">        SIMAD ids.</span>
+<span class="linenos">352</span><span class="sd">    maximum_magnitude : float</span>
+<span class="linenos">353</span><span class="sd">        Filtering value for the children.</span>
+<span class="linenos">354</span>
+<span class="linenos">355</span><span class="sd">    Returns</span>
+<span class="linenos">356</span><span class="sd">    -------</span>
+<span class="linenos">357</span><span class="sd">    collections.abc.Collection[str]</span>
+<span class="linenos">358</span><span class="sd">        Child ids.</span>
+<span class="linenos">359</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">360</span>
+<span class="linenos">361</span>    <span class="n">parent_stars_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">362</span>    <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="n">parent_stars</span><span class="p">:</span>
+<span class="linenos">363</span>        <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">star</span><span class="p">:</span>
+<span class="linenos">364</span>            <span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">[:</span> <span class="n">star</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)]</span>
+<span class="linenos">365</span>        <span class="k">if</span> <span class="s2">&quot;&#39;&quot;</span> <span class="ow">in</span> <span class="n">star</span><span class="p">:</span>
+<span class="linenos">366</span>            <span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">)</span>
+<span class="linenos">367</span>        <span class="n">parent_stars_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">star</span><span class="p">)</span>
+<span class="linenos">368</span>
+<span class="linenos">369</span>    <span class="c1"># str(tuple-with-one-element) adds a trailing comma, which trips up SIMBAD,</span>
+<span class="linenos">370</span>    <span class="c1"># so we do the string conversion ourself in this case</span>
+<span class="linenos">371</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_stars_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos">372</span>        <span class="n">parent_stars_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(&#39;</span><span class="si">{</span><span class="n">parent_stars_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+<span class="linenos">373</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">374</span>        <span class="n">parent_stars_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">parent_stars_list</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="linenos">375</span>
+<span class="linenos">376</span>    <span class="c1"># write the query</span>
+<span class="linenos">377</span>    <span class="n">parent_query_adql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="linenos">378</span><span class="s2">        SELECT main_id as &quot;child&quot;, allfluxes.V</span>
+<span class="linenos">379</span><span class="s2">        FROM h_link</span>
+<span class="linenos">380</span><span class="s2">        JOIN ident as p on p.oidref=parent</span>
+<span class="linenos">381</span><span class="s2">        JOIN basic on oid=&quot;child&quot;</span>
+<span class="linenos">382</span><span class="s2">        JOIN allfluxes on oid = allfluxes.oidref</span>
+<span class="linenos">383</span><span class="s2">        WHERE p.id in </span><span class="si">{</span><span class="n">parent_stars_string</span><span class="si">}</span>
+<span class="linenos">384</span><span class="s2">        AND V &lt;= </span><span class="si">{</span><span class="n">maximum_magnitude</span><span class="si">}</span><span class="s2">;</span>
+<span class="linenos">385</span><span class="s2">    &quot;&quot;&quot;</span>
+<span class="linenos">386</span>
+<span class="linenos">387</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">388</span>        <span class="n">children</span> <span class="o">=</span> <span class="n">run_simbad_query</span><span class="p">(</span><span class="s2">&quot;tap&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">parent_query_adql</span><span class="p">)</span>
+<span class="linenos">389</span>    <span class="k">except</span> <span class="n">DALQueryError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># TODO: find out how to force this error</span>
+<span class="linenos">390</span>        <span class="c1"># Sometimes one of the parent ids is...problematic</span>
+<span class="linenos">391</span>        <span class="c1"># if that&#39;s the case, just boot it out</span>
+<span class="linenos">392</span>        <span class="k">if</span> <span class="s2">&quot;1 unresolved identifiers&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">:</span>
+<span class="linenos">393</span>            <span class="n">bad_region</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)]</span>
+<span class="linenos">394</span>            <span class="n">lineno</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bad_region</span><span class="p">[</span><span class="mi">2</span> <span class="p">:</span> <span class="n">bad_region</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)])</span>
+<span class="linenos">395</span>            <span class="n">get_col</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">colstring</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">colstring</span><span class="p">[</span><span class="n">colstring</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">:])</span>
+<span class="linenos">396</span>            <span class="n">col_start</span><span class="p">,</span> <span class="n">col_end</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_col</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">bad_region</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">)]</span>
+<span class="linenos">397</span>
+<span class="linenos">398</span>            <span class="n">query_split</span> <span class="o">=</span> <span class="n">parent_query_adql</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+<span class="linenos">399</span>            <span class="n">query_split</span><span class="p">[</span><span class="n">lineno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">400</span>                <span class="n">query_split</span><span class="p">[</span><span class="n">lineno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][:</span> <span class="n">col_start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos">401</span>                <span class="o">+</span> <span class="n">query_split</span><span class="p">[</span><span class="n">lineno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">col_end</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+<span class="linenos">402</span>            <span class="p">)</span>
+<span class="linenos">403</span>
+<span class="linenos">404</span>            <span class="n">parent_query_adql</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_split</span><span class="p">)</span>
+<span class="linenos">405</span>            <span class="n">children</span> <span class="o">=</span> <span class="n">run_simbad_query</span><span class="p">(</span><span class="s2">&quot;tap&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">parent_query_adql</span><span class="p">)</span>
+<span class="linenos">406</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">407</span>            <span class="n">children</span> <span class="o">=</span> <span class="n">QTable</span><span class="p">(</span><span class="o">**</span><span class="n">BASIC_TABLE</span><span class="p">)</span>
+<span class="linenos">408</span>            <span class="k">raise</span> <span class="n">e</span>
+<span class="linenos">409</span>
+<span class="linenos">410</span>    <span class="k">return</span> <span class="n">children</span><span class="p">[</span><span class="s2">&quot;child&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span></div>
+
+<span class="linenos">411</span>
+<span class="linenos">412</span>
+<div class="viewcode-block" id="remove_child_stars">
+<a class="viewcode-back" href="../../generated/skysim.query.remove_child_stars.html#skysim.query.remove_child_stars">[docs]</a>
+<span class="linenos">413</span><span class="k">def</span><span class="w"> </span><span class="nf">remove_child_stars</span><span class="p">(</span><span class="n">star_table</span><span class="p">:</span> <span class="n">QTable</span><span class="p">,</span> <span class="n">maximum_magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">414</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the given table for parent-child pairs, and remove the children if</span>
+<span class="linenos">415</span><span class="sd">    they exist.</span>
+<span class="linenos">416</span>
+<span class="linenos">417</span><span class="sd">    Parameters</span>
+<span class="linenos">418</span><span class="sd">    ----------</span>
+<span class="linenos">419</span><span class="sd">    star_table : astropy.table.QTable</span>
+<span class="linenos">420</span><span class="sd">        Table to checked.</span>
+<span class="linenos">421</span><span class="sd">    maximum_magnitude : float</span>
+<span class="linenos">422</span><span class="sd">        Filtering value for the children.</span>
+<span class="linenos">423</span>
+<span class="linenos">424</span><span class="sd">    Returns</span>
+<span class="linenos">425</span><span class="sd">    -------</span>
+<span class="linenos">426</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">427</span><span class="sd">        Table with only parent items.</span>
+<span class="linenos">428</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">429</span>    <span class="n">parents</span> <span class="o">=</span> <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>  <span class="c1"># check all items, regardless of type</span>
+<span class="linenos">430</span>
+<span class="linenos">431</span>    <span class="n">blocksize</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># the maximum number of parents to query at once</span>
+<span class="linenos">432</span>    <span class="n">all_children</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">433</span>    <span class="n">n_blocks</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span> <span class="o">/</span> <span class="n">blocksize</span><span class="p">)</span>
+<span class="linenos">434</span>
+<span class="linenos">435</span>    <span class="c1"># query for the end of the parents list, leaving only a multiple of blocksize to query</span>
+<span class="linenos">436</span>    <span class="n">all_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="linenos">437</span>        <span class="n">get_child_stars</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">parents</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">n_blocks</span> <span class="o">*</span> <span class="n">blocksize</span> <span class="p">:]),</span> <span class="n">maximum_magnitude</span><span class="p">)</span>
+<span class="linenos">438</span>    <span class="p">)</span>
+<span class="linenos">439</span>    <span class="c1"># query for the remainder of the parents in blocksize chunks</span>
+<span class="linenos">440</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_blocks</span><span class="p">):</span>
+<span class="linenos">441</span>        <span class="n">all_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="linenos">442</span>            <span class="n">get_child_stars</span><span class="p">(</span>
+<span class="linenos">443</span>                <span class="nb">tuple</span><span class="p">(</span><span class="n">parents</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">blocksize</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">blocksize</span><span class="p">]),</span>
+<span class="linenos">444</span>                <span class="n">maximum_magnitude</span><span class="p">,</span>
+<span class="linenos">445</span>            <span class="p">)</span>
+<span class="linenos">446</span>        <span class="p">)</span>
+<span class="linenos">447</span>
+<span class="linenos">448</span>    <span class="n">child_items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_children</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type,var-annotated]</span>
+<span class="linenos">449</span>
+<span class="linenos">450</span>    <span class="c1"># search for and remove children</span>
+<span class="linenos">451</span>    <span class="n">star_table</span><span class="o">.</span><span class="n">add_index</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+<span class="linenos">452</span>    <span class="k">for</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">child_items</span><span class="p">:</span>
+<span class="linenos">453</span>        <span class="k">if</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span>
+<span class="linenos">454</span>            <span class="n">star_table</span><span class="o">.</span><span class="n">remove_rows</span><span class="p">(</span><span class="n">star_table</span><span class="o">.</span><span class="n">loc_indices</span><span class="p">[</span><span class="n">child_id</span><span class="p">])</span>
+<span class="linenos">455</span>    <span class="n">star_table</span><span class="o">.</span><span class="n">remove_indices</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+<span class="linenos">456</span>
+<span class="linenos">457</span>    <span class="k">return</span> <span class="n">star_table</span></div>
+
+<span class="linenos">458</span>
+<span class="linenos">459</span>
+<div class="viewcode-block" id="get_single_spectral_type">
+<a class="viewcode-back" href="../../generated/skysim.query.get_single_spectral_type.html#skysim.query.get_single_spectral_type">[docs]</a>
+<span class="linenos">460</span><span class="k">def</span><span class="w"> </span><span class="nf">get_single_spectral_type</span><span class="p">(</span>
+<span class="linenos">461</span>    <span class="n">spectral_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos">462</span>    <span class="n">acceptable_types</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="linenos">463</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">464</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Process a SIMBAD spectral type into one of `acceptable_types` or</span>
+<span class="linenos">465</span><span class="sd">    `FALLBACK_SPECTRAL_TYPE`.</span>
+<span class="linenos">466</span>
+<span class="linenos">467</span><span class="sd">    Parameters</span>
+<span class="linenos">468</span><span class="sd">    ----------</span>
+<span class="linenos">469</span><span class="sd">    spectral_type : str</span>
+<span class="linenos">470</span><span class="sd">        The spectral type as given by SIMBAD.</span>
+<span class="linenos">471</span><span class="sd">    acceptable_types : collections.abc.Collection[str]</span>
+<span class="linenos">472</span><span class="sd">        Collection of acceptable spectral types.</span>
+<span class="linenos">473</span>
+<span class="linenos">474</span><span class="sd">    Returns</span>
+<span class="linenos">475</span><span class="sd">    -------</span>
+<span class="linenos">476</span><span class="sd">    str</span>
+<span class="linenos">477</span><span class="sd">        The best match to `acceptable_types` or `FALLBACK_SPECTRAL_TYPE`.</span>
+<span class="linenos">478</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">479</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectral_type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">480</span>        <span class="k">return</span> <span class="n">FALLBACK_SPECTRAL_TYPE</span>
+<span class="linenos">481</span>
+<span class="linenos">482</span>    <span class="c1"># start with most specific type, and work backwards</span>
+<span class="linenos">483</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectral_type</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+<span class="linenos">484</span>        <span class="k">if</span> <span class="n">spectral_type</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">acceptable_types</span><span class="p">:</span>
+<span class="linenos">485</span>            <span class="k">return</span> <span class="n">spectral_type</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">486</span>
+<span class="linenos">487</span>    <span class="k">return</span> <span class="n">FALLBACK_SPECTRAL_TYPE</span></div>
+
+<span class="linenos">488</span>
+<span class="linenos">489</span>
+<div class="viewcode-block" id="simplify_spectral_types">
+<a class="viewcode-back" href="../../generated/skysim.query.simplify_spectral_types.html#skysim.query.simplify_spectral_types">[docs]</a>
+<span class="linenos">490</span><span class="k">def</span><span class="w"> </span><span class="nf">simplify_spectral_types</span><span class="p">(</span>
+<span class="linenos">491</span>    <span class="n">star_table</span><span class="p">:</span> <span class="n">QTable</span><span class="p">,</span>
+<span class="linenos">492</span>    <span class="n">acceptable_types</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="linenos">493</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">494</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Replaces the `spectral_type` column of a table with simplified versions</span>
+<span class="linenos">495</span><span class="sd">    via `get_single_spectral_type`.</span>
+<span class="linenos">496</span>
+<span class="linenos">497</span><span class="sd">    Parameters</span>
+<span class="linenos">498</span><span class="sd">    ----------</span>
+<span class="linenos">499</span><span class="sd">    star_table : astropy.table.QTable</span>
+<span class="linenos">500</span><span class="sd">        Table with a `spectral_type` column.</span>
+<span class="linenos">501</span><span class="sd">    acceptable_types : collections.abc.Collection[str]</span>
+<span class="linenos">502</span><span class="sd">        Collection of acceptable spectral types.</span>
+<span class="linenos">503</span>
+<span class="linenos">504</span><span class="sd">    Returns</span>
+<span class="linenos">505</span><span class="sd">    -------</span>
+<span class="linenos">506</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">507</span><span class="sd">        `star_table` with a replaced `spectral_type` column.</span>
+<span class="linenos">508</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">509</span>    <span class="n">old_spectral_types</span> <span class="o">=</span> <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;spectral_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+<span class="linenos">510</span>    <span class="n">star_table</span><span class="p">[</span><span class="s2">&quot;spectral_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">511</span>        <span class="n">get_single_spectral_type</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">acceptable_types</span><span class="p">)</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">old_spectral_types</span>
+<span class="linenos">512</span>    <span class="p">]</span>
+<span class="linenos">513</span>    <span class="k">return</span> <span class="n">star_table</span></div>
+
+<span class="linenos">514</span>
+<span class="linenos">515</span>
+<div class="viewcode-block" id="clean_simbad_table_columns">
+<a class="viewcode-back" href="../../generated/skysim.query.clean_simbad_table_columns.html#skysim.query.clean_simbad_table_columns">[docs]</a>
+<span class="linenos">516</span><span class="k">def</span><span class="w"> </span><span class="nf">clean_simbad_table_columns</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">QTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTable</span><span class="p">:</span>
+<span class="linenos">517</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove and rename some SIMBAD columns - does not fail if the columns do</span>
+<span class="linenos">518</span><span class="sd">    not exist (happens if the table was actually generated from `BASIC_TABLE` and not by</span>
+<span class="linenos">519</span><span class="sd">    an actual query).</span>
+<span class="linenos">520</span>
+<span class="linenos">521</span><span class="sd">    Parameters</span>
+<span class="linenos">522</span><span class="sd">    ----------</span>
+<span class="linenos">523</span><span class="sd">    table : astropy.table.QTable</span>
+<span class="linenos">524</span><span class="sd">        Table to operate on.</span>
+<span class="linenos">525</span>
+<span class="linenos">526</span><span class="sd">    Returns</span>
+<span class="linenos">527</span><span class="sd">    -------</span>
+<span class="linenos">528</span><span class="sd">    astropy.table.QTable</span>
+<span class="linenos">529</span><span class="sd">        &quot;Cleaned&quot; table.</span>
+<span class="linenos">530</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">531</span>    <span class="n">columns_to_remove</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">532</span>        <span class="s2">&quot;coo_err_min&quot;</span><span class="p">,</span>
+<span class="linenos">533</span>        <span class="s2">&quot;coo_err_angle&quot;</span><span class="p">,</span>
+<span class="linenos">534</span>        <span class="s2">&quot;coo_wavelength&quot;</span><span class="p">,</span>
+<span class="linenos">535</span>        <span class="s2">&quot;coo_bibcode&quot;</span><span class="p">,</span>
+<span class="linenos">536</span>        <span class="s2">&quot;coo_err_maj&quot;</span><span class="p">,</span>
+<span class="linenos">537</span>        <span class="s2">&quot;otype&quot;</span><span class="p">,</span>
+<span class="linenos">538</span>    <span class="p">]</span>
+<span class="linenos">539</span>    <span class="k">for</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">columns_to_remove</span><span class="p">:</span>
+<span class="linenos">540</span>        <span class="k">if</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+<span class="linenos">541</span>            <span class="n">table</span><span class="o">.</span><span class="n">remove_column</span><span class="p">(</span><span class="n">colname</span><span class="p">)</span>
+<span class="linenos">542</span>
+<span class="linenos">543</span>    <span class="n">renames</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">544</span>        <span class="s2">&quot;main_id&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="linenos">545</span>        <span class="s2">&quot;V&quot;</span><span class="p">:</span> <span class="s2">&quot;magnitude&quot;</span><span class="p">,</span>
+<span class="linenos">546</span>        <span class="s2">&quot;sp_type&quot;</span><span class="p">:</span> <span class="s2">&quot;spectral_type&quot;</span><span class="p">,</span>
+<span class="linenos">547</span>    <span class="p">}</span>
+<span class="linenos">548</span>
+<span class="linenos">549</span>    <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">renames</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="linenos">550</span>        <span class="k">if</span> <span class="n">old</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+<span class="linenos">551</span>            <span class="n">table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+<span class="linenos">552</span>
+<span class="linenos">553</span>    <span class="k">return</span> <span class="n">table</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright  2025, Tai Withers.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
