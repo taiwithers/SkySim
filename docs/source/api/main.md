@@ -3,7 +3,7 @@
 ```{eval-rst}
 .. automodule:: skysim.__main__
    :no-index:
-   :exclude-members: main, parse_args, confirm_config_file, handle_overwrite, check_for_overwrite
+   :exclude-members: main, parse_cli_args, confirm_config_file, handle_overwrite, check_for_overwrite
 ```
 
 ## Entrypoint
@@ -18,7 +18,7 @@
 .. autosummary::
    :toctree: ../generated
 
-   parse_args
+   parse_cli_args
    confirm_config_file
    handle_overwrite
    check_for_overwrite
